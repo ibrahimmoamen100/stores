@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Product, ProductSize, ProductAddon } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -169,8 +169,9 @@ export function ProductOptions({
 
   // Initialize with first size if available
   useEffect(() => {
-    if (product.sizes && product.sizes.length > 0 && !selectedSizeId) {
-      setSelectedSizeId(product.sizes[0].id);
+    const validSizes = product.sizes?.filter(size => size && size.label && size.label.trim() !== '') || [];
+    if (validSizes.length > 0 && !selectedSizeId) {
+      setSelectedSizeId(validSizes[0].id);
     }
   }, [product.sizes]);
 
@@ -303,7 +304,8 @@ export function ProductOptions({
     toast.info('تم إلغاء الكوبون');
   };
 
-  const hasSizes = product.sizes && product.sizes.length > 0;
+  const validSizes = product.sizes?.filter(size => size && size.label && size.label.trim() !== '') || [];
+  const hasSizes = validSizes.length > 0;
   const hasCustomOptionGroups = product.customOptionGroups && product.customOptionGroups.length > 0;
   const hasAddons = product.addons && product.addons.length > 0;
 
@@ -331,7 +333,7 @@ export function ProductOptions({
           </div>
 
           <div className="flex flex-col gap-3">
-            {product.sizes!.map((size) => (
+            {validSizes.map((size) => (
               <button
                 key={size.id}
                 onClick={() => handleSizeChange(size.id)}

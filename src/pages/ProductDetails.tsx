@@ -1,4 +1,4 @@
-﻿import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { SEOHelmet } from "@/components/SEOHelmet";
 import seoData from "@/constants/seo.json";
 import { useStore } from "@/store/useStore";
@@ -773,8 +773,9 @@ const ProductDetails = () => {
     let baseSpecsText = [baseRam, baseStorage].filter(Boolean).join(' + ');
 
     // Fallback to sizes if available and no specific base specs found
-    if (!baseSpecsText && product.sizes && product.sizes.length > 0) {
-      baseSpecsText = product.sizes[0].label;
+    const validSizes = product.sizes?.filter(s => s && s.label && s.label.trim() !== '') || [];
+    if (!baseSpecsText && validSizes.length > 0) {
+      baseSpecsText = validSizes[0].label;
     }
 
     if (baseSpecsText) {
