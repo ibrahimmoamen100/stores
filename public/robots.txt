@@ -1,0 +1,40 @@
+# Robots.txt for كومبيو سيف للابتوبات - ElHashimi Store
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+Allow: /products
+Allow: /product/*
+Allow: /works
+Allow: /locations
+Allow: /about
+Allow: /careers
+Allow: /faq
+Allow: /delivery
+
+# Disallow admin and private pages
+Disallow: /admin*
+Disallow: /dashboard*
+Disallow: /cashier*
+Disallow: /settings*
+Disallow: /attendance*
+Disallow: /api/*
+Disallow: /my-orders
+Disallow: /orders
+Disallow: /analytics
+Disallow: /profit-analysis
+
+# Allow crawling of static assets
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.webp$
+Allow: /*.svg$
+Allow: /*.css$
+Allow: /*.js$
+
+# Sitemap location
+Sitemap: https://compu-saif.vercel.app/sitemap.xml
+
+# Crawl delay (optional - removes if causing issues)
+Crawl-delay: 1

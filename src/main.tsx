@@ -1,0 +1,23 @@
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
+import "./utils/initializeAdmin"; // تهيئة إعدادات الإدارة
+import { applyTheme } from "./lib/applyTheme";
+
+// Apply brand colors from src/config/brand.json before first render
+applyTheme();
+
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Failed to find the root element");
+}
+
+const root = createRoot(rootElement);
+
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
