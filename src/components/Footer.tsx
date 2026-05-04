@@ -29,7 +29,7 @@ export default function Footer() {
 
           {/* About */}
           <div>
-            <img src="/logo2.png" alt="كومبيو سيف" className="h-14 w-auto mb-4 opacity-90" />
+            <img src="/logo2.png" alt="الحشومي" className="h-14 w-auto mb-4 opacity-90" />
             <p className="text-slate-400 text-sm leading-relaxed mb-5">
               {t("footer.aboutDescription")}
             </p>

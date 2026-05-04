@@ -86,7 +86,7 @@ ${formData.details || "لا يوجد"}`;
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/40">
       <SEOHelmet
-        title="توريدات وجملة أجهزة الجملة بأسعار تنافسية | كومبيو سيف"
+        title="توريدات وجملة أجهزة الجملة بأسعار تنافسية | الحشومي"
         description="نوفر خدمات توريد أجهزة اللابتوب والكمبيوتر للشركات والمتاجر في جميع أنحاء مصر من خلال استيراد مباشر من أمريكا بأسعار تنافسية غير مسبوقة."
       />
 
@@ -105,7 +105,7 @@ ${formData.details || "لا يوجد"}`;
                 توريدات وجملة أجهزة لابتوب <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-blue-400">أصلية بأسعار تنافسية</span>
               </h1>
               <p className="text-brand-200 text-lg sm:text-xl leading-relaxed max-w-3xl mx-auto drop-shadow-md">
-                في كومبيوسيف نوفر خدمات توريد أجهزة اللابتوب والكمبيوتر للشركات، المتاجر، والموزعين في جميع أنحاء مصر، من خلال استيراد مباشر من الولايات المتحدة الأمريكية بدون وسطاء، مما يمنح عملاءنا أفضل جودة بأفضل سعر.
+                في الحشومي نوفر خدمات توريد أجهزة اللابتوب والكمبيوتر للشركات، المتاجر، والموزعين في جميع أنحاء مصر، من خلال استيراد مباشر من الولايات المتحدة الأمريكية بدون وسطاء، مما يمنح عملاءنا أفضل جودة بأفضل سعر.
               </p>
             </motion.div>
           </div>
@@ -136,7 +136,7 @@ ${formData.details || "لا يوجد"}`;
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">تم الاستلام بنجاح!</h3>
                     <p className="text-gray-600 text-lg">
-                      تم استلام طلبك بنجاح، وسيتم التواصل معك من قبل فريق كومبيوسيف خلال وقت قصير.
+                      تم استلام طلبك بنجاح، وسيتم التواصل معك من قبل فريق الحشومي خلال وقت قصير.
                     </p>
                     <Button
                       onClick={() => setIsSuccess(false)}
@@ -315,7 +315,7 @@ ${formData.details || "لا يوجد"}`;
               {/* Why Us Column */}
               <motion.div {...fadeUp(0.2)}>
                 <h2 className="text-3xl font-bold text-gray-900 mb-8 inline-flex items-center gap-3">
-                  <span className="text-brand-700">لماذا تختار</span> كومبيو سيف؟
+                  <span className="text-brand-700">لماذا تختار</span> الحشومي؟
                 </h2>
                 <div className="space-y-4">
                   {[
