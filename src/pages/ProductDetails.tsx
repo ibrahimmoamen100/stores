@@ -1277,7 +1277,28 @@ const ProductDetails = () => {
           </motion.div>
         </div>
 
+        {/* Product Description */}
+        {product.description && (
+          <div className="mb-16">
+            <Separator className="mb-8" />
+            <div className="max-w-4xl mx-auto">
 
+              <div
+                className="prose prose-lg max-w-none
+                prose-headings:font-semibold
+                prose-p:leading-relaxed
+                prose-ul:list-disc prose-ul:pl-4
+                prose-ol:list-decimal prose-ol:pl-4
+                prose-li:my-1
+                prose-strong:text-foreground
+                prose-em:text-foreground/80
+                prose-ul:marker:text-foreground
+                prose-ol:marker:text-foreground"
+                dangerouslySetInnerHTML={{ __html: product.description }}
+              />
+            </div>
+          </div>
+        )}
 
         <div id="specs-section" className="mb-16 scroll-mt-24">
           <Separator className="mb-8" />
@@ -1306,28 +1327,7 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* Product Description */}
-        {product.description && (
-          <div className="mb-16">
-            <Separator className="mb-8" />
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">وصف المنتج</h2>
-              <div
-                className="prose prose-lg max-w-none
-                prose-headings:font-semibold
-                prose-p:leading-relaxed
-                prose-ul:list-disc prose-ul:pl-4
-                prose-ol:list-decimal prose-ol:pl-4
-                prose-li:my-1
-                prose-strong:text-foreground
-                prose-em:text-foreground/80
-                prose-ul:marker:text-foreground
-                prose-ol:marker:text-foreground"
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              />
-            </div>
-          </div>
-        )}
+
 
         {/* Suggested Products */}
         <div className="mb-16">
