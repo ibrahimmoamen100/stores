@@ -27,7 +27,7 @@ export function Topbar() {
             <FaWhatsapp className="h-4 w-4" />
           </a>
           <a
-            href="https://instagram.com/compusaaiff"
+            href="https://www.instagram.com/elhashumi"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center w-8 h-8 rounded-full border border-white/40 bg-white/10 hover:bg-white text-white hover:border-white hover:text-pink-600 transition-all duration-300 hover:scale-110 shadow-sm"

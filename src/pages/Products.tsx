@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback, useMemo, useLayoutEffect } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, useLayoutEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useLocation, useSearchParams } from "react-router-dom";
 import { useStore } from "@/store/useStore";
@@ -39,6 +39,8 @@ function filtersToSearchParams(filters: import("@/types/product").Filter, slugMa
   filters.features?.forEach((v) => params.append("features", v));
   // 6. العروض الخاصة
   if (filters.specialOffer) params.set("specialOffer", "true");
+  // 7. البحث
+  if (filters.search) params.set("search", filters.search);
 
   // Dynamic Specs
   if (filters.dynamicSpecs) {
@@ -79,6 +81,7 @@ function searchParamsToFilters(params: URLSearchParams, reverseSlugMap: Record<s
     subcategory: getArr("subcategory"),
     features: getArr("features"),
     specialOffer: params.get("specialOffer") === "true" ? true : undefined,
+    search: params.get("search") || undefined,
     dynamicSpecs: Object.keys(dynamicSpecs).length > 0 ? dynamicSpecs : undefined,
   };
 }

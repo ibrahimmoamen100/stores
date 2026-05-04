@@ -16,7 +16,7 @@ import { ProductCarousel } from "@/components/ProductCarousel";
 import { BrandsCarousel } from "@/components/BrandsCarousel";
 import Footer from "@/components/Footer";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Zap, Star, Shield, Truck, ChevronRight } from "lucide-react";
+import { ArrowLeft, Zap, Star, Shield, Truck, ChevronRight, Search } from "lucide-react";
 import { STORE_HERO_CAROUSEL } from "@/constants/store";
 import { motion } from "framer-motion";
 
@@ -142,6 +142,38 @@ const Index = () => {
                   ))}
                 </div>
               </Carousel>
+            </div>
+          </section>
+
+          {/* ── Search Bar ── */}
+          <section className="relative z-10 -mt-6 sm:-mt-8 px-4 md:px-0">
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white/90 backdrop-blur-xl p-2 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/40 flex items-center gap-2 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+                <div className="bg-brand-50 p-2.5 rounded-xl text-brand-600 mr-1 rtl:mr-0 rtl:ml-1 hidden sm:block">
+                  <Search className="h-5 w-5" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="ابحث عن اسم لابتوب، موديل، أو مواصفات..."
+                  className="w-full bg-transparent border-none outline-none text-gray-800 placeholder:text-gray-400 font-medium sm:text-lg px-2 h-12"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      navigate(`/products?search=${e.currentTarget.value}`);
+                    }
+                  }}
+                  id="home-search-input"
+                />
+                <Button 
+                  className="bg-gradient-to-r from-brand-700 to-brand-600 hover:from-brand-800 hover:to-brand-700 text-white rounded-xl px-5 sm:px-8 h-12 font-bold shadow-md transition-all duration-300"
+                  onClick={() => {
+                    const input = document.getElementById("home-search-input") as HTMLInputElement;
+                    if (input?.value) navigate(`/products?search=${input.value}`);
+                  }}
+                >
+                  <Search className="h-5 w-5 sm:hidden rtl:ml-2 ltr:mr-2" />
+                  <span className="hidden sm:inline">بحث</span>
+                </Button>
+              </div>
             </div>
           </section>
 
