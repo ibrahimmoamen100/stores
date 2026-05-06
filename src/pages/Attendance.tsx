@@ -13,6 +13,7 @@ import {
 } from '@/types/attendance';
 import { useAttendanceAuth } from '@/hooks/useAttendanceAuth';
 import AttendanceLogin from '@/components/AttendanceLogin';
+import { getDashboardSession } from '@/lib/dashboardAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -147,7 +148,9 @@ export default function Attendance() {
   });
 
   // Check if user is admin
-  const isAdmin = session?.userType === 'admin';
+  const dashboardSession = getDashboardSession();
+  const hasDashboardAttendancePerm = !!dashboardSession?.permissions.includes('attendance');
+  const isAdmin = session?.userType === 'admin' || hasDashboardAttendancePerm;
   const currentEmployeeId = session?.employeeId;
 
   // Attendance form state
@@ -639,7 +642,7 @@ export default function Attendance() {
   }
 
   // Show login form if not authenticated
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !hasDashboardAttendancePerm) {
     return (
       <>
         <Helmet>

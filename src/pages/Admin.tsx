@@ -1,4 +1,5 @@
-﻿import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useStore } from "@/store/useStore";
 import { Product } from "@/types/product";
 import { Button } from "@/components/ui/button";
@@ -9,8 +10,7 @@ import { ProductTable } from "@/components/ProductTable";
 import { ProductForm } from "@/components/ProductForm";
 import { CouponsManager } from "@/components/CouponsManager";
 import { AdminFilters } from "@/components/AdminFilters";
-import AdminLogin from "@/components/AdminLogin";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { getDashboardSession } from "@/lib/dashboardAuth";
 import { toast } from "sonner";
 import {
   Package,
@@ -21,6 +21,7 @@ import {
   Calendar as CalendarIcon,
   ChevronDown,
   Filter,
+  ArrowLeft,
   ShoppingCart,
   ClipboardList,
   Clock,
@@ -28,8 +29,6 @@ import {
   Truck,
   CheckSquare,
   XCircle,
-  BarChart3,
-  TrendingUp,
   LogOut,
   User,
   RotateCcw,
@@ -61,7 +60,6 @@ import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 import { DEFAULT_SUPPLIER } from "@/constants/supplier";
 import { Card } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
 import { useRevenue } from "@/hooks/useRevenue";
 import { salesService } from "@/lib/firebase";
 import { db } from "@/lib/firebase";
@@ -88,7 +86,6 @@ interface Order {
 
 const Admin = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, session, loading: authLoading, error: authError, logout, login } = useAdminAuth();
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState("all");
@@ -103,6 +100,8 @@ const Admin = () => {
     stockStatus: "all" as "all" | "out-of-stock" | "low-stock",
   });
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const dashboardSession = getDashboardSession();
+  const hasDashboardAdminPerm = dashboardSession?.permissions.includes('admin');
   const [trackingEnabled, setTrackingEnabled] = useState<boolean>(true);
 
   // Fetch tracking status on mount
@@ -130,7 +129,7 @@ const Admin = () => {
       await setDoc(doc(db, "admin_config", "settings"), { trackingEnabled: newState }, { merge: true });
       setTrackingEnabled(newState);
       toast.success(newState ? "تم تفعيل تسجيل الإحصائيات (الزوار والمبيعات)" : "تم إيقاف تسجيل الإحصائيات (للحفاظ على قراءات Firebase)", { id: "tracking-toggle" });
-      
+
       // Update local storage so it applies immediately to this session
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('global_tracking_disabled', newState ? 'false' : 'true');
@@ -142,20 +141,7 @@ const Admin = () => {
 
   const { products, addProduct, deleteProduct, updateProduct, loadProducts, loading, error, updateProductQuantity } = useStore();
 
-  // Monitor authentication state changes
-  useEffect(() => {
-    console.log('🔄 Admin: Authentication state changed:', {
-      isAuthenticated,
-      authLoading,
-      session: session ? 'exists' : 'null',
-      error: authError
-    });
-
-    // Force re-render if authentication state changes
-    if (isAuthenticated && session) {
-      console.log('🔄 Admin: Authenticated with session, forcing re-render...');
-    }
-  }, [isAuthenticated, authLoading, session, authError]);
+  // Removed authentication effect monitor
 
   // Load products from Firebase on component mount
   useEffect(() => {
@@ -295,40 +281,7 @@ const Admin = () => {
     return bDate - aDate;
   });
 
-  // Handle login using the hook's login function
-  const handleLogin = useCallback(async (password: string) => {
-    console.log('🔐 Admin: handleLogin called');
-    const result = await login(password);
-    console.log('🔐 Admin: handleLogin result:', result);
 
-    if (result.success) {
-      console.log('🔐 Admin: Login successful, waiting for state update...');
-      console.log('🔐 Admin: Current state after login:', {
-        isAuthenticated,
-        authLoading,
-        session: session ? 'exists' : 'null'
-      });
-
-      // Force a re-render by triggering a state update
-      setTimeout(() => {
-        console.log('🔐 Admin: Forcing re-render after successful login...');
-        console.log('🔐 Admin: State after timeout:', {
-          isAuthenticated,
-          authLoading,
-          session: session ? 'exists' : 'null'
-        });
-
-        // Additional verification
-        if (!isAuthenticated) {
-          console.log('🔐 Admin: WARNING - Still not authenticated after timeout!');
-        } else {
-          console.log('🔐 Admin: SUCCESS - Authentication confirmed after timeout!');
-        }
-      }, 200);
-    }
-
-    return result;
-  }, [login]);
 
 
 
@@ -514,72 +467,7 @@ const Admin = () => {
     [updateProduct]
   );
 
-  // Debug logging
-  console.log('🔍 Admin component state:', {
-    isAuthenticated,
-    authLoading,
-    session: session ? 'exists' : 'null',
-    error: authError
-  });
 
-  // Additional debugging
-  console.log('🔍 isAuthenticated type:', typeof isAuthenticated);
-  console.log('🔍 isAuthenticated value:', isAuthenticated);
-  console.log('🔍 authLoading value:', authLoading);
-  console.log('🔍 session details:', session ? {
-    token: session.token ? 'exists' : 'null',
-    isAuthenticated: session.isAuthenticated,
-    expiresAt: session.expiresAt
-  } : 'null');
-
-  // Show loading state while checking authentication
-  if (authLoading) {
-    console.log('🔄 Showing loading state...');
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Helmet>
-          <title>جاري التحميل...</title>
-          <meta
-            name="description"
-            content="جاري التحقق من تسجيل الدخول"
-          />
-        </Helmet>
-        <div className="flex items-center space-x-2">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <span className="text-muted-foreground">جاري التحقق من تسجيل الدخول...</span>
-        </div>
-      </div>
-    );
-  }
-
-  // Show login form if not authenticated
-  if (!isAuthenticated) {
-    console.log('🔒 Showing login form (not authenticated)');
-    console.log('🔒 Current state details:', {
-      isAuthenticated,
-      authLoading,
-      session: session ? 'exists' : 'null',
-      error: authError
-    });
-    return (
-      <>
-        <Helmet>
-          <title>تسجيل دخول المسؤول</title>
-          <meta
-            name="description"
-            content="صفحة تسجيل دخول المسؤول لنظام إدارة المتجر"
-          />
-        </Helmet>
-        <AdminLogin onLogin={handleLogin} loading={authLoading} />
-      </>
-    );
-  }
-
-  console.log('✅ Showing admin dashboard (authenticated)');
-  console.log('✅ Authentication confirmed:', {
-    isAuthenticated,
-    session: session ? 'exists' : 'null'
-  });
 
   return (
     <div className="min-h-screen">
@@ -596,79 +484,18 @@ const Admin = () => {
           <div className="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <h1 className="text-3xl font-bold">لوحة التحكم</h1>
             <div className="flex flex-wrap items-center gap-2">
-              <Button
-                onClick={() => navigate("/analytics")}
-                className="gap-2 bg-brand-700 hover:bg-brand-800 text-white"
-                aria-label="إحصائيات الزوار"
-              >
-                <BarChart3 className="h-4 w-4" aria-hidden="true" />
-                إحصائيات الزوار
-              </Button>
-
-              <Button
-                onClick={() => navigate("/profit-analysis")}
-                className="gap-2 bg-green-600 hover:bg-green-700 text-white"
-                aria-label="تحليل الأرباح"
-              >
-                <TrendingUp className="h-4 w-4" aria-hidden="true" />
-                تحليل الأرباح
-              </Button>
-
-              <Button
-                onClick={() => navigate("/admin/orders")}
-                className="gap-2 bg-brand-700 hover:bg-indigo-700 text-white"
-                aria-label="إدارة الطلبات"
-              >
-                <ClipboardList className="h-4 w-4" aria-hidden="true" />
-                إدارة الطلبات
-              </Button>
-              <Button
-                onClick={toggleTrackingStatus}
-                variant={trackingEnabled ? "outline" : "destructive"}
-                className={cn("gap-2", trackingEnabled ? "hover:bg-red-50 hover:text-red-700 border-red-200" : "hover:bg-red-800")}
-                aria-label="إيقاف / تشغيل الإحصائيات"
-                title="إيقاف تسجيل الإحصائيات وتتبع الشراء لتقليل استهلاك قاعدة البيانات"
-              >
-                {trackingEnabled ? (
-                  <>
-                    <Activity className="h-4 w-4 text-red-600" aria-hidden="true" />
-                    إيقاف الإحصائيات مؤقتاً
-                  </>
-                ) : (
-                  <>
-                    <Activity className="h-4 w-4" aria-hidden="true" />
-                    تفعيل الإحصائيات
-                  </>
-                )}
-              </Button>
-              <Button
-                onClick={handleResetAllPages}
-                variant="destructive"
-                className="gap-2 hover:bg-red-700 border-2 border-red-600"
-                aria-label="إعادة تعيين جميع البيانات"
-                title="إعادة تعيين جميع البيانات (عمليات البيع، الإحصائيات، التحليلات)"
-              >
-                <RotateCcw className="h-4 w-4" aria-hidden="true" />
-                إعادة تعيين البيانات
-              </Button>
-              <div className="flex flex-wrap items-center gap-2 mt-2 md:mt-0 md:ml-4 pb-2 md:pb-0 md:pl-4 border-b md:border-b-0 md:border-l w-full md:w-auto">
-                {session && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <User className="h-4 w-4" />
-                    <span>المسؤول</span>
-                  </div>
-                )}
-                <Button
-                  onClick={logout}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  aria-label="تسجيل الخروج"
-                >
-                  <LogOut className="h-4 w-4" aria-hidden="true" />
-                  تسجيل الخروج
+              {hasDashboardAdminPerm && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <User className="h-4 w-4" />
+                  <span>{dashboardSession ? dashboardSession.displayName : 'المسؤول'}</span>
+                </div>
+              )}
+              {hasDashboardAdminPerm && (
+                <Button onClick={() => navigate('/dashboard')} variant="outline" size="sm" className="gap-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  لوحة التحكم
                 </Button>
-              </div>
+              )}
             </div>
           </div>
 
@@ -781,12 +608,12 @@ const Admin = () => {
                 <div className="bg-card rounded-lg border p-4 shadow-sm">
                   <div className="flex items-center gap-2">
                     <CheckCircle
-                      className="h-5 w-5 text-brand-700"
+                      className="h-5 w-5 text-blue-600"
                       aria-hidden="true"
                     />
                     <h3 className="text-sm font-medium">تم التأكيد</h3>
                   </div>
-                  <p className="text-2xl font-bold mt-2 text-brand-700">
+                  <p className="text-2xl font-bold mt-2 text-blue-600">
                     {statistics.confirmedOrders}
                   </p>
                 </div>
@@ -829,12 +656,12 @@ const Admin = () => {
                 <div className="bg-card rounded-lg border p-4 shadow-sm">
                   <div className="flex items-center gap-2">
                     <ShoppingCart
-                      className="h-5 w-5 text-brand-700"
+                      className="h-5 w-5 text-blue-600"
                       aria-hidden="true"
                     />
                     <h3 className="text-sm font-medium">مبيعات الكاشير</h3>
                   </div>
-                  <p className="text-2xl font-bold mt-2 text-brand-700">
+                  <p className="text-2xl font-bold mt-2 text-blue-600">
                     {orderStatistics?.totalCashierSales || 0}
                   </p>
                 </div>
@@ -861,6 +688,8 @@ const Admin = () => {
           <div className="mt-6">
             <CouponsManager />
           </div>
+
+
 
           <hr />
           <div className="mt-28 mb-8">

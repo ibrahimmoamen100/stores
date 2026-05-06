@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useStore } from "@/store/useStore";
 import { Product, ProductSize, ProductAddon } from "@/types/product";
 import { Button } from "@/components/ui/button";
@@ -1163,7 +1163,7 @@ export default function Cashier() {
     }
 
     const message = generateWhatsAppMessage(filteredSales);
-    const whatsappNumber = "201061246012"; // Convert 01061246012 to international format
+    const whatsappNumber = "201080640246"; // Convert 01080640246 to international format
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
@@ -1374,7 +1374,7 @@ ${saleToDelete.customerPhone ? `رقم الهاتف: ${saleToDelete.customerPhon
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-600"
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="all">جميع التصنيفات</option>
                     {categories.map(category => (
@@ -1414,8 +1414,8 @@ ${saleToDelete.customerPhone ? `رقم الهاتف: ${saleToDelete.customerPhon
                         <div
                           key={product.id}
                           className={`relative p-4 border rounded-lg transition-all hover:shadow-md ${!isAvailable ? 'opacity-50 bg-gray-100' :
-                            loadingProducts.has(product.id || '') ? 'opacity-75 bg-brand-50 border-brand-300' :
-                              'hover:border-brand-300 cursor-pointer'
+                            loadingProducts.has(product.id || '') ? 'opacity-75 bg-blue-50 border-blue-300' :
+                              'hover:border-blue-300 cursor-pointer'
                             } ${hasSpecialOffer ? 'border-red-200 bg-gradient-to-br from-red-50 to-pink-50 shadow-sm' : ''}`}
                           onClick={() => isAvailable && !loadingProducts.has(product.id || '') && addToCart(product)}
                         >
@@ -1435,8 +1435,8 @@ ${saleToDelete.customerPhone ? `رقم الهاتف: ${saleToDelete.customerPhon
 
                           {/* Loading Indicator */}
                           {loadingProducts.has(product.id || '') && (
-                            <div className="absolute inset-0 rounded-lg bg-brand-100 bg-opacity-50 flex items-center justify-center z-20">
-                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-brand-700"></div>
+                            <div className="absolute inset-0 rounded-lg bg-blue-100 bg-opacity-50 flex items-center justify-center z-20">
+                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
                             </div>
                           )}
 
@@ -1463,7 +1463,7 @@ ${saleToDelete.customerPhone ? `رقم الهاتف: ${saleToDelete.customerPhon
                                 </div>
                                 <div className="flex items-center gap-1">
                                   {(product.sizes && product.sizes.length > 0) || (product.addons && product.addons.length > 0) ? (
-                                    <Settings className="h-4 w-4 text-brand-600 flex-shrink-0" />
+                                    <Settings className="h-4 w-4 text-blue-500 flex-shrink-0" />
                                   ) : null}
                                 </div>
                               </div>
@@ -1497,7 +1497,7 @@ ${saleToDelete.customerPhone ? `رقم الهاتف: ${saleToDelete.customerPhon
                                 </Badge>
                               </div>
                               {inCart && (
-                                <div className="mt-2 text-xs text-brand-700">
+                                <div className="mt-2 text-xs text-blue-600">
                                   في السلة: {inCart.quantity}
                                 </div>
                               )}
@@ -1571,7 +1571,7 @@ ${saleToDelete.customerPhone ? `رقم الهاتف: ${saleToDelete.customerPhon
                             <div className="flex-1 min-w-0">
                               <h4 className="font-medium text-sm truncate">{item.product.name}</h4>
                               {item.selectedSize && (
-                                <p className="text-xs text-brand-700 font-medium">
+                                <p className="text-xs text-blue-600 font-medium">
                                   📐 الحجم: {item.selectedSize.label}
                                 </p>
                               )}
@@ -2013,7 +2013,7 @@ ${saleToDelete.customerPhone ? `رقم الهاتف: ${saleToDelete.customerPhon
                                       className="w-14 h-14 object-cover rounded-lg border-2 border-white shadow-sm"
                                     />
                                     {item.selectedSize && (
-                                      <Badge className="absolute -top-1 -right-1 bg-brand-700 text-white text-xs px-1.5 py-0.5 rounded-full border-2 border-white">
+                                      <Badge className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full border-2 border-white">
                                         {item.selectedSize.label}
                                       </Badge>
                                     )}

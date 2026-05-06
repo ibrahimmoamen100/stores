@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Building2,
@@ -15,6 +15,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { STORE_WHATSAPP } from "@/constants/store";
 import Footer from "@/components/Footer";
 import { SEOHelmet } from "@/components/SEOHelmet";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 28 },
@@ -23,6 +24,7 @@ const fadeUp = (delay = 0) => ({
 });
 
 export default function Wholesale() {
+  const { settings } = useSiteSettings();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -86,26 +88,26 @@ ${formData.details || "لا يوجد"}`;
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/40">
       <SEOHelmet
-        title="توريدات وجملة أجهزة الجملة بأسعار تنافسية | الحشومي"
+        title="توريدات وجملة أجهزة الجملة بأسعار تنافسية | كومبيو سيف"
         description="نوفر خدمات توريد أجهزة اللابتوب والكمبيوتر للشركات والمتاجر في جميع أنحاء مصر من خلال استيراد مباشر من أمريكا بأسعار تنافسية غير مسبوقة."
       />
 
       <main className="flex-1">
         {/* ── Hero Section ── */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-brand-900 to-brand-950 py-20 md:py-28 text-white">
-          <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-brand-700/20 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none" />
+        <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-primary/90 to-secondary/90 py-20 md:py-28 text-white">
+          <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
 
           <div className="container relative z-10 text-center px-4">
             <motion.div {...fadeUp(0)} className="max-w-4xl mx-auto">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-cyan-300 font-medium text-sm mb-6 shadow-sm">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-accent font-medium text-sm mb-6 shadow-sm">
                 <Briefcase className="w-4 h-4" /> قسم التوريدات للشركات والتجار
               </span>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 drop-shadow-lg text-white">
-                توريدات وجملة أجهزة لابتوب <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-blue-400">أصلية بأسعار تنافسية</span>
+                توريدات وجملة أجهزة لابتوب <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-white">{settings.wholesalePage.heroTitle}</span>
               </h1>
-              <p className="text-brand-200 text-lg sm:text-xl leading-relaxed max-w-3xl mx-auto drop-shadow-md">
-                في الحشومي نوفر خدمات توريد أجهزة اللابتوب والكمبيوتر للشركات، المتاجر، والموزعين في جميع أنحاء مصر، من خلال استيراد مباشر من الولايات المتحدة الأمريكية بدون وسطاء، مما يمنح عملاءنا أفضل جودة بأفضل سعر.
+              <p className="text-white/80 text-lg sm:text-xl leading-relaxed max-w-3xl mx-auto drop-shadow-md">
+                {settings.wholesalePage.heroSubtitle}
               </p>
             </motion.div>
           </div>
@@ -120,10 +122,10 @@ ${formData.details || "لا يوجد"}`;
             <motion.div {...fadeUp(0.4)} className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
 
               {/* Form Header */}
-              <div className="bg-gradient-to-r from-brand-700 to-brand-700 p-8 text-center text-white">
-                <h2 className="text-3xl font-bold mb-3">اطلب عرض سعر الآن</h2>
-                <p className="text-brand-200 text-sm md:text-base max-w-lg mx-auto">
-                  املأ النموذج التالي وسيقوم فريق المبيعات بالتواصل معك في أقرب وقت لتقديم أفضل عرض يناسب احتياجاتك.
+              <div className="bg-gradient-to-r from-primary to-secondary p-8 text-center text-primary-foreground">
+                <h2 className="text-3xl font-bold mb-3">{settings.wholesalePage.formTitle}</h2>
+                <p className="text-primary-foreground/80 text-sm md:text-base max-w-lg mx-auto">
+                  {settings.wholesalePage.formSubtitle}
                 </p>
               </div>
 
@@ -136,7 +138,7 @@ ${formData.details || "لا يوجد"}`;
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">تم الاستلام بنجاح!</h3>
                     <p className="text-gray-600 text-lg">
-                      تم استلام طلبك بنجاح، وسيتم التواصل معك من قبل فريق الحشومي خلال وقت قصير.
+                      تم استلام طلبك بنجاح، وسيتم التواصل معك من قبل فريق كومبيوسيف خلال وقت قصير.
                     </p>
                     <Button
                       onClick={() => setIsSuccess(false)}
@@ -158,7 +160,7 @@ ${formData.details || "لا يوجد"}`;
                           required
                           onChange={handleChange}
                           value={formData.name}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-brand-600 focus:ring-2 focus:ring-brand-200 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                           placeholder="الاسم الثلاثي"
                         />
                       </div>
@@ -172,7 +174,7 @@ ${formData.details || "لا يوجد"}`;
                           required
                           onChange={handleChange}
                           value={formData.phone}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-brand-600 focus:ring-2 focus:ring-brand-200 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                           placeholder="مثال: 01012345678"
                         />
                       </div>
@@ -185,7 +187,7 @@ ${formData.details || "لا يوجد"}`;
                           name="company"
                           onChange={handleChange}
                           value={formData.company}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-brand-600 focus:ring-2 focus:ring-brand-200 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                           placeholder="اسم الكيان التجاري"
                         />
                       </div>
@@ -199,7 +201,7 @@ ${formData.details || "لا يوجد"}`;
                           required
                           onChange={handleChange}
                           value={formData.governorate}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-brand-600 focus:ring-2 focus:ring-brand-200 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                           placeholder="محافظتك"
                         />
                       </div>
@@ -212,7 +214,7 @@ ${formData.details || "لا يوجد"}`;
                           required
                           onChange={handleChange}
                           value={formData.deviceType}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-brand-600 focus:ring-2 focus:ring-brand-200 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                         >
                           <option value="لابتوب مكتبي">لابتوب مكتبي</option>
                           <option value="أجهزة طلاب">أجهزة طلاب</option>
@@ -229,7 +231,7 @@ ${formData.details || "لا يوجد"}`;
                           required
                           onChange={handleChange}
                           value={formData.quantity}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-brand-600 focus:ring-2 focus:ring-brand-200 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                         >
                           <option value="أقل من 5">أقل من 5 أجهزة</option>
                           <option value="من 5 إلى 20">من 5 إلى 20 جهاز</option>
@@ -246,7 +248,7 @@ ${formData.details || "لا يوجد"}`;
                         rows={4}
                         onChange={handleChange}
                         value={formData.details}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-brand-600 focus:ring-2 focus:ring-brand-200 outline-none transition-all resize-none"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none"
                         placeholder="اذكر أي مواصفات أو ملاحظات خاصة بطلبك..."
                       />
                     </div>
@@ -254,7 +256,7 @@ ${formData.details || "لا يوجد"}`;
                     <Button
                       disabled={isSubmitting}
                       type="submit"
-                      className="w-full py-6 rounded-xl text-lg font-bold bg-brand-700 hover:bg-brand-800 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 gap-3 disabled:opacity-70 disabled:hover:translate-y-0"
+                      className="w-full py-6 rounded-xl text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 gap-3 disabled:opacity-70 disabled:hover:translate-y-0"
                     >
                       {isSubmitting ? (
                         <div className="flex items-center gap-2">
@@ -284,12 +286,12 @@ ${formData.details || "لا يوجد"}`;
           <div className="container">
             <div className="text-center mb-10">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">تم التعامل مع نخبة من:</h2>
-              <div className="w-16 h-1 bg-brand-700 rounded-full mx-auto opacity-50" />
+              <div className="w-16 h-1 bg-primary rounded-full mx-auto opacity-50" />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto mb-8">
               {[
-                { icon: Building2, title: "شركات ومؤسسات", color: "text-brand-700", bg: "bg-brand-50" },
+                { icon: Building2, title: "شركات ومؤسسات", color: "text-blue-600", bg: "bg-blue-50" },
                 { icon: Store, title: "محلات بيع الأجهزة الإلكترونية", color: "text-indigo-600", bg: "bg-indigo-50" },
                 { icon: Users, title: "تجار الجملة والموزعين", color: "text-cyan-600", bg: "bg-cyan-50" }
               ].map((item, i) => (
@@ -315,7 +317,7 @@ ${formData.details || "لا يوجد"}`;
               {/* Why Us Column */}
               <motion.div {...fadeUp(0.2)}>
                 <h2 className="text-3xl font-bold text-gray-900 mb-8 inline-flex items-center gap-3">
-                  <span className="text-brand-700">لماذا تختار</span> الحشومي؟
+                  <span className="text-primary">لماذا تختار</span> {settings.storeName}؟
                 </h2>
                 <div className="space-y-4">
                   {[
@@ -346,15 +348,15 @@ ${formData.details || "لا يوجد"}`;
                     { title: "أجهزة مناسبة للشركات والأعمال المكتبية", icon: Briefcase },
                     { title: "أجهزة مخصصة للموظفين أو الاستخدام الشخصي بكميات", icon: UserCheck }
                   ].map((offer, i) => (
-                    <div key={i} className="flex items-center gap-4 p-5 rounded-xl bg-gradient-to-l from-brand-50 to-transparent border border-brand-100 border-l-4 border-l-brand-700">
+                    <div key={i} className="flex items-center gap-4 p-5 rounded-xl bg-gradient-to-l from-primary/10 to-transparent border border-primary/20 border-l-4 border-l-primary">
                       <div className="p-2 bg-white rounded-lg shadow-sm">
-                        <offer.icon className="w-6 h-6 text-brand-700" />
+                        <offer.icon className="w-6 h-6 text-primary" />
                       </div>
                       <p className="font-bold text-gray-800 text-lg">{offer.title}</p>
                     </div>
                   ))}
                 </div>
-                <div className="p-5 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-900 font-medium">
+                <div className="p-5 rounded-xl bg-accent/20 border border-accent/40 text-gray-800 font-medium">
                   ✨ كما يمكننا تجهيز عروض مخصصة حسب طبيعة نشاط شركتك أو متجرك.
                 </div>
               </motion.div>

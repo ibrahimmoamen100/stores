@@ -28,6 +28,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { checkCoupon, incrementCouponUsage, Coupon } from '@/lib/coupons';
+import { STORE_GOVERNORATES } from '@/constants/store';
 
 export interface CheckoutFormData {
   fullName: string;
@@ -169,9 +170,8 @@ export function ProductOptions({
 
   // Initialize with first size if available
   useEffect(() => {
-    const validSizes = product.sizes?.filter(size => size && size.label && size.label.trim() !== '') || [];
-    if (validSizes.length > 0 && !selectedSizeId) {
-      setSelectedSizeId(validSizes[0].id);
+    if (product.sizes && product.sizes.length > 0 && !selectedSizeId) {
+      setSelectedSizeId(product.sizes[0].id);
     }
   }, [product.sizes]);
 
@@ -207,9 +207,9 @@ export function ProductOptions({
       } else {
         discount = (baseTotal * appliedCoupon.value) / 100;
       }
-      setFormData(prev => ({...prev, couponDiscountAmount: discount, couponCode: appliedCoupon.code}));
+      setFormData(prev => ({ ...prev, couponDiscountAmount: discount, couponCode: appliedCoupon.code }));
     } else {
-      setFormData(prev => ({...prev, couponDiscountAmount: 0, couponCode: undefined}));
+      setFormData(prev => ({ ...prev, couponDiscountAmount: 0, couponCode: undefined }));
     }
   }, [appliedCoupon, currentPrice, quantity]);
 
@@ -266,7 +266,7 @@ export function ProductOptions({
     if (appliedCoupon?.id) {
       incrementCouponUsage(appliedCoupon.id);
     }
-    
+
     onBuy(quantity, formData);
   };
 
@@ -279,9 +279,9 @@ export function ProductOptions({
       if (result.coupon) {
         if (result.coupon.applicableProductIds && result.coupon.applicableProductIds.length > 0) {
           if (!result.coupon.applicableProductIds.includes(product.id!)) {
-             setCouponError('هذا الكوبون غير صالح لهذا المنتج');
-             setAppliedCoupon(null);
-             return;
+            setCouponError('هذا الكوبون غير صالح لهذا المنتج');
+            setAppliedCoupon(null);
+            return;
           }
         }
         setAppliedCoupon(result.coupon);
@@ -304,8 +304,7 @@ export function ProductOptions({
     toast.info('تم إلغاء الكوبون');
   };
 
-  const validSizes = product.sizes?.filter(size => size && size.label && size.label.trim() !== '') || [];
-  const hasSizes = validSizes.length > 0;
+  const hasSizes = product.sizes && product.sizes.length > 0;
   const hasCustomOptionGroups = product.customOptionGroups && product.customOptionGroups.length > 0;
   const hasAddons = product.addons && product.addons.length > 0;
 
@@ -333,18 +332,18 @@ export function ProductOptions({
           </div>
 
           <div className="flex flex-col gap-3">
-            {validSizes.map((size) => (
+            {product.sizes!.map((size) => (
               <button
                 key={size.id}
                 onClick={() => handleSizeChange(size.id)}
                 className={`relative group p-4 rounded-xl border transition-all duration-200 ${selectedSizeId === size.id
-                  ? 'border-brand-700 bg-brand-50/30'
+                  ? 'border-primary bg-primary/5'
                   : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                   }`}
               >
                 <div className="flex items-start gap-3">
                   <div className={`shrink-0 w-5 h-5 mt-0.5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${selectedSizeId === size.id
-                    ? 'border-brand-700 bg-brand-700'
+                    ? 'border-primary bg-primary'
                     : 'border-gray-300 bg-white'
                     }`}>
                     {selectedSizeId === size.id && (
@@ -353,7 +352,7 @@ export function ProductOptions({
                   </div>
                   <div className="text-right flex-1">
                     <div className="font-bold text-gray-900 text-sm leading-relaxed">{size.label}</div>
-                    <div className={`font-black text-base mt-1 inline-block px-3 py-1 rounded-lg ${size.price === 0 || size.price === product.price ? 'text-brand-700 bg-brand-50/30 border border-brand-100/50 text-sm' : 'text-brand-700 bg-brand-50/50'}`}>
+                    <div className={`font-black text-base mt-1 inline-block px-3 py-1 rounded-lg ${size.price === 0 || size.price === product.price ? 'text-primary/80 bg-primary/5 border border-primary/20 text-sm' : 'text-primary bg-primary/10'}`}>
                       {size.price === 0 || size.price === product.price ? 'الأساسي' : formatCurrency(size.price, 'جنيه')}
                     </div>
                   </div>
@@ -383,14 +382,14 @@ export function ProductOptions({
                       key={option.id}
                       onClick={() => setSelectedCustomOptionIds(prev => ({ ...prev, [group.id]: option.id }))}
                       className={`relative group p-4 rounded-xl border transition-all duration-200 ${isSelected
-                        ? 'border-brand-700 bg-brand-50/30 shadow-sm'
+                        ? 'border-primary bg-primary/5 shadow-sm'
                         : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                         }`}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
                           <div className={`shrink-0 w-5 h-5 mt-0.5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${isSelected
-                            ? 'border-brand-700 bg-brand-700'
+                            ? 'border-primary bg-primary'
                             : 'border-gray-300 bg-white'
                             }`}>
                             {isSelected && (
@@ -402,11 +401,11 @@ export function ProductOptions({
                           </div>
                         </div>
                         {option.extraPrice > 0 ? (
-                          <div className="font-black text-brand-700 bg-brand-50/50 inline-block px-3 py-1 rounded-lg text-sm">
+                          <div className="font-black text-primary bg-primary/10 inline-block px-3 py-1 rounded-lg text-sm">
                             +{formatCurrency(option.extraPrice, 'جنيه')}
                           </div>
                         ) : (
-                          <div className="font-bold text-brand-700 bg-brand-50/30 border border-brand-100/50 inline-block px-3 py-1 rounded-lg text-xs">
+                          <div className="font-bold text-primary/80 bg-primary/5 border border-primary/20 inline-block px-3 py-1 rounded-lg text-xs">
                             الأساسي
                           </div>
                         )}
@@ -435,14 +434,14 @@ export function ProductOptions({
                 key={addon.id}
                 onClick={() => handleAddonToggle(addon.id, !selectedAddonIds.includes(addon.id))}
                 className={`relative group p-4 rounded-xl border transition-all duration-200 ${selectedAddonIds.includes(addon.id)
-                  ? 'border-brand-700 bg-brand-50/30 shadow-sm'
+                  ? 'border-primary bg-primary/5 shadow-sm'
                   : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                   }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${selectedAddonIds.includes(addon.id)
-                      ? 'border-brand-700 bg-brand-700'
+                      ? 'border-primary bg-primary'
                       : 'border-gray-300 bg-white'
                       }`}>
                       {selectedAddonIds.includes(addon.id) && (
@@ -455,7 +454,7 @@ export function ProductOptions({
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-brand-700 bg-brand-50 px-3 py-1 rounded-full text-sm">
+                    <span className="font-bold text-primary bg-primary/5 px-3 py-1 rounded-full text-sm">
                       +{formatCurrency(addon.price_delta, 'جنيه')}
                     </span>
                   </div>
@@ -472,14 +471,13 @@ export function ProductOptions({
           {/* Price Header - updates when coupon applied */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h3 className="text-sm tracking-widest uppercase font-bold text-brand-700/60 mb-1">
+              <h3 className="text-sm tracking-widest uppercase font-bold text-primary/60 mb-1">
                 {appliedCoupon ? 'سعر بعد خصم الكوبون' : currentPrice < originalPrice ? 'عرض خاص حصري!' : 'السعر النهائي'}
               </h3>
               <div className="flex items-baseline gap-3">
                 {/* Main price: shows discounted price when coupon applied */}
-                <span className={`text-4xl md:text-5xl font-black tracking-tight ${
-                  appliedCoupon ? 'text-green-700' : currentPrice < originalPrice ? 'text-red-600' : 'text-brand-700'
-                }`}>
+                <span className={`text-4xl md:text-5xl font-black tracking-tight ${appliedCoupon ? 'text-green-700' : currentPrice < originalPrice ? 'text-red-600' : 'text-primary'
+                  }`}>
                   {formatCurrency(appliedCoupon ? finalPriceAfterCoupon : subtotal, 'جنيه')}
                 </span>
 
@@ -502,7 +500,10 @@ export function ProductOptions({
             <div className="flex flex-col items-end gap-2">
               {currentPrice < originalPrice && (
                 <div className="inline-block bg-red-50 text-red-600 px-4 py-1.5 rounded-full text-sm font-bold border border-red-100">
-                  خصم العرض {Math.round(((originalPrice - currentPrice) / originalPrice) * 100)}%
+                  {product.discountPrice
+                    ? `خصم ${formatCurrency(originalPrice - currentPrice, 'جنيه')}`
+                    : `خصم العرض ${Math.round(((originalPrice - currentPrice) / originalPrice) * 100)}%`
+                  }
                 </div>
               )}
               {appliedCoupon && (
@@ -668,7 +669,7 @@ export function ProductOptions({
                   <span className="text-green-700 font-medium">خصم الكوبون</span>
                   <span className="font-black text-green-700">- {formatCurrency(couponDiscount, 'جنيه')}</span>
                 </div>
-                <div className="flex justify-between items-center px-4 py-3 bg-brand-700">
+                <div className="flex justify-between items-center px-4 py-3 bg-primary">
                   <span className="font-bold text-white">الإجمالي بعد الخصم</span>
                   <span className="text-2xl font-black text-white">{formatCurrency(finalPriceAfterCoupon, 'جنيه')}</span>
                 </div>
@@ -678,16 +679,16 @@ export function ProductOptions({
 
           <div className="flex flex-col sm:flex-row gap-3 mt-4">
             <Button
-              className="flex-1 h-14 text-lg font-bold bg-brand-700 text-white hover:bg-brand-950 rounded-2xl transition-all duration-300 shadow-md flex items-center justify-center gap-2"
+              className="flex-1 h-14 text-lg font-bold bg-primary text-white hover:bg-primary/90 rounded-2xl transition-all duration-300 shadow-md flex items-center justify-center gap-2"
               onClick={() => setIsFormVisible(!isFormVisible)}
             >
-              شراء الان
+              شراء / حجز
               <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isFormVisible ? 'rotate-180' : ''}`} />
             </Button>
             {onAddToCart && (
               <Button
                 variant="outline"
-                className="flex-1 h-14 text-lg font-bold bg-white text-brand-700 border-2 border-brand-700/20 hover:border-brand-700 rounded-2xl transition-all duration-300"
+                className="flex-1 h-14 text-lg font-bold bg-white text-primary border-2 border-primary/20 hover:border-primary hover:bg-primary/5 rounded-2xl transition-all duration-300"
                 onClick={onAddToCart}
               >
                 إضافة للسلة
@@ -705,18 +706,28 @@ export function ProductOptions({
                   <button
                     type="button"
                     onClick={() => setFormData(prev => ({ ...prev, orderType: 'online_purchase', appointmentDate: '', appointmentTime: '' }))} // Clear reservation fields on type change
-                    className={`flex-1 py-3 text-sm border-2 font-bold rounded-lg transition-all ${formData.orderType === 'online_purchase' ? 'border-2 border-brand-700 text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
+                    className={`flex-1 py-3 text-sm border-2 font-bold rounded-lg transition-all ${formData.orderType === 'online_purchase' ? 'border-primary text-primary shadow-sm bg-white' : 'text-gray-500 hover:text-gray-900 border-transparent'}`}
                   >
                     شراء أونلاين
                   </button>
                   <button
                     type="button"
                     onClick={() => setFormData(prev => ({ ...prev, orderType: 'reservation', governorate: '', address: '' }))} // Clear online purchase fields on type change
-                    className={`flex-1 py-3 text-sm border-2 font-bold rounded-lg transition-all ${formData.orderType === 'reservation' ? 'border-2 border-brand-700 text-brand-700 shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
+                    className={`flex-1 py-3 text-sm border-2 font-bold rounded-lg transition-all ${formData.orderType === 'reservation' ? 'border-primary text-primary shadow-sm bg-white' : 'text-gray-500 hover:text-gray-900 border-transparent'}`}
                   >
                     حجز من الفرع
                   </button>
                 </div>
+                {formData.orderType === 'online_purchase' && (
+                  <p className="text-sm font-medium text-primary bg-primary/5 p-3 rounded-lg border border-primary/20 leading-relaxed text-center">
+                    سيتم الشحن لحد عندك
+                  </p>
+                )}
+                {formData.orderType === 'reservation' && (
+                  <p className="text-sm font-medium text-emerald-700 bg-emerald-50 p-3 rounded-lg border border-emerald-100 leading-relaxed text-center">
+                    سيتم تجهيز اللاب وحجزه لحد ما تشرفنا في الفرع وسيتم التواصل لتحديد الفرع
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -747,48 +758,35 @@ export function ProductOptions({
                 <>
                   <div className="space-y-2">
                     <Label className="text-xs font-semibold text-gray-700">المحافظة <span className="text-red-500">*</span></Label>
-                    <Input
-                      placeholder="اسم المحافظة كامل..."
+                    <select
                       value={formData.governorate}
                       onChange={(e) => setFormData(prev => ({ ...prev, governorate: e.target.value }))}
-                      className={`h-9 bg-white ${formErrors.governorate ? 'border-red-500' : ''}`}
-                    />
+                      className={`flex h-9 w-full rounded-md border border-input bg-white px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${formErrors.governorate ? 'border-red-500' : ''}`}
+                    >
+                      <option value="">اختر المحافظة</option>
+                      {STORE_GOVERNORATES.map(gov => (
+                        <option key={gov.name} value={gov.name}>
+                          {gov.name}
+                        </option>
+                      ))}
+                    </select>
                     {formErrors.governorate && <p className="text-[10px] text-red-500">مطلوب</p>}
 
                     {formData.governorate ? (
-                      <div className="bg-brand-50/50 rounded-md p-2 border border-brand-100/50 mt-2 animate-in fade-in slide-in-from-top-1 duration-200 flex justify-between items-center px-3">
-                        <span className="text-xs text-brand-800 font-medium">
-                          الشحن: <span className="font-bold text-brand-700 text-sm">
-                            {(() => {
-                              const gov = formData.governorate?.trim() || '';
-                              const isCairo = /^(cairo|القاهرة|القاهره|القاهرا)$/i.test(gov);
-                              const isRemote = /^(قنا|الاقصر|الأقصر|اسوان|أسوان|شرم الشيخ|الغردقة|الغردقه|مرسى)$/i.test(gov);
-                              const total = currentPrice * quantity;
-
-                              if (isCairo) {
-                                return total > 11000 ? '120 ج.م' : '100 ج.م';
-                              } else if (isRemote) {
-                                return '200 ج.م';
-                              } else {
-                                return total > 11000 ? '170 ج.م' : '150 ج.م';
-                              }
-                            })()}
+                      <div className="bg-primary/5 rounded-md p-2 border border-primary/10 mt-2 animate-in fade-in slide-in-from-top-1 duration-200 flex justify-between items-center px-3">
+                        <span className="text-xs text-primary font-medium">
+                          الشحن: <span className="font-bold text-primary text-sm">
+                            {STORE_GOVERNORATES.find(g => g.name === formData.governorate)?.shippingCost}
                           </span>
                         </span>
-                        <span className="text-[10px] text-brand-700 bg-brand-100/50 px-2 py-0.5 rounded-full">
-                          {(() => {
-                            const gov = formData.governorate?.trim() || '';
-                            const isCairo = /^(cairo|القاهرة|القاهره|القاهرا)$/i.test(gov);
-                            const isRemote = /^(قنا|الاقصر|الأقصر|اسوان|أسوان|شرم الشيخ|الغردقة|الغردقه|مرسى)$/i.test(gov);
-                            if (isCairo) return 'خلال 24 ساعة';
-                            if (isRemote) return 'خلال 48 ساعة';
-                            return 'خلال 48 ساعة';
-                          })()}
+                        <span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                          {STORE_GOVERNORATES.find(g => g.name === formData.governorate)?.deliveryTime || 'خلال 48 ساعة'}
                         </span>
                       </div>
                     ) : (
                       <p className="text-[10px] text-gray-500 mt-1">
-                        اكتب اسم محافظتك كامل و هيظهرلك جميع تفاصيل الشحن والتوصيل                   </p>
+                        سيتم التواصل لتأكيد مصاريف الشحن
+                      </p>
                     )}
                   </div>
 
@@ -847,7 +845,7 @@ export function ProductOptions({
                       يرجى زيارة المحل خلال الفترة المحددة، وفي حال عدم الحضور سيتم اعتبار الحجز ملغيًا تلقائيًا.
                     </p>
                   ) : (
-                    <p className="text-xs text-brand-700 mt-1">
+                    <p className="text-xs text-primary/80 mt-1">
                       الحجز في المحل في فتره لا تتجاوز اليومين
                     </p>
                   )}
@@ -865,7 +863,7 @@ export function ProductOptions({
 
               {/* Submit Button */}
               <Button
-                className="w-full h-14 text-xl font-black bg-brand-700 text-white hover:bg-brand-950 rounded-2xl transition-all duration-300 mt-4 shadow-xl hover:scale-[1.01] active:scale-[0.98]"
+                className="w-full h-14 text-xl font-black bg-primary text-primary-foreground hover:bg-primary/90 rounded-2xl transition-all duration-300 mt-4 shadow-xl hover:scale-[1.01] active:scale-[0.98]"
                 onClick={handleBuyClick}
                 disabled={maxQuantity <= 0}
               >

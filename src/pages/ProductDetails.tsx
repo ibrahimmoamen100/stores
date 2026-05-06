@@ -66,6 +66,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { createPortal } from "react-dom";
 import { SpecsDisplay } from "@/components/SpecsDisplay";
+import { STORE_GOVERNORATES } from '@/constants/store';
 
 
 const ProductDetails = () => {
@@ -356,15 +357,15 @@ const ProductDetails = () => {
       if (product.specialOffer &&
         product.offerEndsAt &&
         new Date(product.offerEndsAt) > new Date()) {
-        if (product.discountPercentage) {
-          // Calculate discount percentage
-          const discountAmount = (basePrice * product.discountPercentage) / 100;
-          finalPrice = basePrice - discountAmount;
-        } else if (product.discountPrice) {
-          // Calculate discount amount based on original product price
-          // We assume discountPrice is for the base product
+        if (product.discountPrice) {
+          // Use fixed discount amount (original price - discountPrice) as saving
+          // This ensures the saving is always the fixed amount regardless of selected options
           const discountAmount = Math.max(0, product.price - product.discountPrice);
           finalPrice = Math.max(0, basePrice - discountAmount);
+        } else if (product.discountPercentage) {
+          // Fallback: use percentage discount only if no discountPrice is set
+          const discountAmount = (basePrice * product.discountPercentage) / 100;
+          finalPrice = basePrice - discountAmount;
         }
       }
 
@@ -394,15 +395,15 @@ const ProductDetails = () => {
     if (product?.specialOffer &&
       product.offerEndsAt &&
       new Date(product.offerEndsAt) > new Date()) {
-      if (product.discountPercentage) {
-        // Calculate discount percentage on the calculated price
-        const discountAmount = (calculatedPrice * product.discountPercentage) / 100;
-        finalPrice = calculatedPrice - discountAmount;
-      } else if (product.discountPrice) {
-        // Calculate discount amount based on original product price
-        // We treat discountPrice as defining a fixed saving amount on the base product
+      if (product.discountPrice) {
+        // Use fixed discount amount (original price - discountPrice) as saving
+        // This ensures the saving is always the fixed amount regardless of selected options
         const discountAmount = Math.max(0, product.price - product.discountPrice);
         finalPrice = Math.max(0, calculatedPrice - discountAmount);
+      } else if (product.discountPercentage) {
+        // Fallback: use percentage discount only if no discountPrice is set
+        const discountAmount = (calculatedPrice * product.discountPercentage) / 100;
+        finalPrice = calculatedPrice - discountAmount;
       }
     }
 
@@ -524,7 +525,14 @@ const ProductDetails = () => {
     // Process Order
     try {
       const totalAmount = finalPrice * quantity;
-      const finalTotalAmount = Math.max(0, totalAmount - (formData.couponDiscountAmount || 0));
+
+      const rawShippingCost = formData.orderType === 'online_purchase'
+        ? STORE_GOVERNORATES.find(g => g.name === formData.governorate)?.shippingCost || 0
+        : 0;
+
+      const numericShippingCost = typeof rawShippingCost === 'number' ? rawShippingCost : 0;
+
+      const finalTotalAmount = Math.max(0, totalAmount - (formData.couponDiscountAmount || 0)) + numericShippingCost;
 
       const orderItem = {
         productId: product.id,
@@ -602,7 +610,7 @@ const ProductDetails = () => {
       await createOrderAndUpdateProductQuantitiesAtomically(orderData, deductions);
 
       // Construct WhatsApp Message
-      const whatsappNumber = "201061246012";
+      const whatsappNumber = "201146324540";
       const orderLines = [
         `1. ${product.name}`,
         `   الكمية: ${quantity}`,
@@ -640,6 +648,7 @@ const ProductDetails = () => {
         customerInfo,
         '========================',
         formData.couponCode ? `🎟 كود الخصم: ${formData.couponCode} (-${formatCurrency(formData.couponDiscountAmount || 0, 'جنيه')})` : null,
+        typeof rawShippingCost === 'number' && rawShippingCost > 0 ? `🚚 مصاريف الشحن: ${formatCurrency(rawShippingCost, 'جنيه')}` : typeof rawShippingCost === 'string' ? `🚚 مصاريف الشحن: ${rawShippingCost}` : null,
         `💰 الإجمالي النهائي: ${formatCurrency(finalTotalAmount, 'جنيه')}`,
         '========================',
         formData.orderType === 'reservation'
@@ -773,9 +782,8 @@ const ProductDetails = () => {
     let baseSpecsText = [baseRam, baseStorage].filter(Boolean).join(' + ');
 
     // Fallback to sizes if available and no specific base specs found
-    const validSizes = product.sizes?.filter(s => s && s.label && s.label.trim() !== '') || [];
-    if (!baseSpecsText && validSizes.length > 0) {
-      baseSpecsText = validSizes[0].label;
+    if (!baseSpecsText && product.sizes && product.sizes.length > 0) {
+      baseSpecsText = product.sizes[0].label;
     }
 
     if (baseSpecsText) {
@@ -836,10 +844,10 @@ const ProductDetails = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="pd-page min-h-screen bg-gray-50/50">
       <SEOHelmet
         title={optimizedTitle}
-        description={`${metaDescription} - اشتري الآن بأفضل سعر من الحشومي.`}
+        description={`${metaDescription} - اشتري الآن بأفضل سعر من كومبيو سيف.`}
         keywords={optimizedKeywords}
         image={product.images?.[0]}
         url={getProductUrl(product.id, product.name)}
@@ -912,13 +920,13 @@ const ProductDetails = () => {
         </motion.div>
 
         {/* Product Details */}
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 mb-16 relative">
+        <div className="pd-columns flex flex-col lg:flex-row gap-8 lg:gap-16 mb-16 relative">
 
           {/* Left Column: Product Images (Sticky) */}
-          <div className="w-full lg:w-1/2 flex flex-col gap-4">
+          <div className="pd-image-col w-full lg:w-1/2 flex flex-col gap-4">
             <div className="lg:sticky lg:top-24 space-y-6">
               {/* Main Image */}
-              <div className="aspect-[4/5] sm:aspect-square w-full rounded-3xl overflow-hidden relative group bg-white border border-gray-200 transition-all duration-500">
+              <div className="pd-main-image aspect-[4/5] sm:aspect-square w-full rounded-3xl overflow-hidden relative group bg-white border border-gray-200 transition-all duration-500">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentImage}
@@ -1013,7 +1021,7 @@ const ProductDetails = () => {
                             }
                           }}
                           className={`group relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-200 ${isSelected
-                            ? "border-brand-700 ring-1 ring-brand-700/20"
+                            ? "border-primary ring-1 ring-primary/20"
                             : "border-gray-200 hover:border-gray-300"
                             }`}
                           whileHover={{ scale: 1.05 }}
@@ -1042,7 +1050,7 @@ const ProductDetails = () => {
                               animate={{ opacity: 1 }}
                               transition={{ duration: 0.15 }}
                             >
-                              <div className="w-5 h-5 bg-brand-700 rounded-full flex items-center justify-center">
+                              <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
                                 <CheckCircle className="h-3 w-3 text-white" />
                               </div>
                             </motion.div>
@@ -1074,7 +1082,7 @@ const ProductDetails = () => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full lg:w-1/2 space-y-8 lg:py-4"
+            className="pd-info-col w-full lg:w-1/2 space-y-8 lg:py-4"
           >
             {/* Product Header */}
             <div className="space-y-5">
@@ -1123,7 +1131,7 @@ const ProductDetails = () => {
               </div>
 
               <div className="space-y-3">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
+                <h1 className="pd-product-name text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
                   {product.name}
                 </h1>
               </div>
@@ -1219,20 +1227,20 @@ const ProductDetails = () => {
             {/* Available Quantity Display */}
             {/* <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-brand-100 rounded-lg">
-                  <Package className="h-5 w-5 text-brand-700" />
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Package className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">الكمية المتاحة</h3>
                   <p className="text-sm text-gray-500">المخزون الحالي</p>
                 </div>
               </div>
-              <div className="bg-gradient-to-r from-brand-50 to-brand-100 rounded-xl p-6 border border-brand-200">
+              <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-brand-700 mb-2">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">
                     {product.wholesaleInfo?.quantity || 0}
                   </div>
-                  <div className="text-sm text-brand-700">
+                  <div className="text-sm text-blue-700">
                     قطعة متاحة
                   </div>
                 </div>
@@ -1277,12 +1285,14 @@ const ProductDetails = () => {
           </motion.div>
         </div>
 
+
+
+
         {/* Product Description */}
         {product.description && (
           <div className="mb-16">
             <Separator className="mb-8" />
             <div className="max-w-4xl mx-auto">
-
               <div
                 className="prose prose-lg max-w-none
                 prose-headings:font-semibold
@@ -1386,7 +1396,7 @@ const ProductDetails = () => {
                       animate={{ y: 0, opacity: 1, scale: 1 }}
                       exit={{ y: 50, opacity: 0, scale: 0.9 }}
                       transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                      className="flex-1 pointer-events-auto shadow-2xl rounded-full relative group"
+                      className="flex-1 pointer-events-auto shadow-2xl rounded-2xl relative group"
                     >
                       {/* Close button for Buy button */}
                       <motion.button
@@ -1407,7 +1417,7 @@ const ProductDetails = () => {
                           window.dispatchEvent(event);
                           setTimeout(() => scrollToSection('checkout-form-section'), 100);
                         }}
-                        className="w-full rounded-full h-12 text-base font-bold shadow-lg bg-brand-700 text-white hover:bg-brand-950 transition-all active:scale-95 border-none backdrop-blur-md"
+                        className="w-full rounded-2xl h-12 text-base font-bold shadow-lg bg-primary text-white hover:bg-primary/90 transition-all active:scale-95 border-none backdrop-blur-md"
                       >
                         إتمام الشراء
                       </Button>
@@ -1422,7 +1432,7 @@ const ProductDetails = () => {
                       animate={{ y: 0, opacity: 1, scale: 1 }}
                       exit={{ y: 50, opacity: 0, scale: 0.9 }}
                       transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                      className="flex-1 pointer-events-auto shadow-2xl rounded-full relative group"
+                      className="flex-1 pointer-events-auto shadow-2xl rounded-2xl relative group"
                     >
                       {/* Close button for Specs button */}
                       <motion.button
@@ -1440,7 +1450,7 @@ const ProductDetails = () => {
                       <Button
                         variant="secondary"
                         onClick={() => scrollToSection('specs-section')}
-                        className="w-full rounded-full h-12 text-base font-bold shadow-lg bg-white/90 hover:bg-white text-gray-900 transition-all active:scale-95 border border-gray-200/50 backdrop-blur-md"
+                        className="w-full rounded-2xl h-12 text-base font-bold shadow-lg bg-white/90 hover:bg-white text-gray-900 transition-all active:scale-95 border border-gray-200/50 backdrop-blur-md"
                       >
                         المواصفات
                       </Button>
@@ -1536,18 +1546,18 @@ const ProductDetails = () => {
                   داخل القاهرة
                 </p>
                 <div className="text-right">
-                  <p className="font-bold text-yellow-800">100 ج.م</p>
+                  <p className="font-bold text-yellow-800">100</p>
                   <p className="text-xs text-yellow-600">(24 ساعة)</p>
                 </div>
               </div>
 
               <div className="flex justify-between items-center bg-white/60 p-3 rounded border border-yellow-100/50">
                 <p className="font-medium flex items-center gap-2 text-gray-800">
-                  <span className="w-2 h-2 rounded-full bg-brand-700 shadow-sm" />
+                  <span className="w-2 h-2 rounded-full bg-blue-500 shadow-sm" />
                   جميع المحافظات
                 </p>
                 <div className="text-right">
-                  <p className="font-bold text-yellow-800">200 ج.م</p>
+                  <p className="font-bold text-yellow-800">200</p>
                   <p className="text-xs text-yellow-600">(48 ساعة)</p>
                 </div>
               </div>
@@ -1596,8 +1606,8 @@ const ProductDetails = () => {
             <h2 className="text-white text-2xl sm:text-3xl font-bold mb-2 leading-snug">
               تم الحجز بنجاح! 🎉
             </h2>
-            <p className="text-brand-300 text-sm sm:text-base leading-relaxed px-2">
-              سنتواصل معاك قريباً بعد دفع عربون <span className="font-bold text-white bg-brand-700/30 px-1.5 py-0.5 rounded">500 ج</span>
+            <p className="text-blue-200 text-sm sm:text-base leading-relaxed px-2">
+              سنتواصل معاك قريباً بعد دفع عربون <span className="font-bold text-white bg-blue-500/30 px-1.5 py-0.5 rounded">300 ج</span>
             </p>
           </div>
 
@@ -1626,10 +1636,10 @@ const ProductDetails = () => {
               <div className="bg-gray-50 border border-gray-200 mt-4 rounded-xl p-3 flex items-center justify-between">
                 <div>
                   <p className="text-[11px] text-gray-500 font-bold mb-0.5">  علي هذا الرقم</p>
-                  <p dir="ltr" className="font-bold font-mono text-xl text-gray-900 tracking-widest select-all">01061246012</p>
+                  <p dir="ltr" className="font-bold font-mono text-xl text-gray-900 tracking-widest select-all">01080640246</p>
                 </div>
                 <button onClick={() => {
-                  navigator.clipboard.writeText('01061246012');
+                  navigator.clipboard.writeText('01080640246');
                   toast.success('تم نسخ الرقم بنجاح');
                 }} className="bg-white hover:bg-gray-100 border border-gray-200 p-2.5 rounded-lg transition-colors text-gray-700 shadow-sm active:scale-95">
                   <ClipboardCopy className="w-5 h-5" />
@@ -1642,7 +1652,7 @@ const ProductDetails = () => {
             </div>
             {/* WhatsApp CTA */}
             <a
-              href={orderSuccess.whatsappUrl || `https://wa.me/201061246012`}
+              href={orderSuccess.whatsappUrl || `https://wa.me/201080640246`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-white text-base transition-all duration-200 hover:opacity-90 active:scale-[0.98]"

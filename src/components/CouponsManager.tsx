@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -418,7 +418,7 @@ export function CouponsManager() {
                             </span>
                           )}
                           {coupon.usageLimit && (
-                            <span className="text-[10px] bg-brand-50 text-brand-700 px-1.5 py-0.5 rounded border border-brand-100">
+                            <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">
                               الاستخدام: {coupon.usedCount || 0} / {coupon.usageLimit}
                             </span>
                           )}
@@ -440,7 +440,7 @@ export function CouponsManager() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleEdit(coupon)}
-                        className="text-brand-500 hover:text-brand-700 hover:bg-brand-50 h-8 w-8"
+                        className="text-blue-400 hover:text-blue-600 hover:bg-blue-50 h-8 w-8"
                         title="تعديل"
                       >
                         <Edit2 className="w-4 h-4" />

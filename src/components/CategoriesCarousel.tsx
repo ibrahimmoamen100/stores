@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "@/store/useStore";
 import {
@@ -81,7 +81,7 @@ export const CategoriesCarousel = () => {
               جاري تحميل الفئات...
             </p>
             <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
             </div>
           </div>
         </div>
@@ -168,7 +168,7 @@ export const CategoriesCarousel = () => {
           <Button
             variant="outline"
             onClick={() => navigate("/products")}
-            className="group border-2 border-gray-300 hover:border-brand-600 hover:bg-brand-50 transition-colors duration-200"
+            className="group border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition-colors duration-200"
           >
             عرض جميع المنتجات
             <ArrowRight className="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform duration-200" />

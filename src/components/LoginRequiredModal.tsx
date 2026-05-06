@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -76,7 +76,7 @@ const LoginRequiredModal: React.FC<LoginRequiredModalProps> = ({
             <Button
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full bg-brand-700 hover:bg-brand-800 text-white font-medium gap-2"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium gap-2"
               size="lg"
             >
               {loading ? (

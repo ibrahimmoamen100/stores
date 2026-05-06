@@ -14,7 +14,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { DataLoader } from "@/components/DataLoader";
 import { analytics } from "@/lib/analytics";
-import { useFacebookPixel } from "./useFacebookPixel";
+import { MetaPixelInitializer } from "./components/MetaPixelInitializer";
 import { GlobalSplash } from "./components/GlobalSplash";
 
 // Lazy load pages with error handling
@@ -61,7 +61,9 @@ const Attendance = lazy(() => import("./pages/Attendance").catch(() => ({ defaul
 const Dashboard = lazy(() => import("./pages/Dashboard").catch(() => ({ default: () => <div>Error loading Dashboard</div> })));
 const Wholesale = lazy(() => import("./pages/Wholesale").catch(() => ({ default: () => <div>Error loading Wholesale</div> })));
 const SuperAdmin = lazy(() => import("./pages/SuperAdmin").catch(() => ({ default: () => <div>Error loading page</div> })));
+const SiteCustomizer = lazy(() => import("./pages/SiteCustomizer").catch(() => ({ default: () => <div>Error loading page</div> })));
 import ProtectedDashboardRoute from "./components/ProtectedDashboardRoute";
+import { SiteSettingsProvider } from "./contexts/SiteSettingsContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -76,12 +78,12 @@ const queryClient = new QueryClient({
   },
 });
 
-// New component that uses the Facebook Pixel hook
+// AppRoutes — must be inside BrowserRouter + SiteSettingsProvider
 const AppRoutes = () => {
-  useFacebookPixel(); // Now this is inside BrowserRouter context
 
   return (
     <>
+      <MetaPixelInitializer />
 
       <ScrollToTop />
       <GlobalSplash />
@@ -93,17 +95,19 @@ const AppRoutes = () => {
 
               {/* Dashboard & Protected Routes */}
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/orders" element={<AdminOrders />} />
-              
+
               <Route element={<ProtectedDashboardRoute />}>
+                <Route path="/admin" element={<Admin />} />
                 <Route path="/analytics" element={<AdminAnalytics />} />
                 <Route path="/visitor-logs" element={<VisitorLogs />} />
                 <Route path="/profit-analysis" element={<AdminProfitAnalysis />} />
-                {/* Add other protected management pages if needed */}
+                <Route path="/orders" element={<AdminOrders />} />
+                <Route path="/site-customizer" element={<SiteCustomizer />} />
+                <Route path="/cashier" element={<Cashier />} />
+                <Route path="/attendance" element={<Attendance />} />
               </Route>
 
               {/* Public/Other Routes */}
-              <Route path="/admin" element={<Admin />} />
               <Route path="/admin/setup" element={<AdminSetup />} />
               <Route path="/cp" element={<SuperAdmin />} />
 
@@ -112,7 +116,7 @@ const AppRoutes = () => {
               <Route path="/admin/analytics" element={<Navigate to="/analytics" replace />} />
               <Route path="/admin/profit-analysis" element={<Navigate to="/profit-analysis" replace />} />
 
-              <Route path="/cashier" element={<Cashier />} />
+
               <Route path="/cart" element={<Cart />} />
               <Route path="/products" element={<Products />} />
               <Route path="/products/category/:category" element={<Products />} />
@@ -132,7 +136,7 @@ const AppRoutes = () => {
               <Route path="/my-orders" element={<Orders />} />
 
               <Route path="/settings" element={<Settings />} />
-              <Route path="/attendance" element={<Attendance />} />
+
             </Routes>
           </Suspense>
         </ErrorBoundary>
@@ -146,6 +150,7 @@ const App = () => {
     <>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
+          <SiteSettingsProvider>
           <AuthProvider>
             <TooltipProvider>
               {createPortal(<Toaster />, document.body)}
@@ -156,6 +161,7 @@ const App = () => {
               </BrowserRouter>
             </TooltipProvider>
           </AuthProvider>
+          </SiteSettingsProvider>
         </QueryClientProvider>
       </HelmetProvider>
     </>

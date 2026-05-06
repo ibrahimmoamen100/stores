@@ -1,6 +1,5 @@
-﻿import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,7 +8,6 @@ import { Progress } from "@/components/ui/progress";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import AdminLogin from "@/components/AdminLogin";
 import { clearAllAnalyticsData } from "@/lib/firebase";
 import {
   Users,
@@ -57,17 +55,8 @@ const Analytics = () => {
   const navigate = useNavigate();
   const [timeRange, setTimeRange] = useState("30");
   const [expandedPage, setExpandedPage] = useState<string | null>(null);
-  const { isAuthenticated, loading: authLoading, session, login } = useAdminAuth();
   
-  // Handle login using the hook's login function
-  const handleLogin = useCallback(async (password: string) => {
-    console.log('🔐 Analytics: handleLogin called');
-    const result = await login(password);
-    console.log('🔐 Analytics: handleLogin result:', result);
-    return result;
-  }, [login]);
-  
-  // Only load analytics data if authenticated
+  // Load analytics data directly (access is controlled by ProtectedDashboardRoute)
   const { 
     data, 
     loading, 
@@ -76,14 +65,7 @@ const Analytics = () => {
     lastUpdated, 
     refreshData, 
     exportData 
-  } = useAnalytics(isAuthenticated ? parseInt(timeRange) : 0);
-
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      console.log('Analytics: User not authenticated, showing login');
-    }
-  }, [isAuthenticated, authLoading]);
+  } = useAnalytics(parseInt(timeRange));
 
   const handleDeleteAnalytics = async () => {
     if (window.confirm("تحذير: هل أنت متأكد من حذف جميع بيانات الإحصائيات الخاصة بالزوار نهائياً؟\nسيؤدي ذلك إلى توفير مساحات القراءة والكتابة في Firebase.")) {
@@ -99,19 +81,6 @@ const Analytics = () => {
     }
   };
 
-  // Show login if not authenticated
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        <span className="ml-2 text-muted-foreground">جاري التحقق من الصلاحيات...</span>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <AdminLogin onLogin={handleLogin} loading={authLoading} />;
-  }
 
   const formatDuration = (milliseconds: number) => {
     const minutes = Math.floor(milliseconds / 60000);
@@ -206,7 +175,7 @@ const Analytics = () => {
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              onClick={() => navigate("/admin")}
+              onClick={() => navigate("/dashboard")}
               className="gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -247,7 +216,7 @@ const Analytics = () => {
             </Button>
             <Button
               onClick={() => navigate("/visitor-logs")}
-              className="gap-2 bg-brand-700 hover:bg-indigo-700 text-white"
+              className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
             >
               <Eye className="h-4 w-4" />
               السجل المفصل
@@ -435,7 +404,7 @@ const Analytics = () => {
                           <p className="text-xs text-muted-foreground">
                             {data.totalVisitors ? Math.round((page.views / data.totalVisitors) * 100) : 0}%
                           </p>
-                          <p className="text-xs text-brand-700 font-medium mt-1">
+                          <p className="text-xs text-blue-600 font-medium mt-1">
                             ⏱️ {formatDuration(page.avgTimeOnPage || 0)}
                           </p>
                         </div>
@@ -767,7 +736,7 @@ const Analytics = () => {
                     return (
                       <div key={day.date} className="flex flex-col items-center group relative">
                         <div
-                          className="w-full bg-brand-700 rounded-t transition-all hover:bg-brand-700 cursor-pointer"
+                          className="w-full bg-blue-500 rounded-t transition-all hover:bg-blue-600 cursor-pointer"
                           style={{ height: `${height}%`, minHeight: day.visitors > 0 ? '2px' : '0' }}
                           title={`${day.date} - ${day.visitors} زائر`}
                         />

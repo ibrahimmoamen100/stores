@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -109,11 +109,11 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin, loading: authLoading }
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md shadow-xl border-0">
         <CardHeader className="text-center pb-4">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-100">
-            <Shield className="h-6 w-6 text-brand-700" />
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+            <Shield className="h-6 w-6 text-blue-600" />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
             تسجيل دخول المسؤول
@@ -170,7 +170,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin, loading: authLoading }
 
             <Button
               type="submit"
-              className="w-full h-11 bg-brand-700 hover:bg-brand-800 text-white font-medium"
+              className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-medium"
               disabled={loading || authLoading}
             >
               {loading || authLoading ? (

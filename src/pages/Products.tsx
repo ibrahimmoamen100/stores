@@ -41,6 +41,8 @@ function filtersToSearchParams(filters: import("@/types/product").Filter, slugMa
   if (filters.specialOffer) params.set("specialOffer", "true");
   // 7. البحث
   if (filters.search) params.set("search", filters.search);
+  // 8. الترتيب
+  if (filters.sortBy) params.set("sortBy", filters.sortBy);
 
   // Dynamic Specs
   if (filters.dynamicSpecs) {
@@ -82,6 +84,7 @@ function searchParamsToFilters(params: URLSearchParams, reverseSlugMap: Record<s
     features: getArr("features"),
     specialOffer: params.get("specialOffer") === "true" ? true : undefined,
     search: params.get("search") || undefined,
+    sortBy: params.get("sortBy") as any || undefined,
     dynamicSpecs: Object.keys(dynamicSpecs).length > 0 ? dynamicSpecs : undefined,
   };
 }
@@ -106,7 +109,7 @@ export default function Products() {
 
   // ─── Scroll / position restoration ───────────────────────────────────────
   const SCROLL_KEY = `products-scroll-${categoryParam ?? 'all'}`;
-  const COUNT_KEY = `products-count-${categoryParam ?? 'all'}`;
+  const COUNT_KEY  = `products-count-${categoryParam ?? 'all'}`;
 
   // Read the saved count ONCE on mount (before any state)
   const restoredCount = parseInt(sessionStorage.getItem(COUNT_KEY) || '0', 10);
@@ -406,7 +409,7 @@ export default function Products() {
     <div className="min-h-screen flex flex-col bg-gray-50/50">
       <SEOHelmet
         title="جميع المنتجات - لابتوبات وكمبيوترات"
-        description="تصفح جميع اللابتوبات والكمبيوترات المتوفرة في ElHashimi."
+        description="تصفح جميع اللابتوبات والكمبيوترات المتوفرة في Compu Saif."
         keywords="لابتوبات, كمبيوترات, HP, Dell, Lenovo, "
         url="/products"
       />
@@ -425,7 +428,7 @@ export default function Products() {
             </div>
 
             <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span className="px-3 py-1.5 rounded-full bg-brand-50 text-brand-700 font-semibold text-xs border border-brand-100">
+              <span className="px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 font-semibold text-xs border border-blue-100">
                 HP • Dell • Lenovo
               </span>
             </div>
@@ -475,7 +478,7 @@ export default function Products() {
                   <DrawerFooter className="border-t pt-4">
                     <Button
                       onClick={() => setOpenDrawer(false)}
-                      className="w-full rounded-xl bg-gradient-to-r from-brand-700 to-brand-500 text-white font-bold"
+                      className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold"
                     >
                       {t("filters.apply")}
                     </Button>
@@ -489,7 +492,7 @@ export default function Products() {
           <div className="hidden md:block lg:w-72 w-60 shrink-0">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sticky top-20">
               <div className="flex items-center gap-2 mb-4">
-                <div className="h-5 w-1 bg-gradient-to-b from-brand-700 to-brand-500 rounded-full" />
+                <div className="h-5 w-1 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full" />
                 <h2 className="text-base font-bold text-gray-800">{t("filters.title")}</h2>
               </div>
               <ProductFilters />
@@ -504,7 +507,7 @@ export default function Products() {
                 variant={viewMode === 'grid' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('grid')}
-                className={viewMode === 'grid' ? 'bg-brand-700' : ''}
+                className={viewMode === 'grid' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'border-primary/20 text-primary hover:bg-primary/5'}
               >
                 <LayoutGrid className="w-4 h-4 mr-2" />
                 شبكة
@@ -513,7 +516,7 @@ export default function Products() {
                 variant={viewMode === 'list' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('list')}
-                className={viewMode === 'list' ? 'bg-brand-700' : ''}
+                className={viewMode === 'list' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'border-primary/20 text-primary hover:bg-primary/5'}
               >
                 <List className="w-4 h-4 mr-2" />
                 قائمة
@@ -564,7 +567,7 @@ export default function Products() {
                       </p>
                       <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden" dir="rtl">
                         <div
-                          className="h-full bg-gradient-to-r from-brand-700 to-brand-500 transition-all duration-500 ease-out"
+                          className="h-full bg-gradient-to-r from-blue-600 to-cyan-500 transition-all duration-500 ease-out"
                           style={{ width: `${(currentProducts.length / sortedProducts.length) * 100}%` }}
                         />
                       </div>
@@ -577,7 +580,7 @@ export default function Products() {
                       onClick={loadMore}
                       disabled={isLoadingMore}
                       variant="outline"
-                      className="min-w-[200px] h-12 rounded-xl border-brand-200 text-brand-700 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-300 font-bold transition-all shadow-sm"
+                      className="min-w-[200px] h-12 rounded-xl border-primary/20 text-primary hover:bg-primary/5 hover:text-primary/90 hover:border-primary/30 font-bold transition-all shadow-sm"
                     >
                       {isLoadingMore ? (
                         <div className="flex items-center gap-2">
@@ -602,8 +605,8 @@ export default function Products() {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-20 h-20 rounded-3xl bg-brand-50 flex items-center justify-center mb-4">
-                  <Search className="h-10 w-10 text-brand-400" />
+                <div className="w-20 h-20 rounded-3xl bg-primary/5 flex items-center justify-center mb-4">
+                  <Search className="h-10 w-10 text-primary/30" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-700 mb-2">لا توجد نتائج</h3>
                 <p className="text-gray-400 text-sm max-w-xs">{t("products.noProductsFound")}</p>

@@ -15,6 +15,7 @@ import { Slider } from "@/components/ui/slider";
 import { useState, useMemo, useEffect } from "react";
 import { formatCurrency } from "@/utils/format";
 import { Filter, Product } from "@/types/product";
+import { getSiteSettings } from "@/lib/siteSettings";
 
 export function ProductFilters() {
   const filters = useStore((state) => state.filters) || {};
@@ -44,10 +45,8 @@ export function ProductFilters() {
     specialOffer: "special-offer",
   };
 
-  // Determine which sections should start open:
-  // always open price & sort, plus any section that already has an active filter.
+  // Determine which sections should start open based on URL/initial filters:
   const computeInitialOpenSections = (): string[] => {
-    const always = ["price", "sort", "subcategory", "brand", "features"];
     const fromFilters = Object.entries(filterToAccordion)
       .filter(([key]) => {
         const val = (filters as any)[key];
@@ -56,10 +55,18 @@ export function ProductFilters() {
         return true; // boolean / number
       })
       .map(([, section]) => section);
-    return Array.from(new Set([...always, ...fromFilters]));
+    return Array.from(new Set(fromFilters));
   };
 
   const [accordionValue, setAccordionValue] = useState<string[]>(() => computeInitialOpenSections());
+
+  // Load user-defined default filters from settings
+  useEffect(() => {
+    getSiteSettings(true).then((s) => {
+      const defaults = s.defaultOpenFilters || ["price", "sort", "subcategory", "brand", "features"];
+      setAccordionValue(prev => Array.from(new Set([...prev, ...defaults])));
+    });
+  }, []);
 
   // When filters change (e.g. when URL params are applied on mount/refresh),
   // auto-open any accordion section that now has an active filter.

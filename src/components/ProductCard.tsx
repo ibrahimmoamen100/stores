@@ -1,4 +1,4 @@
-﻿import { Product } from "@/types/product";
+import { Product } from "@/types/product";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/store/useStore";
 import { toast } from "sonner";
@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getProductUrl } from "@/utils/url";
-
 import { formatCurrency } from "@/utils/format";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { CARD_THEMES } from "@/lib/siteSettings";
 
 interface ProductCardProps {
   product: Product;
@@ -33,6 +34,9 @@ export const ProductCard = ({
   const cart = useStore((state) => state.cart);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { settings } = useSiteSettings();
+  const cardThemeId = settings.cardTheme || 'classic';
+  const cardTheme = CARD_THEMES.find(t => t.id === cardThemeId) || CARD_THEMES[0];
   const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -211,7 +215,7 @@ export const ProductCard = ({
       finalPriceSection,
       ' ',
       '📸 يمكنك مشاهدة صور وفيديو اللابتوب والمواصفات كاملة',
-      '🛒 مع إمكانية الشراء من خلال اللينك الرسمي على متجر الحشومي',
+      '🛒 مع إمكانية الشراء من خلال اللينك الرسمي على متجر كومبيو سيف',
       `🔗 ${window.location.origin}${getProductUrl(product.id, product.name)}`,
       '',
       'أو يمكن الشراء من هنا 👇',
@@ -279,9 +283,10 @@ export const ProductCard = ({
     return 'إضافة للسلة';
   };
 
+
   return (
     <div
-      className={`group relative overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-200 hover:border-brand-700/30 ${isOutOfStock ? 'opacity-60' : ''} h-full ${viewMode === 'list' ? 'flex flex-row items-stretch' : 'flex flex-col'}`}
+      className={`pc-root ${viewMode === 'list' ? 'list-mode' : ''} ${isOutOfStock ? 'opacity-60' : ''}`}
       onMouseEnter={() => {
         if (product.images && product.images.length > 1) {
           setCurrentImageIndex(1);
@@ -292,10 +297,11 @@ export const ProductCard = ({
       }}
     >
       {/* IMAGE */}
-      <div className={`relative overflow-hidden bg-gray-50 shrink-0 aspect-square ${viewMode === 'list'
+      <div className={`pc-image-wrap relative overflow-hidden shrink-0 aspect-square ${
+        viewMode === 'list'
           ? 'w-[110px] xs:w-[140px] sm:w-[200px]'
           : 'w-full'
-        }`}>
+      }`}>
         <img
           src={currentImage}
           alt={product.name || 'Product'}
@@ -305,7 +311,7 @@ export const ProductCard = ({
 
         {/* New Product ribbon — top left */}
         {isNewProduct && (
-          <div
+          <div 
             className="absolute top-0 left-3 sm:left-4 z-20 bg-gradient-to-b from-[#ff5a5a] to-[#ff4242] text-white flex flex-col items-center justify-start pt-1.5 pb-2.5 px-1.5 shadow-sm min-w-[32px]"
             style={{ clipPath: 'polygon(100% 0, 100% 100%, 50% 82%, 0 100%, 0 0)' }}
           >
@@ -316,8 +322,9 @@ export const ProductCard = ({
         {/* Stock badge — top left next to ribbon */}
         {(isOutOfStock || isLowStock) && (
           <div className="absolute top-2 left-[52px] z-10">
-            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${isOutOfStock ? 'bg-gray-900 text-white' : 'bg-orange-100 text-orange-700'
-              }`}>
+            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
+              isOutOfStock ? 'bg-gray-900 text-white' : 'bg-orange-100 text-orange-700'
+            }`}>
               {isOutOfStock ? 'نفذت الكمية' : 'كمية محدودة'}
             </span>
           </div>
@@ -334,11 +341,12 @@ export const ProductCard = ({
       </div>
 
       {/* CONTENT */}
-      <div className={`flex flex-col flex-1 min-w-0 ${viewMode === 'list' ? 'p-3 sm:p-4' : 'p-3 sm:p-4'
-        }`}>
+      <div className={`pc-content-wrap flex flex-col flex-1 min-w-0 ${
+        viewMode === 'list' ? 'p-3 sm:p-4' : 'p-3 sm:p-4'
+      }`}>
 
         {/* Brand · Category */}
-        <p className="text-[10px] font-black uppercase tracking-widest text-brand-700/60 mb-2 truncate">
+        <p className="pc-brand text-[10px] font-black uppercase tracking-widest mb-2 truncate">
           {product.brand}
           {product.category && (
             <span className="font-normal text-gray-400 normal-case">
@@ -349,8 +357,9 @@ export const ProductCard = ({
 
         {/* Name */}
         <h3
-          className={`font-bold leading-snug text-gray-900 group-hover:text-brand-700 transition-colors cursor-pointer mb-2 line-clamp-2 ${viewMode === 'list' ? 'text-sm sm:text-[15px]' : 'text-[13px] sm:text-sm'
-            }`}
+          className={`pc-name font-bold leading-snug transition-colors cursor-pointer mb-2 line-clamp-2 ${
+            viewMode === 'list' ? 'text-sm sm:text-[15px]' : 'text-[13px] sm:text-sm'
+          }`}
           onClick={handleViewDetails}
         >
           {product.name}
@@ -368,7 +377,7 @@ export const ProductCard = ({
         {(() => {
           // Dynamic specifications based on filter tags
           const filterSpecs = product.specifications?.filter(s => s.inFilter && s.value.trim() !== '') || [];
-
+          
           if (filterSpecs.length > 0) {
             let processedSpecs: any[] = [];
             let gpuSpec: any = null;
@@ -395,7 +404,7 @@ export const ProductCard = ({
             const limit = viewMode === 'list' ? 6 : 4;
             const toShow = processedSpecs.slice(0, limit);
             const remaining = processedSpecs.length - limit;
-
+            
             return (
               <div className={`mb-3 ${viewMode === 'list' ? '' : 'mt-1.5'}`}>
                 <div className={`flex flex-col ${viewMode === 'list' ? 'gap-1.5' : 'gap-[3px]'}`}>
@@ -425,7 +434,7 @@ export const ProductCard = ({
               : (product.processor?.integratedGpu || ''),
             product.display?.sizeInches ? `${product.display.sizeInches}"` : '',
           ].filter(Boolean);
-
+          
           return specs.length ? (
             <p className="text-[11px] text-gray-400 font-medium truncate mb-3" dir="ltr">
               {specs.join(' · ')}
@@ -438,9 +447,9 @@ export const ProductCard = ({
           <div className="relative mb-4 mt-2 w-[100%] ml-auto">
             {/* The folded piece behind (top-left) */}
             <div className="absolute -top-1.5 -left-1.5 w-3 h-3 bg-[#5c0b0b]" style={{ clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }}></div>
-
+            
             {/* The main banner pointing right */}
-            <div
+            <div 
               className="relative flex items-center justify-between py-1.5 pl-2 pr-6 shadow-md -left-1.5 border-y border-[#ff7373]/40"
               style={{
                 background: 'linear-gradient(90deg, #8a0c0c 0%, #d61c1c 30%, #ff5252 60%, #d61c1c 90%, #a61212 100%)',
@@ -482,7 +491,7 @@ export const ProductCard = ({
                 </span>
               </>
             ) : (
-              <span className="font-black text-base sm:text-lg text-brand-700 leading-none">
+              <span className="pc-price font-black text-base sm:text-lg leading-none">
                 {formatCurrency(product.price, 'جنيه')}
               </span>
             )}
@@ -497,12 +506,12 @@ export const ProductCard = ({
               نسخ المواصفات
             </Button>
           ) : (
-            <Button
-              className="w-full h-11 text-sm font-bold bg-brand-700 hover:bg-brand-950 text-white rounded-xl transition-colors"
+            <button
+              className="pc-btn w-full h-11 text-sm font-bold transition-all cursor-pointer"
               onClick={handleViewDetails}
             >
               عرض التفاصيل
-            </Button>
+            </button>
           )}
 
         </div>

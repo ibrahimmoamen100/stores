@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -124,7 +124,7 @@ const Orders = () => {
   const getStatusBadge = (status: Order['status']) => {
     const statusConfig = {
       pending: { color: 'bg-yellow-100 text-yellow-800', icon: Clock, text: 'قيد الانتظار' },
-      confirmed: { color: 'bg-brand-100 text-brand-800', icon: CheckCircle, text: 'تم التأكيد' },
+      confirmed: { color: 'bg-blue-100 text-blue-800', icon: CheckCircle, text: 'تم التأكيد' },
       shipped: { color: 'bg-purple-100 text-purple-800', icon: Package, text: 'تم الشحن' },
       delivered: { color: 'bg-green-100 text-green-800', icon: CheckCircle, text: 'تم التوصيل' },
       cancelled: { color: 'bg-red-100 text-red-800', icon: XCircle, text: 'ملغي' },
@@ -324,7 +324,7 @@ const Orders = () => {
                           <div className="flex-1">
                             <h5 className="font-medium">{item.productName}</h5>
                             {item.selectedSize && (
-                              <p className="text-sm text-brand-700 font-medium">
+                              <p className="text-sm text-blue-600 font-medium">
                                 📐 الحجم: {item.selectedSize.label}
                               </p>
                             )}

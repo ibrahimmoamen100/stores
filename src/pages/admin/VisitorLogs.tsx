@@ -1,10 +1,8 @@
-﻿import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, startAfter, Timestamp } from "firebase/firestore";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
-import AdminLogin from "@/components/AdminLogin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,16 +46,11 @@ const PAGE_SIZE = 50;
 
 const VisitorLogs = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, loading: authLoading, login } = useAdminAuth();
   const [logs, setLogs] = useState<PageViewLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastVisible, setLastVisible] = useState<any>(null);
   const [hasMore, setHasMore] = useState(true);
-
-  const handleLogin = useCallback(async (password: string) => {
-    return await login(password);
-  }, [login]);
 
   const fetchLogs = async (loadMore = false) => {
     try {
@@ -114,23 +107,8 @@ const VisitorLogs = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchLogs();
-    }
-  }, [isAuthenticated]);
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        <span className="ml-2 text-muted-foreground">جاري التحقق من الصلاحيات...</span>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <AdminLogin onLogin={handleLogin} loading={authLoading} />;
-  }
+    fetchLogs();
+  }, []);
 
   const getDeviceIcon = (device?: string) => {
     switch (device) {
@@ -154,9 +132,9 @@ const VisitorLogs = () => {
       <div className="max-w-[95%] mx-auto py-8">
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate("/analytics")} className="gap-2">
+            <Button variant="ghost" onClick={() => navigate("/dashboard")} className="gap-2">
               <ArrowLeft className="h-4 w-4" />
-              العودة للإحصائيات
+              العودة للوحة التحكم
             </Button>
             <div>
               <h1 className="text-3xl font-bold">سجل الزوار المفصل</h1>
@@ -231,7 +209,7 @@ const VisitorLogs = () => {
                       </TableCell>
                       <TableCell>
                         {log.isNewVisitor ? (
-                          <Badge variant="default" className="bg-brand-700">
+                          <Badge variant="default" className="bg-blue-500">
                             جديد
                           </Badge>
                         ) : (

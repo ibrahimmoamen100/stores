@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -32,7 +32,8 @@ import {
   ShoppingCart,
   ArrowUpDown,
   MoreHorizontal,
-  Copy
+  Copy,
+  Download
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -40,7 +41,6 @@ import { db } from '@/lib/firebase';
 import { formatDate, formatDateTime, formatCurrency } from '@/utils/format';
 import { toast } from 'sonner';
 import { useRevenue } from '@/hooks/useRevenue';
-import AdminLogin from "@/components/AdminLogin";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -102,6 +102,8 @@ interface Order {
   };
   createdAt: Date;
   updatedAt: Date;
+  couponCode?: string | null;
+  couponDiscountAmount?: number;
 }
 
 type SortConfig = {
@@ -120,20 +122,6 @@ const AdminOrders = () => {
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'createdAt', direction: 'desc' });
 
-  // Require password every time the page loads
-  const [isOrdersAuth, setIsOrdersAuth] = useState(false);
-  const [loginLoading, setLoginLoading] = useState(false);
-
-  const handleOrdersLogin = async (password: string) => {
-    setLoginLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    setLoginLoading(false);
-    if (password === '102030') {
-      setIsOrdersAuth(true);
-      return { success: true };
-    }
-    return { success: false, error: 'كلمة المرور غير صحيحة' };
-  };
 
   useEffect(() => {
     filterData();
@@ -193,6 +181,84 @@ const AdminOrders = () => {
       key,
       direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc',
     }));
+  };
+
+  const exportOrdersToJson = () => {
+    const formattedOrders = filteredOrders.map(order => {
+      const isReservation = order.type === 'reservation';
+      const customerInfo = isReservation ? order.reservationInfo : order.deliveryInfo;
+      
+      const formattedItems = order.items.map(item => {
+        let optionsStr = '';
+        if (item.selectedOptionGroups && item.selectedOptionGroups.length > 0) {
+          optionsStr = item.selectedOptionGroups.map(g => `${g.groupName}: ${g.optionLabel}`).join(' | ');
+        }
+        
+        let addonsStr = '';
+        if (item.selectedAddons && item.selectedAddons.length > 0) {
+          addonsStr = item.selectedAddons.map(a => a.label).join('، ');
+        }
+
+        let itemData: any = {
+          "اسم المنتج": item.productName,
+          "السعر": item.price,
+          "الكمية": item.quantity,
+        };
+
+        if (optionsStr || addonsStr || item.selectedSize || item.selectedColor) {
+          let details = [];
+          if (item.selectedSize) details.push(`الحجم: ${item.selectedSize.label}`);
+          if (item.selectedColor) details.push(`اللون: ${getColorByName(item.selectedColor)?.name || item.selectedColor}`);
+          if (optionsStr) details.push(`المواصفات: ${optionsStr}`);
+          if (addonsStr) details.push(`الإضافات: ${addonsStr}`);
+          
+          itemData["تفاصيل إضافية"] = details.join(' - ');
+        }
+
+        return itemData;
+      });
+
+      let orderData: any = {
+        "اسم الزبون": customerInfo?.fullName || 'غير محدد',
+        "رقم الهاتف": customerInfo?.phoneNumber || 'غير محدد',
+      };
+
+      if (!isReservation && order.deliveryInfo) {
+        orderData["المحافظة"] = order.deliveryInfo.city;
+        orderData["العنوان"] = order.deliveryInfo.address;
+      } else if (isReservation && order.reservationInfo) {
+        orderData["تاريخ الحجز"] = order.reservationInfo.appointmentDate;
+        orderData["وقت الحجز"] = order.reservationInfo.appointmentTime;
+      }
+
+      if (customerInfo?.notes) {
+        orderData["الملاحظات"] = customerInfo.notes;
+      }
+
+      orderData["نوع الطلب"] = isReservation ? "حجز منتج في الفرع" : "شراء أونلاين";
+      orderData["المنتجات"] = formattedItems;
+
+      if (order.couponCode) {
+        orderData["كوبون الخصم"] = `${order.couponCode} (-${order.couponDiscountAmount || 0} جنيه)`;
+      }
+
+      orderData["السعر النهائي"] = order.total;
+      orderData["تاريخ الطلب"] = formatDateTime(order.createdAt);
+
+      return orderData;
+    });
+
+    const dataStr = JSON.stringify(formattedOrders, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `orders_export_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("تم تصدير البيانات بنجاح");
   };
 
   const copyOrderDetails = (order: Order) => {
@@ -296,7 +362,7 @@ const AdminOrders = () => {
   const getStatusBadge = (status: Order['status']) => {
     const statusConfig = {
       pending: { color: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200', icon: Clock, text: 'قيد الانتظار' },
-      confirmed: { color: 'bg-brand-100 text-brand-800 hover:bg-brand-200', icon: CheckCircle, text: 'تم التأكيد' },
+      confirmed: { color: 'bg-blue-100 text-blue-800 hover:bg-blue-200', icon: CheckCircle, text: 'تم التأكيد' },
       shipped: { color: 'bg-purple-100 text-purple-800 hover:bg-purple-200', icon: Truck, text: 'تم الشحن' },
       delivered: { color: 'bg-green-100 text-green-800 hover:bg-green-200', icon: CheckSquare, text: 'تم التوصيل' },
       cancelled: { color: 'bg-red-100 text-red-800 hover:bg-red-200', icon: XCircle, text: 'ملغي' },
@@ -324,9 +390,7 @@ const AdminOrders = () => {
     );
   }
 
-  if (!isOrdersAuth) {
-    return <AdminLogin onLogin={handleOrdersLogin} loading={loginLoading} />;
-  }
+
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -335,7 +399,7 @@ const AdminOrders = () => {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Link to="/admin">
+            <Link to="/dashboard">
               <Button variant="ghost" size="icon" className="rounded-full">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
@@ -349,6 +413,15 @@ const AdminOrders = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            <Button
+              onClick={exportOrdersToJson}
+              variant="outline"
+              className="gap-2 bg-white shadow-sm border-gray-200 hover:bg-gray-50"
+              title="تصدير بيانات الطلبات (JSON)"
+            >
+              <Download className="h-4 w-4" />
+              <span>تصدير JSON</span>
+            </Button>
             <Card className="px-4 py-2 bg-white shadow-sm border-none">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-muted-foreground">الإجمالي:</span>
@@ -624,7 +697,7 @@ const AdminOrders = () => {
                         <>
                           <div className="pt-2 border-t mt-2">
                             <div className="flex items-center gap-2 mb-2">
-                              <Badge variant="outline" className="bg-brand-50 text-brand-700 border-brand-200">
+                              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                                 حجز موعد
                               </Badge>
                             </div>
@@ -632,14 +705,14 @@ const AdminOrders = () => {
                               <div className="bg-white p-2.5 rounded border">
                                 <p className="text-xs text-muted-foreground mb-1">تاريخ الحجز</p>
                                 <div className="font-medium flex items-center gap-1.5">
-                                  <Calendar className="h-3.5 w-3.5 text-brand-600" />
+                                  <Calendar className="h-3.5 w-3.5 text-blue-500" />
                                   {selectedOrder.reservationInfo.appointmentDate}
                                 </div>
                               </div>
                               <div className="bg-white p-2.5 rounded border">
                                 <p className="text-xs text-muted-foreground mb-1">وقت الحجز</p>
                                 <div className="font-medium flex items-center gap-1.5">
-                                  <Clock className="h-3.5 w-3.5 text-brand-600" />
+                                  <Clock className="h-3.5 w-3.5 text-blue-500" />
                                   {(() => {
                                     const time = selectedOrder.reservationInfo.appointmentTime;
                                     if (!time) return '';
@@ -745,7 +818,7 @@ const AdminOrders = () => {
                               </h4>
                               {item.selectedSize && (
                                 <div className="flex">
-                                  <span className="inline-flex items-center px-2 py-1 rounded text-xs bg-brand-50 text-brand-700 border border-brand-100 font-medium">
+                                  <span className="inline-flex items-center px-2 py-1 rounded text-xs bg-blue-50 text-blue-700 border border-blue-100 font-medium">
                                     {item.selectedSize.label}
                                   </span>
                                 </div>
@@ -768,7 +841,7 @@ const AdminOrders = () => {
                             <div className="flex flex-wrap items-center gap-2 mb-3">
                               {/* Desktop Size Badge */}
                               {item.selectedSize && (
-                                <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-50 border border-brand-100 text-brand-700 text-sm font-medium">
+                                <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-blue-50 border border-blue-100 text-blue-700 text-sm font-medium">
                                   <span className="opacity-70">الحجم:</span>
                                   <span>{item.selectedSize.label}</span>
                                 </div>
@@ -841,7 +914,7 @@ const AdminOrders = () => {
                   {selectedOrder.status === 'pending' && (
                     <Button
                       size="sm"
-                      className="bg-brand-700 hover:bg-brand-800"
+                      className="bg-blue-600 hover:bg-blue-700"
                       onClick={() => {
                         updateOrderStatus(selectedOrder.id, 'confirmed');
                         setShowOrderDetails(false);

@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useStore } from "@/store/useStore";
 import { productsService } from "@/lib/firebase";
 import { toast } from "sonner";
@@ -153,7 +153,7 @@ export function SlugMigrationTool() {
                 <span key={key} className="inline-flex items-center gap-1 px-2 py-0.5 bg-white rounded-full border border-amber-200 text-[11px] text-amber-800 font-mono">
                   <span className="text-gray-500 font-normal">{key}</span>
                   <span className="text-amber-400">→</span>
-                  <span className="font-bold text-brand-700">{slug}</span>
+                  <span className="font-bold text-blue-600">{slug}</span>
                 </span>
               ))}
             </div>

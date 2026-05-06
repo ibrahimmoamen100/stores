@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 
 export default function Careers() {
   const handleWhatsApp = (type: "product" | "wholesale" | "delivery") => {
-    const phoneNumber = "01061246012";
+    const phoneNumber = "01080640246";
     let message = "";
 
     switch (type) {

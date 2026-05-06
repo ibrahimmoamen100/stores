@@ -1,4 +1,4 @@
-﻿import { useStore } from "@/store/useStore";
+import { useStore } from "@/store/useStore";
 import { ProductModal } from "@/components/ProductModal";
 import LoginRequiredModal from "@/components/LoginRequiredModal";
 import { useState, useEffect } from "react";
@@ -58,6 +58,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { STORE_GOVERNORATES } from "@/constants/store";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getProductUrl } from "@/utils/url";
 import { checkCoupon, incrementCouponUsage, Coupon } from "@/lib/coupons";
@@ -157,7 +158,12 @@ const Cart = () => {
     }
   }
 
-  const finalTotalAmount = Math.max(0, totalAmount - couponDiscountAmount);
+  const selectedCity = watch("city");
+  const shippingCost = STORE_GOVERNORATES.find(g => g.name === selectedCity)?.shippingCost || 0;
+  const currentShippingCost = orderType === "online_purchase" ? shippingCost : 0;
+  const numericShippingCost = typeof currentShippingCost === 'number' ? currentShippingCost : 0;
+
+  const finalTotalAmount = Math.max(0, totalAmount - couponDiscountAmount) + numericShippingCost;
 
   const handleApplyCoupon = async () => {
     setCouponError('');
@@ -343,7 +349,7 @@ const Cart = () => {
   };
 
   const processOrder = async (orderData: any, message: string) => {
-    const whatsappNumber = "201061246012";
+    const whatsappNumber = "201080640246";
     const deductions = cart
       .filter((item) => item.product && item.product.id)
       .map(item => ({
@@ -440,6 +446,7 @@ const Cart = () => {
       deliverySection,
       '========================',
       appliedCoupon ? `🎟 كود الخصم: ${appliedCoupon.code} (-${formatCurrency(couponDiscountAmount, 'جنيه')})` : null,
+      currentShippingCost !== 0 ? `🚚 مصاريف الشحن: ${typeof currentShippingCost === 'number' ? formatCurrency(currentShippingCost as number, 'جنيه') : currentShippingCost}` : null,
       `💰 الإجمالي النهائي: ${formatCurrency(finalTotalAmount, 'جنيه')}`,
       `📅 التاريخ: ${new Date().toLocaleDateString('ar-EG')}`,
       '========================',
@@ -552,7 +559,7 @@ const Cart = () => {
       }));
 
     try {
-      const whatsappNumber = "201061246012";
+      const whatsappNumber = "201080640246";
       if (typeof createOrderAndUpdateProductQuantitiesAtomically === 'function') {
         await createOrderAndUpdateProductQuantitiesAtomically(orderData, deductions);
       } else {
@@ -808,6 +815,14 @@ const Cart = () => {
                           {formatCurrency(totalAmount, 'جنيه')}
                         </span>
                       </div>
+                      {currentShippingCost !== 0 && (
+                        <div className="flex justify-between w-full items-center gap-2 mt-2">
+                          <span className="text-lg font-bold"> مصاريف الشحن </span>
+                          <span className="text-xl font-bold">
+                            {typeof currentShippingCost === 'number' ? formatCurrency(currentShippingCost as number, 'جنيه') : currentShippingCost}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Coupon Toggle + Input Area */}
@@ -883,7 +898,18 @@ const Cart = () => {
                               </span>
                               <span className="font-black text-green-700">- {formatCurrency(couponDiscountAmount, 'جنيه')}</span>
                             </div>
-                            <div className="flex justify-between items-center px-4 py-3 bg-brand-700">
+                            {currentShippingCost !== 0 && (
+                              <div className="flex justify-between items-center px-4 py-2.5 bg-gray-50">
+                                <span className="text-gray-600 font-medium flex items-center gap-1.5">
+                                  <Truck className="w-3 h-3" />
+                                  مصاريف الشحن
+                                </span>
+                                <span className="font-black text-gray-800">
+                                  {typeof currentShippingCost === 'number' ? formatCurrency(currentShippingCost as number, 'جنيه') : currentShippingCost}
+                                </span>
+                              </div>
+                            )}
+                            <div className="flex justify-between items-center px-4 py-3 bg-blue-900">
                               <span className="font-bold text-white text-base">الإجمالي بعد الخصم</span>
                               <span className="text-2xl font-black text-white">{formatCurrency(finalTotalAmount, 'جنيه')}</span>
                             </div>
@@ -928,43 +954,7 @@ const Cart = () => {
                 <TabsContent value="online_purchase" className="space-y-4">
 
                   <Accordion type="multiple" className="w-full mb-6">
-                    <AccordionItem value="shipping" className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg border border-yellow-100 mb-4 px-4 shadow-sm">
-                      <AccordionTrigger className="hover:no-underline py-3">
-                        <div className="flex gap-3 items-center text-yellow-900">
-                          <div className="p-2 bg-white rounded-lg h-fit shadow-sm border border-yellow-100">
-                            <Truck className="h-5 w-5 text-yellow-600" />
-                          </div>
-                          <span className="font-bold flex items-center gap-2 text-sm">
-                            سياسة الشحن والتوصيل
-                            <span className="text-[10px] bg-yellow-100 px-2 py-0.5 rounded-full text-yellow-700">هام</span>
-                          </span>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <div className="grid grid-cols-1 gap-2 pt-1 pb-2">
-                          <div className="flex justify-between items-center bg-white/50 p-2 rounded border border-yellow-100/50">
-                            <p className="font-medium flex items-center gap-1.5 text-yellow-900">
-                              <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_4px_rgba(34,197,94,0.4)]" />
-                              داخل القاهرة
-                            </p>
-                            <div className="text-right">
-                              <p className="font-bold text-yellow-800">100 ج.م</p>
-                              <p className="text-[10px] text-yellow-600">(24 ساعة)</p>
-                            </div>
-                          </div>
-                          <div className="flex justify-between items-center bg-white/50 p-2 rounded border border-yellow-100/50">
-                            <p className="font-medium flex items-center gap-1.5 text-yellow-900">
-                              <span className="w-1.5 h-1.5 rounded-full bg-brand-700 shadow-[0_0_4px_rgba(59,130,246,0.4)]" />
-                              جميع المحافظات
-                            </p>
-                            <div className="text-right">
-                              <p className="font-bold text-yellow-800">170 ج.م</p>
-                              <p className="text-[10px] text-yellow-600">(48 ساعة)</p>
-                            </div>
-                          </div>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
+
 
                     <AccordionItem value="payment" className="bg-purple-50/50 rounded-lg border border-purple-100 shadow-sm px-4">
                       <AccordionTrigger className="hover:no-underline py-3">
@@ -981,7 +971,7 @@ const Cart = () => {
                             <div className="flex items-center gap-2 font-medium text-purple-800 text-sm">
                               <Phone className="h-4 w-4" /> فودافون كاش / انستا باي
                             </div>
-                            <p className="text-lg font-bold font-mono dir-ltr text-left text-purple-700 pl-6 select-all">01061246012</p>
+                            <p className="text-lg font-bold font-mono dir-ltr text-left text-purple-700 pl-6 select-all">01080640246</p>
                           </div>
                           <div className="text-xs text-purple-700 font-medium bg-purple-100/50 p-2 rounded flex items-start gap-2">
                             <span className="mt-0.5 block w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0" />
@@ -1032,12 +1022,18 @@ const Cart = () => {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="city" className="text-xs font-semibold text-gray-600">المحافظة <span className="text-red-500">*</span></Label>
-                          <Input
+                          <select
                             id="city"
-                            placeholder="القاهرة، الجيزة، إلخ"
                             {...register('city', { required: 'هذا الحقل إلزامي' })}
-                            className={errors.city ? 'border-red-500' : ''}
-                          />
+                            className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.city ? 'border-red-500' : ''}`}
+                          >
+                            <option value="">اختر المحافظة</option>
+                            {STORE_GOVERNORATES.map(gov => (
+                              <option key={gov.name} value={gov.name}>
+                                {gov.name} - {gov.shippingCost}
+                              </option>
+                            ))}
+                          </select>
                           {errors.city && <p className="text-xs text-red-500">{errors.city.message}</p>}
                         </div>
                         <div className="space-y-2">
@@ -1080,30 +1076,30 @@ const Cart = () => {
                   <form onSubmit={handleSubmitReservation(handleReservationSubmit)} className="space-y-6">
 
                     <Accordion type="single" collapsible className="w-full mb-6">
-                      <AccordionItem value="deposit" className="bg-brand-50/50 rounded-lg border border-brand-100 shadow-sm px-4">
+                      <AccordionItem value="deposit" className="bg-blue-50/50 rounded-lg border border-blue-100 shadow-sm px-4">
                         <AccordionTrigger className="hover:no-underline py-3">
-                          <div className="flex gap-3 items-center text-brand-700">
-                            <div className="p-2 bg-white rounded-lg h-fit shadow-sm border border-brand-100">
-                              <AlertCircle className="h-5 w-5 text-brand-700" />
+                          <div className="flex gap-3 items-center text-blue-900">
+                            <div className="p-2 bg-white rounded-lg h-fit shadow-sm border border-blue-100">
+                              <AlertCircle className="h-5 w-5 text-blue-600" />
                             </div>
                             <span className="font-bold text-sm">تأكيد جدية الحجز</span>
                           </div>
                         </AccordionTrigger>
                         <AccordionContent>
                           <div className="space-y-3 pt-1 pb-2">
-                            <p className="text-brand-800 text-sm leading-relaxed">
-                              لضمان الحجز، يفضل دفع مبلغ <span className="font-bold text-brand-700">200 جنيه</span> كجدية حجز.
+                            <p className="text-blue-800 text-sm leading-relaxed">
+                              لضمان الحجز، يفضل دفع مبلغ <span className="font-bold text-blue-700">200 جنيه</span> كجدية حجز.
                             </p>
-                            <div className="bg-white/60 p-3 rounded border border-brand-100/50 space-y-2">
-                              <p className="font-semibold text-brand-800 flex items-center gap-2 text-sm">
+                            <div className="bg-white/60 p-3 rounded border border-blue-100/50 space-y-2">
+                              <p className="font-semibold text-blue-800 flex items-center gap-2 text-sm">
                                 <Phone className="h-4 w-4" /> طرق الدفع المتاحة:
                               </p>
                               <div className="grid gap-1 pr-6 text-sm">
-                                <p className="font-medium text-brand-700">فودافون كاش / انستا باي</p>
-                                <p className="text-lg font-bold font-mono dir-ltr text-left text-brand-700 select-all">01061246012</p>
+                                <p className="font-medium text-blue-900">فودافون كاش / انستا باي</p>
+                                <p className="text-lg font-bold font-mono dir-ltr text-left text-blue-700 select-all">01080640246</p>
                               </div>
                             </div>
-                            <div className="text-xs text-brand-700 font-medium bg-brand-100/50 p-2 rounded">
+                            <div className="text-xs text-blue-700 font-medium bg-blue-100/50 p-2 rounded">
                               بعد التحويل، يرجى إرسال صورة التحويل (سكرين شوت) على نفس الرقم عبر واتساب.
                             </div>
                           </div>
@@ -1295,8 +1291,8 @@ const Cart = () => {
               <h2 className="text-white text-2xl sm:text-3xl font-bold mb-2 leading-snug">
                 تم الحجز بنجاح! 🎉
               </h2>
-              <p className="text-brand-300 text-sm sm:text-base leading-relaxed px-2">
-                سنتواصل معاك قريباً بعد دفع عربون <span className="font-bold text-white bg-brand-700/30 px-1.5 py-0.5 rounded">500 ج</span>
+              <p className="text-blue-200 text-sm sm:text-base leading-relaxed px-2">
+                سنتواصل معاك قريباً بعد دفع عربون <span className="font-bold text-white bg-blue-500/30 px-1.5 py-0.5 rounded">300 ج</span>
               </p>
             </div>
 
@@ -1325,10 +1321,10 @@ const Cart = () => {
                 <div className="bg-gray-50 border border-gray-200 mt-4 rounded-xl p-3 flex items-center justify-between">
                   <div>
                     <p className="text-[11px] text-gray-500 font-bold mb-0.5">الرقم الموحد للدفع</p>
-                    <p dir="ltr" className="font-bold font-mono text-xl text-gray-900 tracking-widest select-all">01061246012</p>
+                    <p dir="ltr" className="font-bold font-mono text-xl text-gray-900 tracking-widest select-all">01080640246</p>
                   </div>
                   <button onClick={() => {
-                    navigator.clipboard.writeText('01061246012');
+                    navigator.clipboard.writeText('01080640246');
                     toast.success('تم نسخ الرقم بنجاح');
                   }} className="bg-white hover:bg-gray-100 border border-gray-200 p-2.5 rounded-lg transition-colors text-gray-700 shadow-sm active:scale-95">
                     <ClipboardCopy className="w-5 h-5" />
@@ -1342,7 +1338,7 @@ const Cart = () => {
 
               {/* WhatsApp CTA */}
               <a
-                href={orderSuccess.whatsappUrl || `https://wa.me/201061246012`}
+                href={orderSuccess.whatsappUrl || `https://wa.me/201080640246`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-white text-base transition-all duration-200 hover:opacity-90 active:scale-[0.98]"

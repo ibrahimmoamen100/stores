@@ -1,196 +1,297 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Footer from "@/components/Footer";
-import { Building, Phone, Clock, MapPin, MessageCircle, Map as MapIcon, CheckCircle2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Building, Phone, Clock, MapPin, Navigation, ChevronDown, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { STORE_LOCATIONS } from "@/constants/store";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 30 },
+  initial: { opacity: 0, y: 24 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.7, delay },
+  transition: { duration: 0.65, delay },
 });
 
+/** Convert a Google Maps share URL → embeddable iframe src */
+function getEmbedUrl(url: string): string {
+  if (!url) return '';
+  // Try extracting @lat,lng from the URL
+  const match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (match) {
+    return `https://maps.google.com/maps?q=${match[1]},${match[2]}&hl=ar&z=16&output=embed`;
+  }
+  return '';
+}
+
 export default function Locations() {
-  const [selectedLocation, setSelectedLocation] = useState(STORE_LOCATIONS[0] as any);
+  const { settings } = useSiteSettings();
+
+  const branches = useMemo(() => {
+    const list = (settings.branches || []);
+    // Attach computed embedUrl to each branch
+    return list.map(b => ({ ...b, embedUrl: getEmbedUrl(b.googleMapsUrl) }));
+  }, [settings.branches]);
+
+  const [selectedId, setSelectedId] = useState<string | null>(
+    branches.length > 0 ? branches[0].id : null
+  );
+
+  const selectedBranch = branches.find(b => b.id === selectedId) ?? branches[0] ?? null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-gray-50/40">
 
-      {/* ── Modern Dark Hero ── */}
-      <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden bg-brand-950">
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] bg-brand-600/20 blur-[120px] rounded-full pointer-events-none" />
-        
-        <div className="container relative z-10 text-center">
+      {/* ── Hero Banner ── */}
+      <div className="relative bg-gradient-to-br from-primary via-primary/90 to-secondary py-16 md:py-20 overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-accent/15 blur-3xl" />
+        <div className="container relative text-center">
           <motion.div {...fadeUp(0)}>
-            <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-brand-500/10 text-brand-400 font-medium text-sm mb-6 border border-brand-500/20">
-              <MapIcon className="w-4 h-4" />
-              <span>فروعنا ونقاط البيع</span>
+            <div className="inline-flex items-center justify-center p-4 bg-white/15 backdrop-blur-sm rounded-2xl border border-white/25 mb-6">
+              <MapPin className="h-8 w-8 text-white" />
             </div>
+            <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg">
+              {settings.locationsPage?.heroTitle || 'فروعنا'}
+            </h1>
+            <p className="text-white/80 text-lg max-w-md mx-auto">
+              {settings.locationsPage?.heroSubtitle || 'تعرف على أماكن وجودنا وزورونا في أي وقت'}
+            </p>
           </motion.div>
-          
-          <motion.h1 {...fadeUp(0.1)} className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight leading-[1.1]">
-            نحن دائماً <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300">بالقرب منك</span>
-          </motion.h1>
-          
-          <motion.p {...fadeUp(0.2)} className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            نسعد بزيارتكم في فروعنا للتعرف على تشكيلتنا الواسعة من الأجهزة وتجربتها بأنفسكم قبل الشراء لضمان أفضل تجربة.
-          </motion.p>
         </div>
-      </section>
+      </div>
 
-      {/* ── Main Content ── */}
-      <section className="py-12 md:py-20 flex-1 bg-slate-50 relative">
-        <div className="container max-w-7xl mx-auto">
-          <div className="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden flex flex-col lg:flex-row min-h-[650px]">
-            
-            {/* Left/Right Sidebar: Locations List */}
-            <div className="w-full lg:w-[400px] xl:w-[450px] border-b lg:border-b-0 lg:border-l border-slate-100 bg-slate-50/50 flex flex-col">
-              <div className="p-6 md:p-8 border-b border-slate-100 bg-white">
-                <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                  <Building className="w-6 h-6 text-brand-600" />
-                  الفروع المتاحة
-                </h2>
-                <p className="text-slate-500 text-sm mt-2">اختر الفرع لعرض تفاصيل الموقع والتواصل</p>
-              </div>
+      <div className="container py-10 flex-1">
 
-              <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
-                {STORE_LOCATIONS.map((location) => {
-                  const isSelected = selectedLocation.id === location.id;
-                  return (
-                    <div
-                      key={location.id}
-                      onClick={() => setSelectedLocation(location)}
-                      className={`relative cursor-pointer rounded-2xl p-5 transition-all duration-300 border-2 
-                        ${isSelected 
-                          ? "bg-white border-brand-500 shadow-md shadow-brand-500/10" 
-                          : "bg-white border-transparent hover:border-brand-200 hover:shadow-sm"}`}
-                    >
-                      {isSelected && (
-                         <div className="absolute top-4 left-4">
-                           <CheckCircle2 className="w-6 h-6 text-brand-600 drop-shadow-sm" />
-                         </div>
-                      )}
-                      
-                      <h3 className={`text-lg font-bold mb-1 pr-2 ${isSelected ? "text-brand-700" : "text-slate-800"}`}>
-                        {location.name}
-                      </h3>
-                      <p className="text-slate-500 text-sm leading-relaxed pr-2 line-clamp-2">
-                        {location.address}
-                      </p>
+        {/* Empty state */}
+        {branches.length === 0 && (
+          <div className="text-center py-20 text-gray-400">
+            <MapPin className="w-12 h-12 mx-auto mb-4 opacity-30" />
+            <p className="text-lg font-medium">لا توجد فروع مضافة حتى الآن</p>
+            <p className="text-sm mt-1">يمكن للمدير إضافة الفروع من لوحة تخصيص الموقع</p>
+          </div>
+        )}
 
-                      {/* Mobile Expandable Details */}
-                      <AnimatePresence>
-                        {isSelected && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden lg:hidden"
-                          >
-                            <div className="pt-5 mt-4 border-t border-slate-100 space-y-3">
-                               <div className="flex items-center gap-3">
-                                 <Phone className="w-4 h-4 text-slate-400" />
-                                 <a href={`tel:${location.phone}`} className="text-slate-700 font-medium text-sm hover:text-brand-600 transition-colors" dir="ltr">{location.phone}</a>
-                               </div>
-                               <div className="flex items-center gap-3">
-                                 <Clock className="w-4 h-4 text-slate-400" />
-                                 <span className="text-slate-700 font-medium text-sm">مفتوح يومياً 11 ص - 9 م (عدا الجمعة)</span>
-                               </div>
+        {branches.length > 0 && (
+          <div className="grid lg:grid-cols-2 gap-8">
 
-                               <div className="h-[200px] w-full rounded-xl overflow-hidden shadow-inner border border-slate-200 relative mt-4">
-                                 <div className="absolute inset-0 bg-slate-100 flex items-center justify-center -z-10 animate-pulse">
-                                   <MapPin className="h-6 w-6 text-slate-300" />
-                                 </div>
-                                 <iframe
-                                   src={location.googleMapsUrl}
-                                   title={`موقع ${location.name}`}
-                                   className="w-full h-full"
-                                   style={{ border: 0 }}
-                                   allowFullScreen
-                                   loading="lazy"
-                                   referrerPolicy="no-referrer-when-downgrade"
-                                 />
-                               </div>
-                               
-                               <div className="flex gap-2 pt-2">
-                                 <Button size="sm" className="flex-1 bg-brand-600 hover:bg-brand-500 text-white gap-2 rounded-xl" onClick={() => window.open(`tel:${location.phone}`, "_self")}>
-                                    <Phone className="w-4 h-4" /> اتصال
-                                 </Button>
-                                 <Button size="sm" variant="outline" className="flex-1 border-slate-200 hover:bg-slate-50 text-slate-700 gap-2 rounded-xl" onClick={() => window.open(`https://wa.me/${location.phone}?text=${encodeURIComponent("مرحباً، أريد الاستفسار عن المنتجات المتاحة")}`, "_blank")}>
-                                    <MessageCircle className="w-4 h-4 text-[#25D366]" /> واتساب
-                                 </Button>
-                               </div>
+            {/* ── Branches List ── */}
+            <motion.div
+              className="space-y-5"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+            >
+              {branches.map((branch, index) => {
+                const isSelected = selectedId === branch.id;
+                return (
+                  <div
+                    key={branch.id}
+                    className={`cursor-pointer bg-white rounded-2xl border-2 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 overflow-hidden
+                      ${isSelected
+                        ? "border-primary shadow-primary/10 shadow-lg ring-1 ring-primary/20"
+                        : "border-gray-100 hover:border-primary/30"
+                      }`}
+                    onClick={() => setSelectedId(branch.id)}
+                  >
+                    <div className="p-6 pb-5">
+                      {/* Header */}
+                      <div className="flex items-start gap-4 mb-5">
+                        <div className={`p-3 rounded-2xl transition-all duration-300 ${isSelected ? "bg-primary" : "bg-primary/10"}`}>
+                          <Building className={`h-6 w-6 ${isSelected ? "text-primary-foreground" : "text-primary"}`} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <h3 className="text-lg font-bold text-gray-800 leading-tight">
+                              {branch.name}
+                            </h3>
+                            <div className="flex items-center gap-2">
+                              {isSelected && (
+                                <span className="shrink-0 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-bold">
+                                  محدد
+                                </span>
+                              )}
+                              <div className="lg:hidden flex items-center justify-center h-6 w-6 rounded-full bg-gray-50 flex-shrink-0">
+                                <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform duration-300 ${isSelected ? "rotate-180 text-primary" : ""}`} />
+                              </div>
                             </div>
-                          </motion.div>
+                          </div>
+                          <p className="text-sm text-gray-500 mt-1.5 leading-relaxed">
+                            {branch.address}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Details */}
+                      <div className="grid sm:grid-cols-2 gap-4 mb-5">
+                        {/* Phone */}
+                        {branch.phone && (
+                          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                            <div className="p-1.5 bg-green-100 rounded-lg">
+                              <Phone className="h-4 w-4 text-green-600" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-gray-400">الهاتف</p>
+                              <a
+                                href={`tel:${branch.phone}`}
+                                className="text-sm font-bold text-green-600 hover:underline"
+                                onClick={e => e.stopPropagation()}
+                              >
+                                {branch.phone}
+                              </a>
+                            </div>
+                          </div>
                         )}
-                      </AnimatePresence>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
 
-            {/* Main Area: Map & Details (Desktop Focus) */}
-            <div className="flex-1 flex flex-col bg-white hidden lg:flex relative">
-              {/* Map View */}
-              <div className="flex-1 relative bg-slate-100">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="animate-pulse flex flex-col items-center gap-3">
-                    <MapPin className="h-10 w-10 text-slate-300" />
-                    <span className="text-slate-400 font-medium text-sm">جاري تحميل الخريطة...</span>
-                  </div>
-                </div>
-                <iframe
-                  key={selectedLocation.id}
-                  src={selectedLocation.googleMapsUrl}
-                  title={`موقع ${selectedLocation.name}`}
-                  className="w-full h-full relative z-10"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
+                        {/* Hours */}
+                        {branch.workingHours && (
+                          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                            <div className="p-1.5 bg-primary/10 rounded-lg">
+                              <Clock className="h-4 w-4 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium text-gray-400">مواعيد العمل</p>
+                              <p className="text-sm font-bold text-gray-700">{branch.workingHours}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
 
-              {/* Details Banner */}
-              <div className="bg-white border-t border-slate-100 p-8 shadow-[0_-10px_30px_rgb(0,0,0,0.03)] relative z-20">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-2xl font-bold text-slate-900 mb-2">{selectedLocation.name}</h3>
-                    <div className="flex items-center gap-2 text-slate-500 text-sm">
-                      <MapPin className="w-4 h-4 text-brand-600" />
-                      <span>{selectedLocation.address}</span>
+                      {/* Actions */}
+                      <div className="flex gap-2 flex-wrap">
+                        {branch.phone && (
+                          <Button
+                            size="sm"
+                            className="flex-1 rounded-xl bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold gap-1.5 hover:shadow-md transition-all"
+                            onClick={e => { e.stopPropagation(); window.open(`tel:${branch.phone}`, "_self"); }}
+                          >
+                            <Phone className="h-3.5 w-3.5" />
+                            اتصل الآن
+                          </Button>
+                        )}
+                        {branch.phone && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 rounded-xl border-green-200 text-green-600 hover:bg-green-50 font-bold gap-1.5"
+                            onClick={e => {
+                              e.stopPropagation();
+                              window.open(
+                                `https://wa.me/${branch.phone?.replace(/\D/g, '')}?text=${encodeURIComponent("مرحباً، أريد الاستفسار عن المنتجات المتاحة")}`,
+                                "_blank"
+                              );
+                            }}
+                          >
+                            <Navigation className="h-3.5 w-3.5" />
+                            واتساب
+                          </Button>
+                        )}
+                        {branch.googleMapsUrl && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="rounded-xl border-blue-200 text-blue-600 hover:bg-blue-50 font-bold gap-1.5"
+                            onClick={e => { e.stopPropagation(); window.open(branch.googleMapsUrl, "_blank"); }}
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                            الخريطة
+                          </Button>
+                        )}
+                      </div>
                     </div>
+
+                    {/* Mobile Collapsible Map */}
+                    <AnimatePresence>
+                      {isSelected && branch.embedUrl && (
+                        <motion.div
+                          className="lg:hidden w-full overflow-hidden border-t border-gray-100 bg-gray-50"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <div className="h-[250px] sm:h-[300px] w-full p-3 pb-4">
+                            <div className="h-full w-full rounded-xl overflow-hidden shadow-inner border border-gray-200 relative">
+                              <div className="absolute inset-0 bg-gray-100 flex items-center justify-center -z-10 animate-pulse">
+                                <MapPin className="h-8 w-8 text-gray-300" />
+                              </div>
+                              <iframe
+                                src={branch.embedUrl}
+                                title={`موقع ${branch.name}`}
+                                className="w-full h-full"
+                                style={{ border: 0 }}
+                                allowFullScreen
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                              />
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
-                  
-                  <div className="flex gap-3">
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="border-slate-200 text-slate-700 hover:bg-slate-50 font-bold px-6 h-12 rounded-xl gap-2 transition-transform hover:-translate-y-1"
-                      onClick={() => window.open(`https://wa.me/${selectedLocation.phone}?text=${encodeURIComponent("مرحباً، أريد الاستفسار عن المنتجات المتاحة")}`, "_blank")}
-                    >
-                      <MessageCircle className="w-5 h-5 text-[#25D366]" />
-                      واتساب
-                    </Button>
-                    <Button
-                      size="lg"
-                      className="bg-brand-600 hover:bg-brand-500 text-white font-bold px-6 h-12 rounded-xl shadow-lg shadow-brand-600/20 gap-2 transition-transform hover:-translate-y-1"
-                      onClick={() => window.open(`tel:${selectedLocation.phone}`, "_self")}
-                    >
-                      <Phone className="w-5 h-5" />
-                      <span dir="ltr">{selectedLocation.phone}</span>
-                    </Button>
+                );
+              })}
+            </motion.div>
+
+            {/* ── Desktop Map ── */}
+            <motion.div
+              className="hidden lg:block lg:min-h-[520px] sticky top-24"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.25 }}
+            >
+              <div className="h-full bg-white rounded-2xl border-2 border-gray-100 shadow-sm overflow-hidden flex flex-col">
+                {/* Map header */}
+                <div className="flex items-center gap-3 p-4 border-b border-gray-100 bg-gray-50">
+                  <div className="p-2 rounded-xl bg-primary/10">
+                    <MapPin className="h-4 w-4 text-primary" />
                   </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-gray-800 truncate">{selectedBranch?.name}</p>
+                    <p className="text-xs text-gray-500 line-clamp-1">{selectedBranch?.address}</p>
+                  </div>
+                  {selectedBranch?.googleMapsUrl && (
+                    <a
+                      href={selectedBranch.googleMapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 p-2 rounded-xl hover:bg-primary/10 text-primary transition-colors"
+                      title="فتح في Google Maps"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  )}
+                </div>
+
+                {/* Iframe map */}
+                <div className="flex-1 relative bg-gray-100 min-h-[400px]">
+                  <div className="absolute inset-0 flex items-center justify-center animate-pulse">
+                    <MapPin className="h-10 w-10 text-gray-300" />
+                  </div>
+                  {selectedBranch?.embedUrl ? (
+                    <iframe
+                      key={selectedBranch.id}
+                      src={selectedBranch.embedUrl}
+                      title={`موقع ${selectedBranch.name}`}
+                      className="w-full h-full relative z-10"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10">
+                      <MapPin className="h-10 w-10 text-gray-300" />
+                      <p className="text-sm text-gray-400">لا يوجد رابط خريطة لهذا الفرع</p>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
+            </motion.div>
 
           </div>
-        </div>
-      </section>
+        )}
+      </div>
 
       <Footer />
     </div>

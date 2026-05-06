@@ -1,4 +1,4 @@
-﻿
+
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -36,6 +36,7 @@ import { getColorByName } from '@/constants/colors';
 import { Product, ProductSize, ProductAddon } from '@/types/product';
 import { createOrderAndUpdateProductQuantitiesAtomically } from '@/lib/firebase';
 import { useAuth } from '@/contexts/AuthContext';
+import { STORE_GOVERNORATES } from '@/constants/store';
 
 interface DirectCheckoutModalProps {
     open: boolean;
@@ -80,12 +81,13 @@ export function DirectCheckoutModal({
     const [orderType, setOrderType] = useState<"online_purchase" | "reservation">("online_purchase");
     const [orderSuccess, setOrderSuccess] = useState(false);
     const [copiedNumber, setCopiedNumber] = useState(false);
-    const PAYMENT_NUMBER = '01061246012';
+    const PAYMENT_NUMBER = '01080640246';
 
     // Delivery Form
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors, isValid },
         reset,
     } = useForm<DeliveryFormData>({
@@ -103,6 +105,11 @@ export function DirectCheckoutModal({
     });
 
     const totalAmount = finalPrice * quantity;
+
+    const watchCity = watch('city');
+    const selectedShippingCost = STORE_GOVERNORATES.find(g => g.name === watchCity)?.shippingCost || 0;
+    const numericSelectedShippingCost = typeof selectedShippingCost === 'number' ? selectedShippingCost : 0;
+    const finalDisplayAmount = orderType === "online_purchase" ? totalAmount + numericSelectedShippingCost : totalAmount;
 
     const handleCopyNumber = async () => {
         try {
@@ -138,7 +145,7 @@ export function DirectCheckoutModal({
     };
 
     const processOrder = async (orderData: any, message: string) => {
-        const whatsappNumber = "201061246012";
+        const whatsappNumber = "201080640246";
         const deductions = [{
             productId: product.id,
             quantityToDeduct: quantity
@@ -197,10 +204,14 @@ export function DirectCheckoutModal({
             notes: data.notes || ''
         };
 
+        const shippingCost = STORE_GOVERNORATES.find(g => g.name === data.city)?.shippingCost || 0;
+        const numericShippingCost = typeof shippingCost === 'number' ? shippingCost : 0;
+        const finalTotalAmount = totalAmount + numericShippingCost;
+
         const orderData = {
             userId: userProfile?.uid || `guest-${Date.now()}`,
             items: [orderItem],
-            total: totalAmount,
+            total: finalTotalAmount,
             status: 'pending',
             type: 'online_purchase', // Explicitly set type
             deliveryInfo,
@@ -225,7 +236,8 @@ export function DirectCheckoutModal({
             '*بيانات الشحن:*',
             deliverySection,
             '========================',
-            `💰 إجمالي المبلغ: ${formatCurrency(totalAmount, 'جنيه')}`,
+            shippingCost !== 0 ? `🚚 مصاريف الشحن: ${typeof shippingCost === 'number' ? formatCurrency(shippingCost as number, 'جنيه') : shippingCost}` : null,
+            `💰 إجمالي المبلغ: ${formatCurrency(finalTotalAmount, 'جنيه')}`,
             `📅 التاريخ: ${new Date().toLocaleDateString('ar-EG')}`,
             '========================',
             'يرجى تأكيد الطلب ومراجعة تكاليف الشحن'
@@ -360,8 +372,8 @@ export function DirectCheckoutModal({
                         <h2 className="text-white text-2xl sm:text-3xl font-bold mb-2 leading-snug">
                             تم الحجز بنجاح! 🎉
                         </h2>
-                        <p className="text-brand-300 text-sm sm:text-base leading-relaxed px-2">
-                            سنتواصل معاك قريباً بعد دفع عربون <span className="font-bold text-white bg-brand-700/30 px-1.5 py-0.5 rounded">500 ج</span>
+                        <p className="text-blue-200 text-sm sm:text-base leading-relaxed px-2">
+                            سنتواصل معاك قريباً بعد دفع عربون <span className="font-bold text-white bg-blue-500/30 px-1.5 py-0.5 rounded">300 ج</span>
                         </p>
                     </div>
 
@@ -390,10 +402,10 @@ export function DirectCheckoutModal({
                             <div className="bg-gray-50 border border-gray-200 mt-4 rounded-xl p-3 flex items-center justify-between">
                                 <div>
                                     <p className="text-[11px] text-gray-500 font-bold mb-0.5">الرقم الموحد للدفع</p>
-                                    <p dir="ltr" className="font-bold font-mono text-xl text-gray-900 tracking-widest select-all">01061246012</p>
+                                    <p dir="ltr" className="font-bold font-mono text-xl text-gray-900 tracking-widest select-all">01080640246</p>
                                 </div>
                                 <button onClick={() => {
-                                    navigator.clipboard.writeText('01061246012');
+                                    navigator.clipboard.writeText('01080640246');
                                     toast.success('تم نسخ الرقم بنجاح');
                                 }} className="bg-white hover:bg-gray-100 border border-gray-200 p-2.5 rounded-lg transition-colors text-gray-700 shadow-sm active:scale-95">
                                     <Copy className="w-5 h-5" />
@@ -407,7 +419,7 @@ export function DirectCheckoutModal({
 
                         {/* WhatsApp CTA */}
                         <a
-                            href={`https://wa.me/201061246012`}
+                            href={`https://wa.me/201080640246`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-white text-base transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
@@ -478,7 +490,7 @@ export function DirectCheckoutModal({
                                         </div>
                                         <div className="flex justify-between items-center bg-white/50 p-2 rounded border border-yellow-100/50">
                                             <p className="font-medium flex items-center gap-1.5">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-brand-700 shadow-[0_0_4px_rgba(59,130,246,0.4)]" />
+                                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_4px_rgba(59,130,246,0.4)]" />
                                                 جميع المحافظات
                                             </p>
                                             <div className="text-right">
@@ -505,7 +517,7 @@ export function DirectCheckoutModal({
                                         <div className="flex items-center gap-2 font-medium text-purple-800">
                                             <Phone className="h-4 w-4" /> فودافون كاش / انستا باي
                                         </div>
-                                        <p className="text-lg font-bold font-mono dir-ltr text-left text-purple-700 select-all">01061246012</p>
+                                        <p className="text-lg font-bold font-mono dir-ltr text-left text-purple-700 select-all">01080640246</p>
                                     </div>
                                     <div className="text-xs text-purple-700 font-medium bg-purple-100/50 p-2 rounded flex items-start gap-2">
                                         <span className="mt-0.5 block w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0" />
@@ -562,12 +574,18 @@ export function DirectCheckoutModal({
                                 <CardContent className="p-4 space-y-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="city" className="text-xs font-semibold text-gray-600">المحافظة <span className="text-red-500">*</span></Label>
-                                        <Input
+                                        <select
                                             id="city"
-                                            placeholder="القاهرة، الجيزة، إلخ"
                                             {...register('city', { required: 'هذا الحقل إلزامي' })}
-                                            className={errors.city ? 'border-red-500' : ''}
-                                        />
+                                            className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.city ? 'border-red-500' : ''}`}
+                                        >
+                                            <option value="">اختر المحافظة</option>
+                                            {STORE_GOVERNORATES.map(gov => (
+                                                <option key={gov.name} value={gov.name}>
+                                                    {gov.name} - {gov.shippingCost} ج.م
+                                                </option>
+                                            ))}
+                                        </select>
                                         {errors.city && <p className="text-xs text-red-500">{errors.city.message}</p>}
                                     </div>
                                     <div className="space-y-2">
@@ -599,7 +617,7 @@ export function DirectCheckoutModal({
                             >
                                 {isSubmitting ? 'جاري الإرسال...' : (
                                     <span className="flex items-center gap-2">
-                                        <ShoppingCart className="h-6 w-6" /> شراء / حجز الآن
+                                        <ShoppingCart className="h-6 w-6" /> إتمام الطلب ({formatCurrency(finalDisplayAmount, 'جنيه')})
                                     </span>
                                 )}
                             </Button>
@@ -668,28 +686,28 @@ export function DirectCheckoutModal({
                                     </div>
 
                                     <div className="pt-2">
-                                        <div className="bg-brand-50/50 rounded-lg p-4 border border-brand-100 mb-4">
+                                        <div className="bg-blue-50/50 rounded-lg p-4 border border-blue-100 mb-4">
                                             <div className="flex gap-3">
-                                                <div className="p-2 bg-white rounded-lg h-fit shadow-sm border border-brand-100">
-                                                    <AlertCircle className="h-5 w-5 text-brand-700" />
+                                                <div className="p-2 bg-white rounded-lg h-fit shadow-sm border border-blue-100">
+                                                    <AlertCircle className="h-5 w-5 text-blue-600" />
                                                 </div>
-                                                <div className="space-y-3 text-sm text-brand-700 flex-1">
+                                                <div className="space-y-3 text-sm text-blue-900 flex-1">
                                                     <div>
                                                         <p className="font-bold text-base mb-1">تأكيد جدية الحجز</p>
-                                                        <p className="text-brand-800 leading-relaxed">
-                                                            لضمان الحجز، يفضل دفع مبلغ <span className="font-bold text-brand-700">200 جنيه</span> كجدية حجز.
+                                                        <p className="text-blue-800 leading-relaxed">
+                                                            لضمان الحجز، يفضل دفع مبلغ <span className="font-bold text-blue-700">200 جنيه</span> كجدية حجز.
                                                         </p>
                                                     </div>
-                                                    <div className="bg-white/60 p-3 rounded border border-brand-100/50 space-y-2">
-                                                        <p className="font-semibold text-brand-800 flex items-center gap-2">
+                                                    <div className="bg-white/60 p-3 rounded border border-blue-100/50 space-y-2">
+                                                        <p className="font-semibold text-blue-800 flex items-center gap-2">
                                                             <Phone className="h-4 w-4" /> طرق الدفع المتاحة:
                                                         </p>
                                                         <div className="grid gap-1 pr-6">
                                                             <p className="font-medium">فودافون كاش / انستا باي</p>
-                                                            <p className="text-lg font-bold font-mono dir-ltr text-left text-brand-700 select-all">01061246012</p>
+                                                            <p className="text-lg font-bold font-mono dir-ltr text-left text-blue-700 select-all">01080640246</p>
                                                         </div>
                                                     </div>
-                                                    <div className="text-xs text-brand-700 font-medium bg-brand-100/50 p-2 rounded">
+                                                    <div className="text-xs text-blue-700 font-medium bg-blue-100/50 p-2 rounded">
                                                         بعد التحويل، يرجى إرسال صورة التحويل (سكرين شوت) على نفس الرقم عبر واتساب.
                                                     </div>
                                                 </div>
@@ -715,7 +733,7 @@ export function DirectCheckoutModal({
                             >
                                 {isSubmitting ? 'جاري الحجز...' : (
                                     <span className="flex items-center gap-2">
-                                        <ShoppingCart className="h-6 w-6" /> شراء / حجز الآن
+                                        <ShoppingCart className="h-6 w-6" /> إتمام الطلب ({formatCurrency(finalDisplayAmount, 'جنيه')})
                                     </span>
                                 )}
                             </Button>

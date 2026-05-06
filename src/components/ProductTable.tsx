@@ -1,4 +1,4 @@
-﻿import { Product } from "@/types/product";
+import { Product } from "@/types/product";
 import {
   Table,
   TableBody,
@@ -513,7 +513,7 @@ export function ProductTable({
       {/* ── Infinite Scroll Sentinel ── */}
       <div ref={sentinelRef} className="mt-4 flex flex-col items-center gap-3 pb-4">
         {isLoadingMore && (
-          <div className="flex items-center gap-2 text-brand-600 bg-white rounded-full px-5 py-2 shadow-sm border border-brand-100">
+          <div className="flex items-center gap-2 text-blue-500 bg-white rounded-full px-5 py-2 shadow-sm border border-blue-100">
             <Loader2 className="h-4 w-4 animate-spin" />
             <span className="text-sm font-semibold">جاري تحميل المزيد...</span>
           </div>

@@ -1,13 +1,13 @@
 export const DEFAULT_SUPPLIER = {
   name: "Elaraby",
-  phone: "01061246012",
-  formattedPhone: "201061246012", // Phone number with country code
+  phone: "01080640246",
+  formattedPhone: "201024911062", // Phone number with country code
 } as const;
 
 export const CONTACT_PHONES = {
-  main: "01061246012",
-  formattedMain: "201061246012",
-  support: "201061246012",
-  formattedSupport: "201061246012",
-  whatsapp: "201061246012",
+  main: "01080640246",
+  formattedMain: "201024911062",
+  support: "201024911062",
+  formattedSupport: "201024911062",
+  whatsapp: "201024911062",
 } as const;

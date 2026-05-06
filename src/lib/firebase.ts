@@ -29,6 +29,7 @@ import {
 const firebaseConfig = {
   apiKey: "AIzaSyARpBTCmOVdyxusXnUT_KPn4G0qG4Fp7Hc",
   authDomain: "stores-d9edb.firebaseapp.com",
+  databaseURL: "https://stores-d9edb-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "stores-d9edb",
   storageBucket: "stores-d9edb.firebasestorage.app",
   messagingSenderId: "568557679847",

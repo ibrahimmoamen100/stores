@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useProfitAnalysis } from "@/hooks/useProfitAnalysis";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -171,7 +171,7 @@ const ProfitAnalysis = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'delivered': return 'text-green-600 bg-green-100';
-      case 'shipped': return 'text-brand-700 bg-brand-100';
+      case 'shipped': return 'text-blue-600 bg-blue-100';
       case 'confirmed': return 'text-yellow-600 bg-yellow-100';
       case 'pending': return 'text-orange-600 bg-orange-100';
       case 'cancelled': return 'text-red-600 bg-red-100';
@@ -263,7 +263,7 @@ const ProfitAnalysis = () => {
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              onClick={() => navigate("/admin")}
+              onClick={() => navigate("/dashboard")}
               className="gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -340,16 +340,16 @@ const ProfitAnalysis = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-brand-200 bg-brand-50">
+          <Card className="border-blue-200 bg-blue-50">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-brand-800">إجمالي الأرباح</CardTitle>
-              <TrendingUp className="h-4 w-4 text-brand-700" />
+              <CardTitle className="text-sm font-medium text-blue-800">إجمالي الأرباح</CardTitle>
+              <TrendingUp className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-brand-800" title={formatDisplayPrice(profitAnalysis.totalProfit).full}>
+              <div className="text-2xl font-bold text-blue-800" title={formatDisplayPrice(profitAnalysis.totalProfit).full}>
                 {formatDisplayPrice(profitAnalysis.totalProfit).abbreviated}
               </div>
-              <p className="text-xs text-brand-700">
+              <p className="text-xs text-blue-600">
                 هامش ربح: {formatPercentage(profitAnalysis.profitMargin)}
               </p>
             </CardContent>
@@ -399,7 +399,7 @@ const ProfitAnalysis = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 bg-brand-700 rounded"></div>
+                    <div className="w-4 h-4 bg-blue-500 rounded"></div>
                     <span className="font-medium">المبيعات عبر الإنترنت</span>
                   </div>
                   <div className="text-right">
@@ -459,7 +459,7 @@ const ProfitAnalysis = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 bg-brand-700 rounded"></div>
+                    <div className="w-4 h-4 bg-blue-500 rounded"></div>
                     <span className="font-medium">أرباح الإنترنت</span>
                   </div>
                   <div className="text-right">
@@ -550,7 +550,7 @@ const ProfitAnalysis = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-brand-700" />
+                <Star className="h-5 w-5 text-blue-600" />
                 أكثر المنتجات مبيعاً
               </CardTitle>
             </CardHeader>
@@ -714,13 +714,13 @@ const ProfitAnalysis = () => {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>هامش الربح الإجمالي:</span>
-                        <span className="font-medium text-brand-700">
+                        <span className="font-medium text-blue-600">
                           {formatPercentage(profitAnalysis.profitMargin)}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>نسبة المبيعات المكتملة:</span>
-                        <span className="font-medium text-brand-700">
+                        <span className="font-medium text-blue-600">
                           {profitAnalysis.totalOrders > 0 ? 
                             formatPercentage((profitAnalysis.analysisByStatus.delivered.orders / profitAnalysis.totalOrders) * 100) : 
                             '0%'

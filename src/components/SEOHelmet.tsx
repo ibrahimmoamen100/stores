@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import seoData from '@/constants/seo.json';
+import { useSiteSettings } from '@/contexts/SiteSettingsContext';
 
 interface SEOHelmetProps {
     title?: string;
@@ -23,34 +23,38 @@ export const SEOHelmet = ({
     title,
     description,
     keywords,
-    image = 'https://compu-saif.vercel.app/logo1.png',
+    image,
     url,
     type = 'website',
     productData,
 }: SEOHelmetProps) => {
-    const baseUrl = seoData.global.baseUrl;
-    const fullUrl = url ? `${baseUrl}${url}` : baseUrl;
+    const { settings } = useSiteSettings();
 
-    const defaultTitle = seoData.global.defaultTitle;
-    const defaultDescription = seoData.global.defaultDescription;
-    const defaultKeywords = seoData.global.defaultKeywords;
+    const baseUrl   = settings.seoBaseUrl   || 'https://www.compusaif.com';
+    const storeName = settings.storeName    || 'Compu Saif';
+    const defTitle  = settings.seoTitle     || `${storeName} | لابتوب وكمبيوتر أصلي`;
+    const defDesc   = settings.seoDescription || '';
+    const defKw     = settings.seoKeywords  || '';
+    const defImage  = settings.seoImage     || settings.logoUrl || '/logo1.png';
 
-    const pageTitle = title ? `${title} | ElHashimi` : defaultTitle;
-    const pageDescription = description || defaultDescription;
-    const pageKeywords = keywords || defaultKeywords;
+    const fullUrl   = url ? `${baseUrl}${url}` : baseUrl;
+    const absImage  = image
+        ? (image.startsWith('http') ? image : `${baseUrl}${image}`)
+        : (defImage.startsWith('http') ? defImage : `${baseUrl}${defImage}`);
 
-    // Create Product Schema if productData is provided
+    const pageTitle       = title       ? `${title} | ${storeName}` : defTitle;
+    const pageDescription = description || defDesc;
+    const pageKeywords    = keywords    || defKw;
+
+    // Product Schema
     const productSchema = productData ? {
         "@context": "https://schema.org/",
         "@type": "Product",
         "name": productData.name,
-        "image": image,
+        "image": absImage,
         "description": pageDescription,
         "sku": productData.sku || '',
-        "brand": {
-            "@type": "Brand",
-            "name": productData.brand || 'Unknown'
-        },
+        "brand": { "@type": "Brand", "name": productData.brand || storeName },
         "offers": {
             "@type": "Offer",
             "url": fullUrl,
@@ -58,24 +62,16 @@ export const SEOHelmet = ({
             "price": productData.price || 0,
             "availability": `https://schema.org/${productData.availability || 'InStock'}`,
             "itemCondition": `https://schema.org/${productData.condition || 'NewCondition'}`,
-            "seller": {
-                "@type": "Organization",
-                "name": "ElHashimi"
-            }
+            "seller": { "@type": "Organization", "name": storeName }
         }
     } : null;
 
-    // Create BreadcrumbList Schema
+    // BreadcrumbList
     const breadcrumbSchema = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "الرئيسية",
-                "item": baseUrl
-            },
+            { "@type": "ListItem", "position": 1, "name": "الرئيسية", "item": baseUrl },
             ...(url && url !== '/' ? [{
                 "@type": "ListItem",
                 "position": 2,
@@ -85,57 +81,50 @@ export const SEOHelmet = ({
         ]
     };
 
-    // Create WebSite Schema for Google Site Name
+    // WebSite Schema
     const websiteSchema = {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "ElHashimi",
-        "alternateName": "الحشومي",
+        "name": storeName,
+        "alternateName": "كمبيو سيف",
         "url": baseUrl
     };
 
     return (
         <Helmet>
-            {/* Primary Meta Tags */}
+            {/* Primary */}
             <title>{pageTitle}</title>
-            <meta name="title" content={pageTitle} />
+            <meta name="title"       content={pageTitle} />
             <meta name="description" content={pageDescription} />
-            <meta name="keywords" content={pageKeywords} />
+            {pageKeywords && <meta name="keywords" content={pageKeywords} />}
 
-            {/* Canonical URL */}
+            {/* Favicon */}
+            {settings.faviconUrl && <link rel="icon" href={settings.faviconUrl} />}
+
+            {/* Canonical */}
             <link rel="canonical" href={fullUrl} />
 
-            {/* Open Graph / Facebook */}
-            <meta property="og:type" content={type} />
-            <meta property="og:url" content={fullUrl} />
-            <meta property="og:title" content={pageTitle} />
+            {/* Open Graph */}
+            <meta property="og:type"        content={type} />
+            <meta property="og:url"         content={fullUrl} />
+            <meta property="og:title"       content={pageTitle} />
             <meta property="og:description" content={pageDescription} />
-            <meta property="og:image" content={image} />
-            <meta property="og:site_name" content="ElHashimi" />
+            <meta property="og:image"       content={absImage} />
+            <meta property="og:site_name"   content={storeName} />
 
             {/* Twitter */}
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:url" content={fullUrl} />
-            <meta name="twitter:title" content={pageTitle} />
+            <meta name="twitter:card"        content="summary_large_image" />
+            <meta name="twitter:url"         content={fullUrl} />
+            <meta name="twitter:title"       content={pageTitle} />
             <meta name="twitter:description" content={pageDescription} />
-            <meta name="twitter:image" content={image} />
+            <meta name="twitter:image"       content={absImage} />
 
-            {/* Product Schema if available */}
+            {/* Structured Data */}
             {productSchema && (
-                <script type="application/ld+json">
-                    {JSON.stringify(productSchema)}
-                </script>
+                <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
             )}
-
-            {/* Breadcrumb Schema */}
-            <script type="application/ld+json">
-                {JSON.stringify(breadcrumbSchema)}
-            </script>
-
-            {/* WebSite Schema for Site Name */}
-            <script type="application/ld+json">
-                {JSON.stringify(websiteSchema)}
-            </script>
+            <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+            <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
         </Helmet>
     );
 };

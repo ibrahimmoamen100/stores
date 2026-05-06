@@ -1,30 +1,68 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
-import { 
-  ShieldCheck, 
-  BatteryCharging, 
-  RefreshCcw, 
-  MessageCircle, 
-  Phone, 
-  Award,
-  ChevronLeft
-} from "lucide-react";
+import {
+  FaWhatsapp,
+  FaShieldAlt,
+  FaBatteryFull,
+  FaExchangeAlt,
+  FaPhone,
+  FaStore,
+  FaAward,
+  FaCheckCircle,
+  FaStar,
+  FaLaptop,
+} from "react-icons/fa";
 import Footer from "@/components/Footer";
 import { STORE_OWNER } from "@/constants/store";
 import { Button } from "@/components/ui/button";
-import brand from "@/config/brand.json";
-import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+
+const warrantyFeatures = [
+  {
+    icon: FaShieldAlt,
+    title: "ضمان 6 شهور",
+    description: "على جميع المنتجات ضد عيوب الصناعة",
+    gradient: "from-primary to-primary/80",
+    bg: "bg-primary/10",
+    border: "border-primary/20",
+    iconColor: "text-primary",
+  },
+  {
+    icon: FaBatteryFull,
+    title: "ضمان شهر",
+    description: "على البطاريات والشواحن والهاردات",
+    gradient: "from-emerald-500 to-emerald-600",
+    bg: "bg-emerald-50",
+    border: "border-emerald-100",
+    iconColor: "text-emerald-600",
+  },
+  {
+    icon: FaExchangeAlt,
+    title: "أسبوع استبدال",
+    description: "على جميع المنتجات بدون أي شروط",
+    gradient: "from-purple-500 to-purple-600",
+    bg: "bg-purple-50",
+    border: "border-purple-100",
+    iconColor: "text-purple-600",
+  },
+];
+
+const whyUs = [
+  { id: 'importer', icon: FaStar, label: "من المستورد المباشر", desc: "أسعار تنافسية لأننا المستوردون، مع توفر أسعار خاصة جداً للتجار." },
+  { id: 'original', icon: FaCheckCircle, label: "أصلي 100%", desc: "جميع المنتجات والمكونات الداخلية أصلية بالكامل ولم يتم تعديلها." },
+  { id: 'products', icon: FaLaptop, label: "منتجات متكاملة", desc: "لابتوبات، أجهزة ديسك توب، وشاشات لتلبية كافة احتياجاتكم التقنية." },
+];
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 30 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-50px" },
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
   transition: { duration: 0.7, delay },
 });
 
 export default function About() {
   const { t } = useTranslation();
+  const { settings } = useSiteSettings();
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent("مرحباً، أريد الاستفسار عن المنتجات المتاحة");
@@ -36,198 +74,231 @@ export default function About() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-gray-50/40">
       <main className="flex-1">
-        
-        {/* ── Modern Dark Hero ── */}
-        <section className="relative pt-24 pb-20 md:pt-36 md:pb-32 overflow-hidden bg-brand-950">
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] bg-brand-600/20 blur-[120px] rounded-full pointer-events-none" />
-          
-          <div className="container relative z-10">
-            <div className="max-w-4xl mx-auto text-center">
-              <motion.div {...fadeUp(0)}>
-                <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-brand-500/10 text-brand-400 font-medium text-sm mb-8 border border-brand-500/20">
-                  <Award className="w-4 h-4" />
-                  <span>{brand.slogan || "معانا انت دايماً في الأمان"}</span>
+        {/* ── Hero ── */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-secondary py-20 md:py-28">
+          {/* Decorative blobs */}
+          <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-accent/20 blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-primary-foreground/10 blur-3xl" />
+
+          <div className="container relative">
+            <motion.div
+              className="max-w-3xl mx-auto text-center"
+              {...fadeUp(0)}
+            >
+              {/* Logo */}
+              <div className="mb-6 flex justify-center">
+                <div className="p-4 bg-white/15 backdrop-blur-sm rounded-3xl border border-white/25 shadow-2xl">
+                  <img
+                    src={settings.logoUrl || "/logo2.png"}
+                    alt={settings.storeName}
+                    className="h-24 md:h-32 w-auto object-contain"
+                    onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }}
+                  />
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.h1 {...fadeUp(0.1)} className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight leading-[1.1]">
-                نعيد صياغة مفهوم <br className="hidden md:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300">التكنولوجيا المضمونة</span>
-              </motion.h1>
+              <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4 drop-shadow-lg">
+                {settings.aboutPage.heroTitle}
+              </h1>
+              <h2 className="text-xl md:text-2xl font-bold text-white/90 mb-3 drop-shadow-md">
+                {settings.aboutPage.heroSubtitle}
+              </h2>
+              <p className="text-white/80 text-lg md:text-xl mb-8 leading-relaxed max-w-2xl mx-auto">
+                {settings.aboutPage.heroDescription}
+              </p>
 
-              <motion.p {...fadeUp(0.2)} className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-                متخصصون في تقديم أجهزة اللابتوب بحالة ممتازة وأداء قوي. نضمن لك الحصول على أفضل سعر في السوق لتلبية كافة احتياجاتك التقنية.
-              </motion.p>
-
-              <motion.div {...fadeUp(0.3)} className="flex flex-col sm:flex-row justify-center gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
                   onClick={handleWhatsAppClick}
                   size="lg"
-                  className="bg-white text-brand-900 hover:bg-brand-50 font-bold px-8 h-14 rounded-full transition-all duration-300 gap-2"
+                  className="bg-white text-green-600 hover:bg-green-50 font-bold px-7 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 gap-2"
                 >
-                  <MessageCircle className="w-5 h-5 text-[#25D366]" />
-                  تواصل عبر الواتساب
+                  <FaWhatsapp className="text-xl" />
+                  تواصل عبر واتساب
                 </Button>
-                <Link to="/products">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full sm:w-auto border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold px-8 h-14 rounded-full backdrop-blur-sm transition-all duration-300 gap-2"
-                  >
-                    تصفح منتجاتنا
-                    <ChevronLeft className="w-5 h-5" />
-                  </Button>
-                </Link>
-              </motion.div>
+                <Button
+                  onClick={handlePhoneClick}
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-white/50 text-white hover:bg-white/15 font-bold px-7 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-105 gap-2"
+                >
+                  <FaPhone className="text-lg" />
+                  {STORE_OWNER.phone}
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* ── Stats bar ── */}
+        <div className="bg-white border-b border-gray-100 shadow-sm">
+          <div className="container py-5">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              {[
+                { value: settings.aboutPage?.stats?.experience || "5+", label: "سنوات خبرة" },
+                { value: settings.aboutPage?.stats?.sold || "1000+", label: "لابتوب مباع" },
+                { value: settings.aboutPage?.stats?.satisfaction || "100%", label: "رضا العملاء" },
+              ].map((s, i) => (
+                <motion.div key={i} {...fadeUp(0.1 + i * 0.1)}>
+                  <p className="text-2xl md:text-3xl font-extrabold gradient-text">{s.value}</p>
+                  <p className="text-xs md:text-sm text-gray-500 font-medium mt-1">{s.label}</p>
+                </motion.div>
+              ))}
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* ── Bento Grid Stats & Values ── */}
-        <section className="py-20 md:py-32 bg-slate-50 relative">
-          <div className="container">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              
-              {/* Main Box */}
-              <motion.div {...fadeUp(0.1)} className="md:col-span-2 bg-white rounded-[2rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col justify-center relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-50 rounded-full blur-3xl -mr-20 -mt-20 transition-transform duration-700 group-hover:scale-150" />
-                <h3 className="text-2xl md:text-3xl font-bold text-brand-950 mb-4 relative z-10">أفضل الأسعار التنافسية</h3>
-                <p className="text-slate-600 text-base md:text-lg mb-10 max-w-lg relative z-10 leading-relaxed">
-                  لماذا تدفع أكثر؟ نحن نحرص على تقديم أفضل الأجهزة بأقل الأسعار الحقيقية في السوق مع ضمان الجودة العالية، لنوفر لك قيمة حقيقية مقابل ما تدفعه.
-                </p>
-                <div className="grid grid-cols-2 gap-4 relative z-10 border-t border-slate-100 pt-8 mt-auto">
-                  <div>
-                    <div className="text-3xl md:text-4xl font-extrabold text-brand-700 mb-1">1000+</div>
-                    <div className="text-sm font-medium text-slate-500">جهاز مباع</div>
+        {/* ── Image Banner ── */}
+        <div className="container pt-14">
+          <motion.div {...fadeUp(0.1)} className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100 relative group">
+            <img 
+              src={settings.aboutPage.bannerImage || "/sg.jpeg"} 
+              alt={settings.storeName} 
+              className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+            {/* Optional subtle overlay for better visual integration if needed, but since it's an ad banner, keeping it clean is usually best */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          </motion.div>
+        </div>
+
+        {/* ── About cards ── */}
+        <div className="container py-14">
+          <motion.div className={`grid md:grid-cols-${settings.isImporter !== false ? '2' : '1'} gap-6 max-w-${settings.isImporter !== false ? 'none' : '3xl'} mx-auto`} {...fadeUp(0.15)}>
+            {settings.isImporter !== false && (
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7 hover:shadow-md hover:border-primary/20 transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-2xl bg-primary/10">
+                    <FaStore className="text-2xl text-primary" />
                   </div>
                   <div>
-                    <div className="text-3xl md:text-4xl font-extrabold text-brand-700 mb-1">100%</div>
-                    <div className="text-sm font-medium text-slate-500">رضا العملاء</div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">من المستورد إليك مباشرةً</h3>
+                    <p className="text-gray-600 leading-relaxed text-sm">
+                      نحن لا نتعامل مع وسطاء! نضمن لك الحصول على جهازك من المستورد مباشرة بأقل سعر في السوق. ويتوفر لدينا <span className="text-primary font-bold">أسعار خاصة ومميزة جداً للتجار والموزعين</span>.
+                    </p>
                   </div>
                 </div>
-              </motion.div>
-
-              {/* Quality Box */}
-              <motion.div {...fadeUp(0.2)} className="bg-brand-900 rounded-[2rem] p-8 md:p-10 shadow-lg text-white flex flex-col justify-between relative overflow-hidden group">
-                <div className="absolute bottom-0 left-0 w-40 h-40 bg-brand-500/20 rounded-full blur-2xl transition-transform duration-700 group-hover:scale-150" />
-                <div className="bg-white/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-md border border-white/10">
-                  <ShieldCheck className="text-brand-400 w-8 h-8" />
+              </div>
+            )}
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7 hover:shadow-md hover:border-emerald-100 transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-2xl bg-emerald-50">
+                  <FaCheckCircle className="text-2xl text-emerald-600" />
                 </div>
-                <div className="relative z-10">
-                  <h3 className="text-2xl font-bold mb-4">فحص فني دقيق</h3>
-                  <p className="text-slate-400 text-base leading-relaxed">
-                    تخضع جميع أجهزتنا لاختبارات وفحوصات فنية شاملة قبل عرضها للبيع، لنضمن لك أداءً مستقراً وموثوقاً ينجز مهامك بكفاءة تامة.
+                <div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">مكونات أصلية 100%</h3>
+                  <p className="text-gray-600 leading-relaxed text-sm">
+                    نتعهد بأن جميع الأجهزة (لابتوب - ديسك توب - شاشات) تأتي بحالتها الأصلية وبالمكونات الداخلية كما خرجت من المصنع (Original)، لتضمن أعلى أداء وعمر افتراضي طويل، مع ضماننا الشامل لراحتك.
                   </p>
                 </div>
-              </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
 
+        {/* ── Warranty Section ── */}
+        <div className="bg-gradient-to-br from-slate-50 to-primary/5 py-16 border-y border-gray-100">
+          <div className="container">
+            <motion.div className="text-center mb-12" {...fadeUp(0.1)}>
+              <div className="inline-flex items-center gap-3 mb-4">
+                <FaAward className="text-3xl text-primary" />
+                <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">ضماناتنا</h2>
+              </div>
+              <p className="text-gray-500 max-w-xl mx-auto text-base">
+                نقدم ضمانات شاملة على جميع منتجاتنا لضمان رضاكم التام
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {warrantyFeatures.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  {...fadeUp(0.15 + index * 0.1)}
+                  className={`bg-white rounded-2xl border ${feature.border} shadow-sm p-7 text-center hover:shadow-lg hover:-translate-y-2 transition-all duration-300 group`}
+                >
+                  <div className={`inline-flex p-4 rounded-2xl ${feature.bg} mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className={`text-3xl ${feature.iconColor}`} />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-3">{feature.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
+                </motion.div>
+              ))}
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* ── Image Banner & Text Split ── */}
-        <section className="py-10 bg-white">
-          <div className="container max-w-6xl mx-auto">
-            <motion.div {...fadeUp(0.1)} className="relative rounded-[2.5rem] overflow-hidden bg-brand-900 min-h-[400px] md:min-h-[500px] flex items-center shadow-2xl">
-              <img 
-                src="/sg.jpeg" 
-                alt="تشكيلة لابتوبات" 
-                className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay hover:scale-105 transition-transform duration-1000" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-l from-brand-950 via-brand-900/80 to-transparent" />
-              
-              <div className="relative z-10 p-8 md:p-16 max-w-2xl text-right">
-                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-                  تشكيلة واسعة تلبي <br/> <span className="text-brand-400">كل احتياجاتك</span>
-                </h2>
-                <p className="text-slate-300 text-lg mb-8 leading-relaxed max-w-lg">
-                  سواء كنت تبحث عن لابتوب للألعاب، للعمل المكتبي الشاق، أو للدراسة، ستجد لدينا الجهاز الذي تبحث عنه بأفضل المواصفات.
-                </p>
-                <Link to="/products">
-                  <Button className="bg-brand-600 hover:bg-brand-500 text-white rounded-full px-8 h-12 text-base shadow-lg shadow-brand-600/20">
-                    اكتشف الموديلات المتاحة
+        {/* ── Why Us ── */}
+        <div className="container py-14">
+          <motion.div className="text-center mb-10" {...fadeUp(0.1)}>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-800 mb-2">
+              لماذا تختارنا؟
+            </h2>
+            <div className="w-12 h-1 bg-gradient-to-r from-primary to-secondary rounded-full mx-auto" />
+          </motion.div>
+          <div className="grid md:grid-cols-3 gap-5 justify-center">
+            {whyUs
+              .filter(item => settings.isImporter !== false || item.id !== 'importer')
+              .map((item, i) => (
+              <motion.div key={i} {...fadeUp(0.1 + i * 0.1)}
+                className="flex flex-col items-center text-center p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 mb-4">
+                  <item.icon className="text-2xl text-primary" />
+                </div>
+                <h4 className="font-bold text-gray-800 mb-1">{item.label}</h4>
+                <p className="text-sm text-gray-500">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Contact Section ── */}
+        <div className="bg-gradient-to-br from-primary to-secondary py-16">
+          <div className="container">
+            <motion.div className="max-w-3xl mx-auto" {...fadeUp(0.1)}>
+              <div className="text-center mb-10">
+                <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">تواصل معنا</h2>
+                <p className="text-white/80 text-base">نحن هنا لخدمتكم وتقديم أفضل المنتجات بأفضل الأسعار</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-5">
+                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-7 text-center hover:bg-white/15 transition-all duration-300">
+                  <div className="inline-flex p-3 rounded-2xl bg-white/20 mb-4">
+                    <FaWhatsapp className="text-3xl text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">واتساب</h3>
+                  <p className="text-white/80 text-sm mb-5">تواصل معنا عبر واتساب للحصول على استشارة مجانية</p>
+                  <Button
+                    onClick={handleWhatsAppClick}
+                    className="w-full bg-white text-green-600 hover:bg-green-50 font-bold rounded-full transition-all duration-300 hover:scale-105 gap-2"
+                  >
+                    <FaWhatsapp />
+                    تواصل عبر واتساب
                   </Button>
-                </Link>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-7 text-center hover:bg-white/15 transition-all duration-300">
+                  <div className="inline-flex p-3 rounded-2xl bg-white/20 mb-4">
+                    <FaPhone className="text-3xl text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">اتصال مباشر</h3>
+                  <p className="text-white/80 text-sm mb-5">اتصل بنا مباشرة للحصول على المساعدة الفورية</p>
+                  <Button
+                    onClick={handlePhoneClick}
+                    variant="outline"
+                    className="w-full border-2 border-white/50 text-white hover:bg-white/20 font-bold rounded-full transition-all duration-300 hover:scale-105 gap-2"
+                  >
+                    <FaPhone />
+                    {STORE_OWNER.phone}
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </div>
-        </section>
-
-        {/* ── Modern Warranty Section ── */}
-        <section className="py-20 md:py-32 bg-white">
-          <div className="container max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <motion.h2 {...fadeUp(0.1)} className="text-3xl md:text-4xl font-bold text-brand-950 mb-4">راحتك تهمنا</motion.h2>
-              <motion.p {...fadeUp(0.2)} className="text-slate-500 text-lg">ضماناتنا مصممة لتوفر لك تجربة شراء خالية من القلق</motion.p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div {...fadeUp(0.1)} className="group p-8 rounded-[2rem] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl hover:shadow-brand-900/5 hover:-translate-y-1 transition-all duration-300">
-                <div className="w-16 h-16 rounded-2xl bg-brand-100 text-brand-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <ShieldCheck className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-bold text-brand-950 mb-3">ضمان 3 شهور</h3>
-                <p className="text-slate-600 leading-relaxed text-sm">تغطية شاملة على جميع المنتجات ضد عيوب الصناعة لضمان أفضل أداء لجهازك.</p>
-              </motion.div>
-
-              <motion.div {...fadeUp(0.2)} className="group p-8 rounded-[2rem] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl hover:shadow-emerald-900/5 hover:-translate-y-1 transition-all duration-300">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <BatteryCharging className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-bold text-brand-950 mb-3">ضمان بطاريات</h3>
-                <p className="text-slate-600 leading-relaxed text-sm">ضمان لمدة شهر كامل على البطاريات والشواحن والهاردات لضمان كفاءة العمل.</p>
-              </motion.div>
-
-              <motion.div {...fadeUp(0.3)} className="group p-8 rounded-[2rem] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl hover:shadow-purple-900/5 hover:-translate-y-1 transition-all duration-300">
-                <div className="w-16 h-16 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <RefreshCcw className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-bold text-brand-950 mb-3">أسبوع استبدال</h3>
-                <p className="text-slate-600 leading-relaxed text-sm">نوفر لك إمكانية استبدال المنتج خلال أسبوع كامل بدون أي شروط معقدة.</p>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Clean Contact CTA ── */}
-        <section className="py-20 bg-slate-50">
-          <div className="container max-w-4xl mx-auto">
-            <motion.div {...fadeUp(0.1)} className="bg-white rounded-[3rem] p-10 md:p-16 shadow-xl shadow-slate-200/40 border border-slate-100 text-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-b from-brand-50/50 to-transparent pointer-events-none" />
-              <div className="relative z-10">
-                <h2 className="text-3xl md:text-4xl font-bold text-brand-950 mb-4">نحن دائماً في خدمتك</h2>
-                <p className="text-slate-500 mb-10 max-w-lg mx-auto text-lg">
-                  فريق خدمة العملاء لدينا مستعد للإجابة على جميع استفساراتك ومساعدتك في اختيار الجهاز الأنسب لعملك.
-                </p>
-                
-                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <Button 
-                    onClick={handleWhatsAppClick} 
-                    size="lg" 
-                    className="bg-[#25D366] hover:bg-[#1ebd5b] text-white rounded-full px-8 h-14 text-base font-bold shadow-lg shadow-[#25D366]/20 transition-transform hover:-translate-y-1 gap-2"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    محادثة واتساب
-                  </Button>
-                  <Button 
-                    onClick={handlePhoneClick} 
-                    size="lg" 
-                    variant="outline" 
-                    className="border-slate-200 hover:bg-slate-50 text-slate-700 rounded-full px-8 h-14 text-base font-bold transition-transform hover:-translate-y-1 gap-2"
-                  >
-                    <Phone className="w-5 h-5" />
-                    اتصال هاتفي
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
+        </div>
       </main>
+
       <Footer />
     </div>
   );

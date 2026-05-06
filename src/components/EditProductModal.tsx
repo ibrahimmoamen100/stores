@@ -381,7 +381,7 @@ export function EditProductModal({
       .filter(Boolean);
     const uniqueCategories = [...new Set(categories)].sort();
     const fixedValues = fixedCategories.map(c => c.value);
-
+    
     const customCategories = uniqueCategories
       .filter(c => !fixedValues.includes(c))
       .map(c => ({ value: c, label: c }));
@@ -701,7 +701,7 @@ export function EditProductModal({
                       ))}
                       <SelectItem
                         value="add-new"
-                        className="text-brand-700 font-medium"
+                        className="text-blue-600 font-medium"
                       >
                         + Add New Brand
                       </SelectItem>
@@ -783,7 +783,7 @@ export function EditProductModal({
                       ))}
                       <SelectItem
                         value="add-new"
-                        className="text-brand-700 font-medium"
+                        className="text-blue-600 font-medium"
                       >
                         + Add New Category
                       </SelectItem>
@@ -838,7 +838,7 @@ export function EditProductModal({
                       ))}
                       <SelectItem
                         value="add-new"
-                        className="text-brand-700 font-medium"
+                        className="text-blue-600 font-medium"
                       >
                         + Add New Subcategory
                       </SelectItem>
@@ -1406,7 +1406,7 @@ export function EditProductModal({
                     الكمية المتوفرة في المخزن (تُخصم تلقائياً عند البيع)
                   </p>
                   {formData.wholesaleInfo && formData.wholesaleInfo.purchasedQuantity > 0 && (
-                    <p className="text-xs text-brand-700 mt-1">
+                    <p className="text-xs text-blue-600 mt-1">
                       المتبقي: {formData.wholesaleInfo.purchasedQuantity - (formData.wholesaleInfo.quantity || 0)} قطعة
                     </p>
                   )}
@@ -1536,10 +1536,10 @@ export function EditProductModal({
                     {/* Options List */}
                     <div className="space-y-3">
                       {group.options.map((option: any, optionIndex: number) => (
-                        <div key={option.id} className={`grid grid-cols-1 md:grid-cols-4 gap-3 p-3 rounded-lg border ${optionIndex === 0 ? 'bg-brand-50/30 border-brand-100' : 'bg-white border-gray-100'}`}>
+                        <div key={option.id} className={`grid grid-cols-1 md:grid-cols-4 gap-3 p-3 rounded-lg border ${optionIndex === 0 ? 'bg-blue-50/30 border-blue-100' : 'bg-white border-gray-100'}`}>
                           <div className="md:col-span-2">
                             <label className="text-xs font-semibold text-gray-600 mb-1 block">
-                              اسم الخيار * {optionIndex === 0 && <span className="text-brand-700 font-bold">(الأساسي)</span>}
+                              اسم الخيار * {optionIndex === 0 && <span className="text-blue-600 font-bold">(الأساسي)</span>}
                             </label>
                             <Input
                               placeholder="مثال: 8GB"
@@ -1583,13 +1583,13 @@ export function EditProductModal({
                           </div>
                         </div>
                       ))}
-
+                      
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => addOptionToGroup(groupIndex)}
-                        className="mt-2 text-sm text-brand-700 border-brand-200 hover:bg-brand-50"
+                        className="mt-2 text-sm text-blue-600 border-blue-200 hover:bg-blue-50"
                       >
                         <PlusCircle className="h-3 w-3 ml-1.5" />
                         إضافة خيار إضافي

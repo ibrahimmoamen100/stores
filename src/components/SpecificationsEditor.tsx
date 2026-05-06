@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useStore } from "@/store/useStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -228,7 +228,7 @@ const PROFILES: Record<string, SectionTemplate[]> = {
 };
 
 const PROFILE_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
-  laptop: { label: "لابتوب", emoji: "💻", color: "bg-brand-50 border-brand-200 text-brand-700" },
+  laptop: { label: "لابتوب", emoji: "💻", color: "bg-blue-50 border-blue-200 text-blue-700" },
   desktop: { label: "كيس استيراد", emoji: "🖥️", color: "bg-purple-50 border-purple-200 text-purple-700" },
   monitor: { label: "شاشة", emoji: "🖵", color: "bg-green-50 border-green-200 text-green-700" },
   accessories: { label: "إكسسوار", emoji: "⌨️", color: "bg-orange-50 border-orange-200 text-orange-700" },
@@ -400,15 +400,15 @@ function SpecRowItem({
 
         <div className="flex items-center gap-3 shrink-0 mr-auto sm:ml-0 mt-2 sm:mt-0 w-full sm:w-auto justify-end">
           <div 
-            className="flex items-center gap-1.5 h-9 px-2 bg-brand-50/50 rounded-md border border-brand-100 cursor-pointer hover:bg-brand-100/50 transition-colors" 
+            className="flex items-center gap-1.5 h-9 px-2 bg-blue-50/50 rounded-md border border-blue-100 cursor-pointer hover:bg-blue-100/50 transition-colors" 
           >
             <Switch
               id={`filter-${spec.id}`}
               checked={spec.inFilter}
               onCheckedChange={(v) => onUpdate("inFilter", v)}
-              className="data-[state=checked]:bg-brand-700 scale-90"
+              className="data-[state=checked]:bg-blue-600 scale-90"
             />
-            <Label htmlFor={`filter-${spec.id}`} className="text-xs font-bold text-brand-700/70 cursor-pointer whitespace-nowrap">
+            <Label htmlFor={`filter-${spec.id}`} className="text-xs font-bold text-blue-900/70 cursor-pointer whitespace-nowrap">
               تصفية
             </Label>
           </div>
@@ -427,11 +427,11 @@ function SpecRowItem({
         <div className="flex items-center gap-3 mt-1 pt-2 border-t border-dashed border-gray-200 animate-in fade-in slide-in-from-top-1">
           <Label className="text-xs font-medium text-gray-500 w-full sm:w-40 shrink-0">الاسم البرمجي (Slug)</Label>
           <div className="flex-1 w-full max-w-sm flex items-center relative group">
-            <span className="absolute left-3 text-[11px] text-gray-400 font-mono select-none pointer-events-none group-focus-within:text-brand-600 transition-colors" dir="ltr">
-              ?<span className="font-bold text-brand-700">{spec.filterSlug || ''}</span>=
+            <span className="absolute left-3 text-[11px] text-gray-400 font-mono select-none pointer-events-none group-focus-within:text-blue-500 transition-colors" dir="ltr">
+              ?<span className="font-bold text-blue-600">{spec.filterSlug || ''}</span>=
             </span>
             <Input
-              className="h-8 text-xs font-mono w-full bg-gray-50/50 focus:bg-white pl-[60px] text-left border-gray-200 focus-visible:ring-brand-600 transition-all font-semibold text-brand-800"
+              className="h-8 text-xs font-mono w-full bg-gray-50/50 focus:bg-white pl-[60px] text-left border-gray-200 focus-visible:ring-blue-500 transition-all font-semibold text-blue-800"
               placeholder="e.g. screen-size"
               dir="ltr"
               value={spec.filterSlug || ""}
@@ -808,8 +808,8 @@ export function SpecificationsEditor({
                     
                     {/* Checkboxes for Display Features */}
                     {section.title === "الشاشة (Display)" && onFeaturesChange && (
-                      <div className="mt-4 p-3 bg-brand-50/50 border border-brand-100 rounded-lg">
-                        <h4 className="text-[11px] font-bold text-brand-700 mb-3">مميزات الشاشة الإضافية (تستخدم للفلترة في المتجر)</h4>
+                      <div className="mt-4 p-3 bg-blue-50/50 border border-blue-100 rounded-lg">
+                        <h4 className="text-[11px] font-bold text-blue-900 mb-3">مميزات الشاشة الإضافية (تستخدم للفلترة في المتجر)</h4>
                         <div className="flex flex-wrap gap-4">
                           {[
                             { id: "touch", label: "تدعم اللمس" },
