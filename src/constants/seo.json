@@ -1,13 +1,13 @@
 {
   "global": {
-    "baseUrl": "https://www.compusaif.com",
-    "siteName": "Compu Saif | كومبيو سيف",
-    "titleTemplate": "%s | Compu Saif",
-    "defaultTitle": "كومبيو سيف للابتوبات | Compu Saif Store - أفضل أسعار اللابتوبات والكمبيوترات في مصر",
+    "baseUrl": "https://www.شركة الحشومي.com",
+    "siteName": "شركة الحشومي | كومبيو سيف",
+    "titleTemplate": "%s | شركة الحشومي",
+    "defaultTitle": "كومبيو سيف للابتوبات | شركة الحشومي Store - أفضل أسعار اللابتوبات والكمبيوترات في مصر",
     "defaultDescription": "كومبيو سيف متجر متخصص في بيع اللابتوبات وأجهزة الكمبيوتر استيراد الخارج، أجهزة All-in-One، بأسعار الجملة والمستورد. جميع الأجهزة أوريجينال أصلية من أمريكا. نوفر لابتوب HP، Dell، Lenovo، Asus، Acer، Apple MacBook والمزيد.",
-    "defaultKeywords": "كومبيو سيف, Compu Saif, لابتوب استيراد, اجهزة استيراد, لابتوب, كمبيوتر, اجهزة اوريجينال, اسعار المستورد, All in one, لاب توب, كمبيوتر مكتبي, كيسات استيراد",
+    "defaultKeywords": "كومبيو سيف, شركة الحشومي, لابتوب استيراد, اجهزة استيراد, لابتوب, كمبيوتر, اجهزة اوريجينال, اسعار المستورد, All in one, لاب توب, كمبيوتر مكتبي, كيسات استيراد",
     "companyInfo": {
-      "name": "Compu Saif",
+      "name": "شركة الحشومي",
       "foundingLocation": "Egypt",
       "importSource": "USA",
       "type": "Importer & Distributor"

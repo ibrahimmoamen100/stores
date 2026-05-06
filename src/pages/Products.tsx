@@ -109,7 +109,7 @@ export default function Products() {
 
   // ─── Scroll / position restoration ───────────────────────────────────────
   const SCROLL_KEY = `products-scroll-${categoryParam ?? 'all'}`;
-  const COUNT_KEY  = `products-count-${categoryParam ?? 'all'}`;
+  const COUNT_KEY = `products-count-${categoryParam ?? 'all'}`;
 
   // Read the saved count ONCE on mount (before any state)
   const restoredCount = parseInt(sessionStorage.getItem(COUNT_KEY) || '0', 10);
@@ -409,7 +409,7 @@ export default function Products() {
     <div className="min-h-screen flex flex-col bg-gray-50/50">
       <SEOHelmet
         title="جميع المنتجات - لابتوبات وكمبيوترات"
-        description="تصفح جميع اللابتوبات والكمبيوترات المتوفرة في Compu Saif."
+        description="تصفح جميع اللابتوبات والكمبيوترات المتوفرة في شركة الحشومي."
         keywords="لابتوبات, كمبيوترات, HP, Dell, Lenovo, "
         url="/products"
       />

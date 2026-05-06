@@ -394,7 +394,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
 
   isImporter: true,
 
-  storeName: 'كمبيو سيف',
+  storeName: 'شركة الحشومي',
   logoUrl: '/logo1.png',
   logoNavbarUrl: '/logo2.png',
   faviconUrl: '/logo1.png',
@@ -424,7 +424,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   wholesaleTitle: 'قسم التوريدات والجملة',
   wholesaleDescription: 'أسعار خاصة للشركات والموزعين — أجهزة أصلية بكميات كبيرة مع ضمان معتمد.',
   footerTagline: 'أفضل الأسعار وأعلى جودة',
-  footerCopyright: 'كمبيو سيف. جميع الحقوق محفوظة.',
+  footerCopyright: 'شركة الحشومي. جميع الحقوق محفوظة.',
 
   phone: '01146324540',
   whatsapp: '01146324540',
@@ -438,7 +438,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     formSubtitle: 'املأ النموذج التالي وسيقوم فريق المبيعات بالتواصل معك في أقرب وقت لتقديم أفضل عرض يناسب احتياجاتك.',
   },
   aboutPage: {
-    heroTitle: 'Compu Saif',
+    heroTitle: 'شركة الحشومي',
     heroSubtitle: 'مع كومبيو سيف انت ديماً في الامان',
     heroDescription: 'متخصصون في بيع (اللابتوبات - الشاشات - أجهزة الديسك توب) الأصلية.',
     bannerImage: '/sg.jpeg',
@@ -474,17 +474,17 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   showHomeSearch: true,
   homeSearchTheme: 'elegant',
 
-  seoTitle: 'كمبيو سيف | لابتوب وكمبيوتر أصلي | Compu Saif',
-  seoDescription: 'كمبيو سيف متخصصون في بيع اللابتوبات والكمبيوترات الأصلية بأفضل الأسعار.',
-  seoKeywords: 'كمبيو سيف, Compu Saif, لابتوب أصلي, كمبيوتر أصلي, لابتوب مستعمل, أسعار اللابتوب',
-  seoBaseUrl: 'https://www.compusaif.com',
+  seoTitle: 'شركة الحشومي | لابتوب وكمبيوتر أصلي | شركة الحشومي',
+  seoDescription: 'شركة الحشومي متخصصون في بيع اللابتوبات والكمبيوترات الأصلية بأفضل الأسعار.',
+  seoKeywords: 'شركة الحشومي, شركة الحشومي, لابتوب أصلي, كمبيوتر أصلي, لابتوب مستعمل, أسعار اللابتوب',
+  seoBaseUrl: 'https://www.شركة الحشومي.com',
   seoImage: '/logo1.png',
   metaPixelId: '',
 
   // Splash Screen
   splashEnabled: true,
   splashTheme: 'elegant',
-  splashText: 'مع كمبيو سيف انت دايماً في الأمان',
+  splashText: 'مع شركة الحشومي انت دايماً في الأمان',
   splashSubtext: '',
   splashShowLogo: true,
   splashLogoUrl: '',
@@ -537,8 +537,8 @@ export async function getSiteSettings(useCache = true): Promise<SiteSettings> {
       customColors: { ...DEFAULT_SETTINGS.customColors, ...(data.customColors || {}) },
       navLinks: { ...DEFAULT_SETTINGS.navLinks, ...(data.navLinks || {}) },
       wholesalePage: { ...DEFAULT_SETTINGS.wholesalePage, ...(data.wholesalePage || {}) },
-      aboutPage: { 
-        ...DEFAULT_SETTINGS.aboutPage, 
+      aboutPage: {
+        ...DEFAULT_SETTINGS.aboutPage,
         ...(data.aboutPage || {}),
         stats: { ...DEFAULT_SETTINGS.aboutPage.stats, ...(data.aboutPage?.stats || {}) }
       },

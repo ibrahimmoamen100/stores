@@ -29,16 +29,16 @@ import {
 
 // ─── Sidebar tabs ─────────────────────────────────────────────────────────────
 const TABS = [
-  { id: 'theme',       label: 'الألوان والثيم',        icon: Palette },
-  { id: 'typography',  label: 'الخطوط والمظهر',      icon: Type },
-  { id: 'cardtheme',   label: 'ثيم كرت المنتج',      icon: CreditCard },
-  { id: 'pagetheme',   label: 'ثيم صفحة المنتجات',     icon: Layout },
-  { id: 'branding',    label: 'الشعار والهوية',        icon: ImageIcon },
-  { id: 'home',        label: 'الصفحة الرئيسية',       icon: LayoutTemplate },
-  { id: 'pages',       label: 'الصفحات الداخلية',     icon: LayoutDashboard },
-  { id: 'contact',     label: 'التواصل والفوتر',     icon: Phone },
-  { id: 'seo',         label: 'تحسين محركات البحث', icon: Search },
-  { id: 'splash',      label: 'شاشة التحميل',        icon: Sparkles },
+  { id: 'theme', label: 'الألوان والثيم', icon: Palette },
+  { id: 'typography', label: 'الخطوط والمظهر', icon: Type },
+  { id: 'cardtheme', label: 'ثيم كرت المنتج', icon: CreditCard },
+  { id: 'pagetheme', label: 'ثيم صفحة المنتجات', icon: Layout },
+  { id: 'branding', label: 'الشعار والهوية', icon: ImageIcon },
+  { id: 'home', label: 'الصفحة الرئيسية', icon: LayoutTemplate },
+  { id: 'pages', label: 'الصفحات الداخلية', icon: LayoutDashboard },
+  { id: 'contact', label: 'التواصل والفوتر', icon: Phone },
+  { id: 'seo', label: 'تحسين محركات البحث', icon: Search },
+  { id: 'splash', label: 'شاشة التحميل', icon: Sparkles },
 ];
 
 const FILTER_OPTIONS = [
@@ -209,7 +209,7 @@ export default function SiteCustomizer() {
       toast.success('تم حفظ الإعدادات بنجاح! 🎉');
       setHasChanges(false);
       // Ensure we clear the cache so the main site gets the new settings immediately
-      clearSettingsCache(); 
+      clearSettingsCache();
     } else {
       toast.error(result.error || 'فشل الحفظ');
     }
@@ -241,7 +241,7 @@ export default function SiteCustomizer() {
               <p className="text-xs text-gray-500">تحكم كامل في مظهر ومحتوى متجرك</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3">
             {hasChanges && (
               <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full animate-pulse">
@@ -249,16 +249,16 @@ export default function SiteCustomizer() {
                 يوجد تعديلات غير محفوظة
               </span>
             )}
-            
+
             <div className="hidden md:flex bg-gray-100 p-1 rounded-lg border border-gray-200 mr-2">
-              <button 
+              <button
                 onClick={() => setPreviewMode('desktop')}
                 className={`p-1.5 rounded-md transition-colors ${previewMode === 'desktop' ? 'bg-white shadow-sm text-violet-600' : 'text-gray-500 hover:text-gray-900'}`}
                 title="معاينة سطح المكتب"
               >
                 <MonitorSmartphone className="w-4 h-4" />
               </button>
-              <button 
+              <button
                 onClick={() => setPreviewMode('mobile')}
                 className={`p-1.5 rounded-md transition-colors ${previewMode === 'mobile' ? 'bg-white shadow-sm text-violet-600' : 'text-gray-500 hover:text-gray-900'}`}
                 title="معاينة الهاتف"
@@ -271,7 +271,7 @@ export default function SiteCustomizer() {
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">إلغاء</span>
             </Button>
-            
+
             <Button
               size="sm"
               onClick={handleSave}
@@ -293,18 +293,17 @@ export default function SiteCustomizer() {
         <aside className="w-64 shrink-0 bg-white border-l border-gray-200 overflow-y-auto flex flex-col z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
           <div className="p-4 space-y-1 flex-1">
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-2">إعدادات المظهر</h3>
-            
+
             {TABS.map(tab => {
               const active = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all text-right group ${
-                    active
-                      ? 'bg-violet-50 text-violet-700'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all text-right group ${active
+                    ? 'bg-violet-50 text-violet-700'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    }`}
                 >
                   <div className={`p-1.5 rounded-lg transition-colors ${active ? 'bg-violet-100 text-violet-700' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200'}`}>
                     <tab.icon className="w-4 h-4 shrink-0" />
@@ -334,9 +333,9 @@ export default function SiteCustomizer() {
               <LayoutDashboard className="w-4 h-4 text-gray-400" />
               لوحة التحكم
             </a>
-            
+
             <div className="pt-4 mt-2 border-t border-gray-200">
-              <button 
+              <button
                 onClick={resetToDefault}
                 className="w-full text-right text-xs text-red-500 hover:text-red-700 px-3 py-2"
               >
@@ -356,7 +355,7 @@ export default function SiteCustomizer() {
               </div>
             ) : (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                
+
                 {/* ── THEME TAB ── */}
                 {activeTab === 'theme' && (
                   <div className="space-y-6">
@@ -377,11 +376,10 @@ export default function SiteCustomizer() {
                               <button
                                 key={theme.id}
                                 onClick={() => update({ activeThemeId: theme.id })}
-                                className={`relative p-4 rounded-xl border-2 transition-all text-right group flex flex-col gap-3 ${
-                                  active
-                                    ? 'border-violet-500 bg-violet-50/30 ring-4 ring-violet-500/10'
-                                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 bg-white'
-                                }`}
+                                className={`relative p-4 rounded-xl border-2 transition-all text-right group flex flex-col gap-3 ${active
+                                  ? 'border-violet-500 bg-violet-50/30 ring-4 ring-violet-500/10'
+                                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 bg-white'
+                                  }`}
                               >
                                 {active && (
                                   <div className="absolute top-3 left-3 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center shadow-md">
@@ -436,7 +434,7 @@ export default function SiteCustomizer() {
                             value={settings.customColors.background}
                             onChange={v => updateColors({ background: v })}
                           />
-                          
+
                           <div className="col-span-1 md:col-span-2 border-t border-gray-100 pt-4 mt-2">
                             <h4 className="text-sm font-bold text-gray-700 mb-4">ألوان الشريط العلوي والفوتر</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -492,8 +490,8 @@ export default function SiteCustomizer() {
                       <CardContent className="space-y-4">
                         <div className="space-y-2">
                           <Label>نوع الخط الأساسي (يجب أن يدعم اللغة العربية)</Label>
-                          <Select 
-                            value={settings.fontFamily} 
+                          <Select
+                            value={settings.fontFamily}
                             onValueChange={v => update({ fontFamily: v })}
                           >
                             <SelectTrigger className="w-full md:w-1/2">
@@ -508,7 +506,7 @@ export default function SiteCustomizer() {
                             </SelectContent>
                           </Select>
                         </div>
-                        
+
                         <div className="p-6 bg-gray-50 rounded-xl border border-gray-200 mt-4">
                           <p className="text-2xl font-bold mb-2" style={{ fontFamily: settings.fontFamily }}>
                             تصفح أحدث المنتجات الإلكترونية
@@ -530,12 +528,11 @@ export default function SiteCustomizer() {
                               <button
                                 key={radius.value}
                                 onClick={() => update({ borderRadius: radius.value })}
-                                className={`flex flex-col items-center gap-3 p-3 border-2 transition-all ${
-                                  active ? 'border-violet-500 bg-violet-50' : 'border-gray-200 hover:border-violet-300'
-                                }`}
+                                className={`flex flex-col items-center gap-3 p-3 border-2 transition-all ${active ? 'border-violet-500 bg-violet-50' : 'border-gray-200 hover:border-violet-300'
+                                  }`}
                                 style={{ borderRadius: radius.value }}
                               >
-                                <div 
+                                <div
                                   className="w-12 h-12 bg-violet-100 border border-violet-200 flex items-center justify-center"
                                   style={{ borderRadius: radius.value }}
                                 >
@@ -565,11 +562,10 @@ export default function SiteCustomizer() {
                               <button
                                 key={shadow.value}
                                 onClick={() => update({ globalShadow: shadow.value as any })}
-                                className={`flex flex-col items-center gap-3 p-4 border-2 rounded-xl transition-all ${
-                                  active ? 'border-violet-500 bg-violet-50' : 'border-transparent hover:bg-gray-50'
-                                }`}
+                                className={`flex flex-col items-center gap-3 p-4 border-2 rounded-xl transition-all ${active ? 'border-violet-500 bg-violet-50' : 'border-transparent hover:bg-gray-50'
+                                  }`}
                               >
-                                <div 
+                                <div
                                   className={`w-16 h-16 bg-white flex items-center justify-center rounded-lg ${previewShadowClass}`}
                                 >
                                   {active && <Check className="w-5 h-5 text-violet-600" />}
@@ -773,7 +769,7 @@ export default function SiteCustomizer() {
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                           {FILTER_OPTIONS.map(opt => (
                             <Label key={opt.id} className="flex items-center gap-3 cursor-pointer p-3 border rounded-xl hover:bg-gray-50 transition-colors">
-                              <Checkbox 
+                              <Checkbox
                                 checked={settings.defaultOpenFilters?.includes(opt.id) || false}
                                 onCheckedChange={(checked) => {
                                   const current = settings.defaultOpenFilters || [];
@@ -809,7 +805,7 @@ export default function SiteCustomizer() {
                           <Input
                             value={settings.storeName}
                             onChange={e => update({ storeName: e.target.value })}
-                            placeholder="مثال: كمبيو سيف"
+                            placeholder="مثال: شركة الحشومي"
                             className="max-w-md"
                           />
                         </div>
@@ -915,9 +911,9 @@ export default function SiteCustomizer() {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                               {HOME_SEARCH_THEMES.map(theme => {
                                 const radius = settings.borderRadius || '9999px';
-                                
+
                                 let previewContent = null;
-                                
+
                                 if (theme.id === 'minimal') {
                                   previewContent = (
                                     <div className="w-full p-4 bg-white border-b border-gray-100 flex flex-col items-center">
@@ -981,11 +977,10 @@ export default function SiteCustomizer() {
                                   <button
                                     key={theme.id}
                                     onClick={() => update({ homeSearchTheme: theme.id as any })}
-                                    className={`flex flex-col overflow-hidden border-2 rounded-xl text-right transition-all group ${
-                                      settings.homeSearchTheme === theme.id
-                                        ? 'border-blue-500 shadow-md ring-2 ring-blue-500/20'
-                                        : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
-                                    }`}
+                                    className={`flex flex-col overflow-hidden border-2 rounded-xl text-right transition-all group ${settings.homeSearchTheme === theme.id
+                                      ? 'border-blue-500 shadow-md ring-2 ring-blue-500/20'
+                                      : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                                      }`}
                                   >
                                     {previewContent}
                                     <div className="p-3 bg-white w-full border-t border-gray-100">
@@ -1033,7 +1028,7 @@ export default function SiteCustomizer() {
                         ) : (
                           settings.heroCarousel.map((slide, i) => (
                             <div key={slide.id} className="p-5 bg-gray-50 border border-gray-200 rounded-xl relative group">
-                              <button 
+                              <button
                                 onClick={() => {
                                   update({ heroCarousel: settings.heroCarousel.filter((_, idx) => idx !== i) });
                                 }}
@@ -1042,12 +1037,12 @@ export default function SiteCustomizer() {
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
-                              
+
                               <h4 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
                                 <span className="bg-violet-100 text-violet-800 w-6 h-6 rounded flex items-center justify-center text-xs">{i + 1}</span>
                                 شريحة العرض
                               </h4>
-                              
+
                               <div className="space-y-4">
                                 <ImageField
                                   label="رابط الصورة"
@@ -1459,8 +1454,8 @@ export default function SiteCustomizer() {
                           </div>
                           <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-blue-200 shadow-sm">
                             <Label htmlFor="show-topbar" className="cursor-pointer text-sm">إظهار الشريط</Label>
-                            <Switch 
-                              id="show-topbar" 
+                            <Switch
+                              id="show-topbar"
                               checked={settings.showTopbar}
                               onCheckedChange={v => update({ showTopbar: v })}
                             />
@@ -1557,7 +1552,7 @@ export default function SiteCustomizer() {
                           <Input
                             value={settings.footerCopyright}
                             onChange={e => update({ footerCopyright: e.target.value })}
-                            placeholder="مثال: كمبيو سيف. جميع الحقوق محفوظة."
+                            placeholder="مثال: شركة الحشومي. جميع الحقوق محفوظة."
                           />
                         </div>
                       </CardContent>
@@ -1609,7 +1604,7 @@ export default function SiteCustomizer() {
                           <Input
                             value={settings.seoTitle || ''}
                             onChange={e => update({ seoTitle: e.target.value })}
-                            placeholder="مثال: كمبيو سيف | لابتوب وكمبيوتر أصلي"
+                            placeholder="مثال: شركة الحشومي | لابتوب وكمبيوتر أصلي"
                           />
                           <div className="flex items-center justify-between">
                             <p className="text-xs text-gray-400">يظهر في تبويب المتصفح ونتائج جوجل. المثالي بين 50-60 حرفاً.</p>
@@ -1639,7 +1634,7 @@ export default function SiteCustomizer() {
                           <Input
                             value={settings.seoKeywords || ''}
                             onChange={e => update({ seoKeywords: e.target.value })}
-                            placeholder="مثال: كمبيو سيف, لابتوب أصلي, كمبيوتر مستعمل"
+                            placeholder="مثال: شركة الحشومي, لابتوب أصلي, كمبيوتر مستعمل"
                           />
                           <p className="text-xs text-gray-400">افصل بين الكلمات بفواصل. لا تتجاوز 20 كلمة.</p>
                         </div>
@@ -1689,7 +1684,7 @@ export default function SiteCustomizer() {
                         <div className="border border-gray-200 rounded-xl p-4 bg-white font-sans">
                           <div className="flex items-center gap-2 mb-3">
                             <div className="w-4 h-4 rounded-full bg-gray-300"></div>
-                            <span className="text-xs text-gray-500 dir-ltr">{settings.seoBaseUrl || 'https://www.compusaif.com'}</span>
+                            <span className="text-xs text-gray-500 dir-ltr">{settings.seoBaseUrl || 'https://www.شركة الحشومي.com'}</span>
                           </div>
                           <p className="text-blue-700 text-lg font-medium leading-snug mb-1 line-clamp-1">
                             {settings.seoTitle || settings.storeName || 'عنوان الموقع'}
@@ -1714,7 +1709,7 @@ export default function SiteCustomizer() {
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shrink-0">
                             <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z"/>
+                              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z" />
                             </svg>
                           </div>
                           <div>
@@ -1831,20 +1826,19 @@ export default function SiteCustomizer() {
                       <CardContent>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                           {[
-                            { id: 'elegant',   label: 'أنيق',    desc: 'ظهور سلس مع ارتداد' },
-                            { id: 'neon',      label: 'نيون',    desc: 'توهج وحلقة مضيئة' },
-                            { id: 'minimal',   label: 'بسيط',    desc: 'تلاشي هادئ وأنيق' },
-                            { id: 'wave',      label: 'موج',     desc: 'موجات متحركة' },
+                            { id: 'elegant', label: 'أنيق', desc: 'ظهور سلس مع ارتداد' },
+                            { id: 'neon', label: 'نيون', desc: 'توهج وحلقة مضيئة' },
+                            { id: 'minimal', label: 'بسيط', desc: 'تلاشي هادئ وأنيق' },
+                            { id: 'wave', label: 'موج', desc: 'موجات متحركة' },
                             { id: 'particles', label: 'جزيئات', desc: 'جزيئات طائرة' },
                           ].map((t) => (
                             <button
                               key={t.id}
-                              onClick={() => update({ splashTheme: t.id as 'elegant'|'neon'|'minimal'|'wave'|'particles' })}
-                              className={`relative flex flex-col overflow-hidden rounded-xl border-2 text-right transition-all group ${
-                                (settings.splashTheme ?? 'elegant') === t.id 
-                                  ? 'border-indigo-500 shadow-md ring-2 ring-indigo-500/20' 
-                                  : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
-                              }`}
+                              onClick={() => update({ splashTheme: t.id as 'elegant' | 'neon' | 'minimal' | 'wave' | 'particles' })}
+                              className={`relative flex flex-col overflow-hidden rounded-xl border-2 text-right transition-all group ${(settings.splashTheme ?? 'elegant') === t.id
+                                ? 'border-indigo-500 shadow-md ring-2 ring-indigo-500/20'
+                                : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                                }`}
                             >
                               <div className="w-full h-24 bg-slate-900 relative flex items-center justify-center overflow-hidden">
                                 {t.id === 'elegant' && (
@@ -1917,7 +1911,7 @@ export default function SiteCustomizer() {
                       <CardContent className="space-y-4">
                         <div className="space-y-2">
                           <Label>النص الرئيسي</Label>
-                          <Input value={settings.splashText || ''} onChange={(e) => update({ splashText: e.target.value })} placeholder="مع كمبيو سيف انت دايماً في الأمان" />
+                          <Input value={settings.splashText || ''} onChange={(e) => update({ splashText: e.target.value })} placeholder="مع شركة الحشومي انت دايماً في الأمان" />
                           <p className="text-xs text-gray-400">كل كلمة تظهر بتأثير متتالي</p>
                         </div>
                         <div className="space-y-2">
@@ -1967,13 +1961,13 @@ export default function SiteCustomizer() {
                             <img src={settings.splashLogoUrl?.trim() || settings.logoUrl || '/logo1.png'} alt="Preview" className="w-16 h-16 object-contain" />
                           )}
                           <p className="font-extrabold text-center text-lg" style={{ color: settings.splashTextColor || '#1e3a8a' }}>
-                            {settings.splashText || 'مع كمبيو سيف انت دايماً في الأمان'}
+                            {settings.splashText || 'مع شركة الحشومي انت دايماً في الأمان'}
                           </p>
                           {settings.splashSubtext?.trim() && (
                             <p className="text-sm opacity-70 text-center" style={{ color: settings.splashTextColor || '#1e3a8a' }}>{settings.splashSubtext}</p>
                           )}
                           <div className="flex gap-1.5">
-                            {[0,1,2].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full opacity-60" style={{ background: settings.splashTextColor || '#1e3a8a' }} />)}
+                            {[0, 1, 2].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full opacity-60" style={{ background: settings.splashTextColor || '#1e3a8a' }} />)}
                           </div>
                           <div className="absolute top-2 right-2 text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/70 text-gray-500">{settings.splashTheme || 'elegant'}</div>
                         </div>

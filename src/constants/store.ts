@@ -44,7 +44,7 @@ export const STORE_CONFIG = {
 
   // معلومات صاحب المتجر
   owner: {
-    name: "شركه كمبيو سيف   ",
+    name: "شركه شركة الحشومي   ",
     phone: "01146324540",
     whatsapp: "01146324540",
     email: "elaraby_ahamed@yahoo.com",
@@ -75,7 +75,7 @@ export const STORE_CONFIG = {
 
     {
       id: "branch2",
-      name: "       شركة كمبيو سيف فرع ايزون مول    ",
+      name: "       شركة شركة الحشومي فرع ايزون مول    ",
       address: " 382W+8V9, Al Manteqah Ath Thamenah, Nasr City, Cairo Governorate 4441552 ",
       phone: "01080640246",
       hours: "11:00 صباحاً - 9:00 مساءً (ماعدا الجمعة)",
@@ -90,7 +90,7 @@ export const STORE_CONFIG = {
     },
     {
       id: "branch3",
-      name: "       شركة كمبيو سيف فرع فيصل      ",
+      name: "       شركة شركة الحشومي فرع فيصل      ",
       address: " شارع الاربعتاشر مقابل سوبر ماركت الفرجانى متفرع من شارع العشرين فيصل، شارع ال, Boulaq Al Dakrour, Giza Governorate  ",
       phone: "01146324540",
       hours: "11:00 صباحاً - 9:00 مساءً (ماعدا الجمعة)",
@@ -104,7 +104,7 @@ export const STORE_CONFIG = {
     },
     {
       id: "branch4",
-      name: "       شركة كمبيو سيف فرع مول البستان      ",
+      name: "       شركة شركة الحشومي فرع مول البستان      ",
       address: " مول البستان, Bab Al Louq, Abdeen, Cairo Governorate 4280122 ",
       phone: "01018154208",
       hours: "11:00 صباحاً - 9:00 مساءً (ماعدا الجمعة)",

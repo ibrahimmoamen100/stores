@@ -30,21 +30,21 @@ export const SEOHelmet = ({
 }: SEOHelmetProps) => {
     const { settings } = useSiteSettings();
 
-    const baseUrl   = settings.seoBaseUrl   || 'https://www.compusaif.com';
-    const storeName = settings.storeName    || 'Compu Saif';
-    const defTitle  = settings.seoTitle     || `${storeName} | لابتوب وكمبيوتر أصلي`;
-    const defDesc   = settings.seoDescription || '';
-    const defKw     = settings.seoKeywords  || '';
-    const defImage  = settings.seoImage     || settings.logoUrl || '/logo1.png';
+    const baseUrl = settings.seoBaseUrl || 'https://www.شركة الحشومي.com';
+    const storeName = settings.storeName || 'شركة الحشومي';
+    const defTitle = settings.seoTitle || `${storeName} | لابتوب وكمبيوتر أصلي`;
+    const defDesc = settings.seoDescription || '';
+    const defKw = settings.seoKeywords || '';
+    const defImage = settings.seoImage || settings.logoUrl || '/logo1.png';
 
-    const fullUrl   = url ? `${baseUrl}${url}` : baseUrl;
-    const absImage  = image
+    const fullUrl = url ? `${baseUrl}${url}` : baseUrl;
+    const absImage = image
         ? (image.startsWith('http') ? image : `${baseUrl}${image}`)
         : (defImage.startsWith('http') ? defImage : `${baseUrl}${defImage}`);
 
-    const pageTitle       = title       ? `${title} | ${storeName}` : defTitle;
+    const pageTitle = title ? `${title} | ${storeName}` : defTitle;
     const pageDescription = description || defDesc;
-    const pageKeywords    = keywords    || defKw;
+    const pageKeywords = keywords || defKw;
 
     // Product Schema
     const productSchema = productData ? {
@@ -86,7 +86,7 @@ export const SEOHelmet = ({
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": storeName,
-        "alternateName": "كمبيو سيف",
+        "alternateName": "شركة الحشومي",
         "url": baseUrl
     };
 
@@ -94,7 +94,7 @@ export const SEOHelmet = ({
         <Helmet>
             {/* Primary */}
             <title>{pageTitle}</title>
-            <meta name="title"       content={pageTitle} />
+            <meta name="title" content={pageTitle} />
             <meta name="description" content={pageDescription} />
             {pageKeywords && <meta name="keywords" content={pageKeywords} />}
 
@@ -105,19 +105,19 @@ export const SEOHelmet = ({
             <link rel="canonical" href={fullUrl} />
 
             {/* Open Graph */}
-            <meta property="og:type"        content={type} />
-            <meta property="og:url"         content={fullUrl} />
-            <meta property="og:title"       content={pageTitle} />
+            <meta property="og:type" content={type} />
+            <meta property="og:url" content={fullUrl} />
+            <meta property="og:title" content={pageTitle} />
             <meta property="og:description" content={pageDescription} />
-            <meta property="og:image"       content={absImage} />
-            <meta property="og:site_name"   content={storeName} />
+            <meta property="og:image" content={absImage} />
+            <meta property="og:site_name" content={storeName} />
 
             {/* Twitter */}
-            <meta name="twitter:card"        content="summary_large_image" />
-            <meta name="twitter:url"         content={fullUrl} />
-            <meta name="twitter:title"       content={pageTitle} />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:url" content={fullUrl} />
+            <meta name="twitter:title" content={pageTitle} />
             <meta name="twitter:description" content={pageDescription} />
-            <meta name="twitter:image"       content={absImage} />
+            <meta name="twitter:image" content={absImage} />
 
             {/* Structured Data */}
             {productSchema && (
