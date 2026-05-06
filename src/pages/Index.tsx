@@ -123,7 +123,7 @@ const Index = () => {
           {settings.showHomeSearch !== false && (() => {
             const theme = settings.homeSearchTheme || 'elegant';
             const radius = settings.borderRadius || '9999px';
-            
+
             // Render logic based on theme
             if (theme === 'minimal') {
               return (
@@ -151,7 +151,7 @@ const Index = () => {
               return (
                 <div className="absolute top-4 md:top-8 left-0 right-0 z-20 px-4 pointer-events-none">
                   <div className="container max-w-3xl mx-auto">
-                    <div 
+                    <div
                       className="backdrop-blur-md bg-white/40 border border-white/60 p-2.5 md:p-3 shadow-2xl pointer-events-auto"
                       style={{ borderRadius: radius }}
                     >
@@ -169,8 +169,8 @@ const Index = () => {
                             dir="auto"
                           />
                         </div>
-                        <Button 
-                          type="submit" 
+                        <Button
+                          type="submit"
                           className="px-6 md:px-8 bg-gray-900 text-white hover:bg-black font-bold h-auto text-base md:text-lg shadow-lg border border-gray-800"
                           style={{ borderRadius: radius === '9999px' ? '9999px' : `calc(${radius} * 0.8)` }}
                         >
@@ -202,8 +202,8 @@ const Index = () => {
                         style={{ borderRadius: radius }}
                         dir="auto"
                       />
-                      <Button 
-                        type="submit" 
+                      <Button
+                        type="submit"
                         className="py-6 md:py-7 px-8 md:px-10 bg-primary text-white hover:bg-primary/90 font-black text-base md:text-lg tracking-widest shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all hover:-translate-y-1"
                         style={{ borderRadius: radius }}
                       >
@@ -234,8 +234,8 @@ const Index = () => {
                           className="w-full bg-transparent border-0 focus-visible:ring-0 text-base md:text-lg shadow-none px-2"
                           dir="auto"
                         />
-                        <Button 
-                          type="submit" 
+                        <Button
+                          type="submit"
                           variant="ghost"
                           className="px-4 md:px-6 text-primary hover:bg-primary/10 hover:text-primary font-bold text-base md:text-lg h-auto py-2"
                           style={{ borderRadius: radius === '9999px' ? '9999px' : `calc(${radius} * 0.8)` }}
@@ -262,7 +262,7 @@ const Index = () => {
                     <div className="absolute right-4 flex items-center justify-center pointer-events-none">
                       <Search className={`h-5 w-5 transition-colors text-gray-400 group-focus-within:text-primary`} />
                     </div>
-                    
+
                     {/* Input Field */}
                     <Input
                       value={searchQuery}
@@ -272,10 +272,10 @@ const Index = () => {
                       style={{ borderRadius: radius }}
                       dir="auto"
                     />
-                    
+
                     {/* Submit Button */}
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       className={`absolute left-2 md:left-3 top-2 md:top-2.5 bottom-2 md:bottom-2.5 px-5 md:px-8 font-bold transition-all h-auto text-sm md:text-base bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:opacity-95 shadow-md hover:shadow-lg hover:-translate-y-0.5`}
                       style={{ borderRadius: radius === '9999px' ? '9999px' : `calc(${radius} * 0.8)` }}
                     >
@@ -363,7 +363,7 @@ const Index = () => {
           <div className="container py-8 md:py-12 space-y-16">
 
             {/* ── Shop by Category ── */}
-            <section>
+            {/* <section>
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                   <div className="h-9 w-1 bg-gradient-to-b from-blue-600 to-indigo-600 rounded-full" />
@@ -385,7 +385,6 @@ const Index = () => {
                     to={`/products?category=${category.slug}`}
                     className="group relative flex flex-col justify-end aspect-square w-full rounded-2xl md:rounded-3xl bg-gray-900 border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500"
                   >
-                    {/* Full Background Image */}
                     <img
                       src={category.image}
                       alt={category.title}
@@ -394,13 +393,10 @@ const Index = () => {
                       decoding="async"
                     />
 
-                    {/* Dark Gradient Overlay for Text Readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/10 to-transparent transition-opacity duration-500 group-hover:opacity-80" />
 
-                    {/* Subtle Brand Color Tint on Hover */}
                     <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
 
-                    {/* Elegant Text Container at Bottom */}
                     <div className="relative z-10 p-3 md:p-5 w-full text-center transform md:translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
                       <h3 className="text-sm md:text-xl font-bold text-white mb-0.5 md:mb-1 drop-shadow-md truncate">
                         {category.title.split(' (')[0]}
@@ -413,7 +409,7 @@ const Index = () => {
                   </Link>
                 ))}
               </div>
-            </section>
+            </section> */}
 
             {/* ── Special Offers ── */}
             {specialOffersProducts.length > 0 && (
@@ -495,42 +491,42 @@ const Index = () => {
             {/* ── Wholesale & Bulk Section ── */}
             {settings.isImporter !== false && (
               <section>
-              <Link
-                to="/wholesale"
-                className="group flex flex-col md:flex-row items-center justify-between overflow-hidden rounded-2xl shadow-sm hover:shadow-md border border-gray-200/60 bg-white transition-all duration-300 min-h-[120px]"
-              >
-                {/* Content Panel (Right for RTL) */}
-                <div className="flex-1 p-5 md:p-8 text-right flex flex-col justify-center h-full">
-                  <div className="flex items-center gap-3 mb-2 md:mb-3">
+                <Link
+                  to="/wholesale"
+                  className="group flex flex-col md:flex-row items-center justify-between overflow-hidden rounded-2xl shadow-sm hover:shadow-md border border-gray-200/60 bg-white transition-all duration-300 min-h-[120px]"
+                >
+                  {/* Content Panel (Right for RTL) */}
+                  <div className="flex-1 p-5 md:p-8 text-right flex flex-col justify-center h-full">
+                    <div className="flex items-center gap-3 mb-2 md:mb-3">
 
-                    <h2 className="text-lg md:text-2xl font-bold text-gray-900">
-                      قسم التوريدات والجملة
-                    </h2>
+                      <h2 className="text-lg md:text-2xl font-bold text-gray-900">
+                        قسم التوريدات والجملة
+                      </h2>
+                    </div>
+
+                    <p className="text-sm text-gray-500 mb-0 md:mb-4 max-w-xl">
+                      أسعار خاصة للشركات والموزعين — أجهزة أصلية بكميات كبيرة مع ضمان معتمد وعقود صيانة.
+                    </p>
+
+                    {/* Desktop Link text */}
+                    <div className="flex md:flex items-center gap-2 text-blue-800 font-semibold text-sm group-hover:text-indigo-700 transition-colors">
+                      تصفح عروض الشركات
+                      <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 duration-300" />
+                    </div>
                   </div>
 
-                  <p className="text-sm text-gray-500 mb-0 md:mb-4 max-w-xl">
-                    أسعار خاصة للشركات والموزعين — أجهزة أصلية بكميات كبيرة مع ضمان معتمد وعقود صيانة.
-                  </p>
-
-                  {/* Desktop Link text */}
-                  <div className="flex md:flex items-center gap-2 text-blue-800 font-semibold text-sm group-hover:text-indigo-700 transition-colors">
-                    تصفح عروض الشركات
-                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 duration-300" />
+                  {/* Image Panel (Left) */}
+                  <div className="w-full md:w-[40%] h-32 md:h-full relative overflow-hidden bg-gray-50">
+                    <div className="absolute inset-0  z-10" />
+                    <img
+                      src="/bg2.jpeg"
+                      alt="التوريدات والجملة"
+                      className="w-full h-full object-cover md:object-right transition-transform duration-700 group-hover:scale-105 opacity-90"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
-                </div>
-
-                {/* Image Panel (Left) */}
-                <div className="w-full md:w-[40%] h-32 md:h-full relative overflow-hidden bg-gray-50">
-                  <div className="absolute inset-0  z-10" />
-                  <img
-                    src="/bg2.jpeg"
-                    alt="التوريدات والجملة"
-                    className="w-full h-full object-cover md:object-right transition-transform duration-700 group-hover:scale-105 opacity-90"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-              </Link>
+                </Link>
               </section>
             )}
 
