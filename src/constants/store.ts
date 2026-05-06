@@ -134,22 +134,22 @@ export const STORE_CONFIG = {
   heroCarousel: [
     {
       id: "slide1",
-      image: "/bg1.jpeg",
+      image: "/1.png",
       title: "  ",
       description: " ",
       buttonText: "تسوق الآن",
       buttonLink: "/products",
       overlay: "from-black/70 to-transparent",
     },
-    {
-      id: "slide2",
-      image: "/bg2.jpeg",
-      title: "  ",
-      description: " ",
-      buttonText: "  جميع اللابات",
-      buttonLink: "/products",
-      overlay: "from-black/70 to-transparent",
-    }
+    // {
+    //   id: "slide2",
+    //   image: "/bg2.jpeg",
+    //   title: "  ",
+    //   description: " ",
+    //   buttonText: "  جميع اللابات",
+    //   buttonLink: "/products",
+    //   overlay: "from-black/70 to-transparent",
+    // }
 
   ],
 

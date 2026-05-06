@@ -300,12 +300,12 @@ const Index = () => {
                     <CarouselItem key={slide.id}>
                       <Link
                         to={slide.buttonLink}
-                        className="block relative w-full bg-gray-900 group overflow-hidden focus:outline-none"
+                        className="block relative w-full md:w-[1300px] lg:mx-auto bg-white group overflow-hidden focus:outline-none"
                       >
                         <img
                           src={slide.image}
                           alt={slide.title || "Banner"}
-                          className="w-full h-auto md:max-h-[550px] object-contain transition-transform duration-1000 group-hover:scale-[1.02]"
+                          className="w-full h-auto md:max-h-[550px] object-cover transition-transform duration-1000 group-hover:scale-[1.02]"
                           loading={i === 0 ? "eager" : "lazy"}
                           decoding="async"
                           {...(i === 0 ? { fetchpriority: "high" } as any : {})}
