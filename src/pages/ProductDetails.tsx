@@ -847,7 +847,7 @@ const ProductDetails = () => {
     <div className="pd-page min-h-screen bg-gray-50/50">
       <SEOHelmet
         title={optimizedTitle}
-        description={`${metaDescription} - اشتري الآن بأفضل سعر من كومبيو سيف.`}
+        description={`${metaDescription} - اشتري الآن بأفضل سعر من شركة الحشومي.`}
         keywords={optimizedKeywords}
         image={product.images?.[0]}
         url={getProductUrl(product.id, product.name)}

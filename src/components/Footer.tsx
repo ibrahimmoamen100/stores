@@ -55,7 +55,7 @@ export default function Footer() {
 
           {/* About */}
           <div>
-            <img src={settings.logoUrl || "/logo2.png"} alt={settings.storeName || "كومبيو سيف"} className="h-14 w-auto mb-4 opacity-90" />
+            <img src={settings.logoUrl || "/logo2.png"} alt={settings.storeName || "شركة الحشومي"} className="h-14 w-auto mb-4 opacity-90" />
             <p className="text-slate-400 text-sm leading-relaxed mb-5">
               {settings.footerTagline || t("footer.aboutDescription")}
             </p>

@@ -439,7 +439,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   },
   aboutPage: {
     heroTitle: 'شركة الحشومي',
-    heroSubtitle: 'مع كومبيو سيف انت ديماً في الامان',
+    heroSubtitle: 'مع شركة الحشومي انت ديماً في الامان',
     heroDescription: 'متخصصون في بيع (اللابتوبات - الشاشات - أجهزة الديسك توب) الأصلية.',
     bannerImage: '/sg.jpeg',
     stats: {
