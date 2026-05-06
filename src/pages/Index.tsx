@@ -342,7 +342,7 @@ const Index = () => {
           </section>
 
           {/* ── Trust Badges ── */}
-          <section className="py-6 bg-white border-y border-gray-100">
+          {/* <section className="py-6 bg-white border-y border-gray-100">
             <div className="container">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {TRUST_BADGES.map((badge, i) => (
@@ -358,7 +358,7 @@ const Index = () => {
                 ))}
               </div>
             </div>
-          </section>
+          </section> */}
 
           <div className="container py-8 md:py-12 space-y-16">
 
