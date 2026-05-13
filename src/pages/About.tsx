@@ -21,7 +21,7 @@ import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 const warrantyFeatures = [
   {
     icon: FaShieldAlt,
-    title: "ضمان 6 شهور",
+    title: "ضمان 3 شهور",
     description: "على جميع المنتجات ضد عيوب الصناعة",
     gradient: "from-primary to-primary/80",
     bg: "bg-primary/10",
@@ -154,9 +154,9 @@ export default function About() {
         {/* ── Image Banner ── */}
         <div className="container pt-14">
           <motion.div {...fadeUp(0.1)} className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100 relative group">
-            <img 
-              src={settings.aboutPage.bannerImage || "/sg.jpeg"} 
-              alt={settings.storeName} 
+            <img
+              src={settings.aboutPage.bannerImage || "/sg.jpeg"}
+              alt={settings.storeName}
               className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
             />
             {/* Optional subtle overlay for better visual integration if needed, but since it's an ad banner, keeping it clean is usually best */}
@@ -241,15 +241,15 @@ export default function About() {
             {whyUs
               .filter(item => settings.isImporter !== false || item.id !== 'importer')
               .map((item, i) => (
-              <motion.div key={i} {...fadeUp(0.1 + i * 0.1)}
-                className="flex flex-col items-center text-center p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-                <div className="p-3 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 mb-4">
-                  <item.icon className="text-2xl text-primary" />
-                </div>
-                <h4 className="font-bold text-gray-800 mb-1">{item.label}</h4>
-                <p className="text-sm text-gray-500">{item.desc}</p>
-              </motion.div>
-            ))}
+                <motion.div key={i} {...fadeUp(0.1 + i * 0.1)}
+                  className="flex flex-col items-center text-center p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                  <div className="p-3 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 mb-4">
+                    <item.icon className="text-2xl text-primary" />
+                  </div>
+                  <h4 className="font-bold text-gray-800 mb-1">{item.label}</h4>
+                  <p className="text-sm text-gray-500">{item.desc}</p>
+                </motion.div>
+              ))}
           </div>
         </div>
 

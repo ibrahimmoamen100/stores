@@ -54,6 +54,9 @@
 
   <!-- Preload Critical Images -->
   <link rel="preload" as="image" href="/bg1.jpeg" />
+  <!-- Preload logos at highest priority so the splash screen never shows a blank logo -->
+  <link rel="preload" as="image" href="/logo1.png" fetchpriority="high" />
+  <link rel="preload" as="image" href="/logo.png" fetchpriority="high" />
 
   <!-- JSON-LD Structured Data for Organization -->
   <script type="application/ld+json">

@@ -51,10 +51,10 @@ export default function Locations() {
               <MapPin className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg">
-              {settings.locationsPage?.heroTitle || 'فروعنا'}
+              {settings.locationsPage?.heroTitle || 'العنـــوان'}
             </h1>
             <p className="text-white/80 text-lg max-w-md mx-auto">
-              {settings.locationsPage?.heroSubtitle || 'تعرف على أماكن وجودنا وزورونا في أي وقت'}
+              {settings.locationsPage?.heroSubtitle || ''}
             </p>
           </motion.div>
         </div>

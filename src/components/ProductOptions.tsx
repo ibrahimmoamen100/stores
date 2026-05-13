@@ -677,14 +677,7 @@ export function ProductOptions({
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-3 mt-4">
-            <Button
-              className="flex-1 h-14 text-lg font-bold bg-primary text-white hover:bg-primary/90 rounded-2xl transition-all duration-300 shadow-md flex items-center justify-center gap-2"
-              onClick={() => setIsFormVisible(!isFormVisible)}
-            >
-              شراء / حجز
-              <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isFormVisible ? 'rotate-180' : ''}`} />
-            </Button>
+          <div className="flex flex-col sm:flex-row gap-3 mt-2">
             {onAddToCart && (
               <Button
                 variant="outline"
@@ -694,6 +687,14 @@ export function ProductOptions({
                 إضافة للسلة
               </Button>
             )}
+            <Button
+              className="flex-1 h-14 text-lg font-bold bg-primary text-white hover:bg-primary/90 rounded-2xl transition-all duration-300 shadow-md flex items-center justify-center gap-2"
+              onClick={() => setIsFormVisible(!isFormVisible)}
+            >
+              شراء / حجز
+              <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isFormVisible ? 'rotate-180' : ''}`} />
+            </Button>
+
           </div>
 
           {/* Checkout Form */}
@@ -719,14 +720,13 @@ export function ProductOptions({
                   </button>
                 </div>
                 {formData.orderType === 'online_purchase' && (
-                  <p className="text-sm font-medium text-primary bg-primary/5 p-3 rounded-lg border border-primary/20 leading-relaxed text-center">
-                    سيتم الشحن لحد عندك
+                  <p className="text-xs font-medium text-primary bg-primary/5 p-3 rounded-lg border border-primary/20 leading-relaxed text-center">
+                    شحن اللاب لحد عندك خلال 24-48 ساعة
                   </p>
                 )}
                 {formData.orderType === 'reservation' && (
-                  <p className="text-sm font-medium text-emerald-700 bg-emerald-50 p-3 rounded-lg border border-emerald-100 leading-relaxed text-center">
-                    سيتم تجهيز اللاب وحجزه لحد ما تشرفنا في الفرع وسيتم التواصل لتحديد الفرع
-                  </p>
+                  <p className="text-xs font-medium text-emerald-700 bg-emerald-50 p-3 rounded-lg border border-emerald-100 leading-relaxed text-center">
+                    حجز و الاستلام في المحل في مده لا تتعدى اليومين                  </p>
                 )}
               </div>
 

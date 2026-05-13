@@ -4,6 +4,31 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
+// ─── Logo cache helpers ────────────────────────────────────────────────────────
+const LOGO_CACHE_KEY = 'splash_logo_cached_url';
+
+/** Returns the last successfully used logo URL from localStorage */
+function getCachedLogoUrl(): string {
+  try { return localStorage.getItem(LOGO_CACHE_KEY) || ''; } catch { return ''; }
+}
+
+/** Persists the logo URL so the next visit can use it immediately */
+function saveCachedLogoUrl(url: string) {
+  try { if (url) localStorage.setItem(LOGO_CACHE_KEY, url); } catch { /* noop */ }
+}
+
+/** Preloads an image URL into the browser cache via a hidden <link> tag */
+function preloadImage(url: string) {
+  if (!url || typeof document === 'undefined') return;
+  // Avoid duplicate preload links
+  if (document.querySelector(`link[rel="preload"][href="${url}"]`)) return;
+  const link = document.createElement('link');
+  link.rel = 'preload';
+  link.as = 'image';
+  link.href = url;
+  document.head.appendChild(link);
+}
+
 // ─── Particle helpers ─────────────────────────────────────────────────────────
 function Particles({ color }: { color: string }) {
   const particles = Array.from({ length: 22 }, (_, i) => i);
@@ -75,7 +100,7 @@ export const GlobalSplash = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [isAppReady, setIsAppReady] = useState(false);
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);
-  const { settings } = useSiteSettings();
+  const { settings, loading: settingsLoading } = useSiteSettings();
   const loading = useStore((state) => state.loading);
 
   const {
@@ -91,7 +116,27 @@ export const GlobalSplash = () => {
     logoUrl = '/logo1.png',
   } = settings;
 
+  // ── Determine real logo src from settings ──────────────────────────────────
   const logoSrc = splashLogoUrl?.trim() || logoUrl || '/logo1.png';
+
+  // ── Instant logo: use localStorage cache so the logo shows immediately ─────
+  // Falls back to: cached → default local file → resolved logoSrc
+  const [displayLogoSrc, setDisplayLogoSrc] = useState<string>(
+    () => getCachedLogoUrl() || '/logo1.png'
+  );
+
+  // Sync display src ONLY after Firebase settings have fully loaded.
+  // This prevents DEFAULT_SETTINGS values ('/logo1.png') from overwriting
+  // a valid cached URL before Firebase responds.
+  useEffect(() => {
+    // Wait until settings are confirmed loaded from Firebase
+    if (settingsLoading) return;
+    if (!logoSrc) return;
+
+    setDisplayLogoSrc(logoSrc);
+    saveCachedLogoUrl(logoSrc);
+    preloadImage(logoSrc);
+  }, [logoSrc, settingsLoading]);
   const minMs = (splashDuration ?? 2) * 1000;
 
   useEffect(() => {
@@ -195,10 +240,16 @@ export const GlobalSplash = () => {
             {/* Logo */}
             {splashShowLogo && (
               <motion.img
-                src={logoSrc}
+                src={displayLogoSrc}
                 alt="Loading..."
                 className="object-contain mb-2"
+                fetchPriority="high"
+                decoding="async"
                 style={{ width: 160, height: 160, filter: splashTheme === 'neon' ? `drop-shadow(0 0 16px ${splashTextColor}aa)` : 'none' }}
+                onError={() => {
+                  // If the cached URL fails, fall back to the fresh one
+                  if (displayLogoSrc !== logoSrc) setDisplayLogoSrc(logoSrc);
+                }}
                 {...(logoAnim as any)}
               />
             )}

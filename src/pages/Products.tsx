@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo, useLayoutEffect } from "react";
+import { useState, useEffect, useRef, useMemo, useLayoutEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useLocation, useSearchParams } from "react-router-dom";
 import { useStore } from "@/store/useStore";
@@ -7,7 +7,7 @@ import { ProductFilters } from "@/components/ProductFilters";
 import { ProductModal } from "@/components/ProductModal";
 import { Product } from "@/types/product";
 import Footer from "@/components/Footer";
-import { Filter, Search, Loader2, LayoutGrid, List } from "lucide-react";
+import { Filter, Search, LayoutGrid, List, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -107,29 +107,14 @@ export default function Products() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const PAGE_SIZE = 12;
 
-  // ─── Scroll / position restoration ───────────────────────────────────────
-  const SCROLL_KEY = `products-scroll-${categoryParam ?? 'all'}`;
-  const COUNT_KEY = `products-count-${categoryParam ?? 'all'}`;
-
-  // Read the saved count ONCE on mount (before any state)
-  const restoredCount = parseInt(sessionStorage.getItem(COUNT_KEY) || '0', 10);
-  const hasRestoredSession = restoredCount > PAGE_SIZE;
-
-  // Initialize visibleCount from sessionStorage (so all previously-loaded cards render)
-  const [visibleCount, setVisibleCount] = useState(
-    hasRestoredSession ? restoredCount : PAGE_SIZE
-  );
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const sentinelRef = useRef<HTMLDivElement>(null);
+  // ─── Pagination state ─────────────────────────────────────────────────────
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Whether scroll position has been restored this mount
   const scrollRestored = useRef(false);
 
-  // While blockReset is true, ALL visibleCount resets from filter changes are ignored.
-  // This prevents URL-sync filter updates (during initialization) from wiping the
-  // restored count.  We clear it 1.5s after products first render — enough for every
-  // init-triggered setFilters() call to complete.
-  const blockReset = useRef(hasRestoredSession);
+  // While blockReset is true, ALL page resets from filter changes are ignored.
+  const blockReset = useRef(false);
 
   // ─── URL ↔ Filters sync ──────────────────────────────────────────────────
   // urlInitialized ref (not state) avoids re-render on set
@@ -334,69 +319,32 @@ export default function Products() {
     return bDate - aDate;
   });
 
-  // ── Infinite scroll: slice only visible products ──
-  const currentProducts = sortedProducts.slice(0, visibleCount);
-  const hasMore = visibleCount < sortedProducts.length;
+  // ── Pagination: compute total pages and current page slice ──
+  const totalPages = Math.max(1, Math.ceil(sortedProducts.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const currentProducts = sortedProducts.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  // ─── Restore scroll position after products are rendered ─────────────────
+  // ─── Scroll to top after first render ────────────────────────────────────
   useLayoutEffect(() => {
     if (scrollRestored.current) return;
     if (loading || sortedProducts.length === 0) return;
-
     scrollRestored.current = true;
-
-    const savedY = parseInt(sessionStorage.getItem(SCROLL_KEY) || '0', 10);
-
-    // Clear sessionStorage immediately so a fresh visit starts at top
-    sessionStorage.removeItem(SCROLL_KEY);
-    sessionStorage.removeItem(COUNT_KEY);
-
-    if (savedY > 0) {
-      requestAnimationFrame(() => {
-        window.scrollTo({ top: savedY, behavior: 'instant' as ScrollBehavior });
-      });
-    }
-
-    // Unblock filter-resets 1.5s after first render — by then every
-    // init-triggered setFilters() call (URL sync, category param) is done.
     setTimeout(() => {
       blockReset.current = false;
     }, 1500);
   }, [loading, sortedProducts.length]);
 
-  // ─── Save scroll position + visibleCount when leaving the page ────────────
-  useEffect(() => {
-    const handleBeforeLeave = () => {
-      sessionStorage.setItem(SCROLL_KEY, String(Math.round(window.scrollY)));
-      sessionStorage.setItem(COUNT_KEY, String(visibleCount));
-    };
-    // Capture on any click so we save before navigation occurs
-    window.addEventListener('click', handleBeforeLeave, { capture: true });
-    return () => {
-      window.removeEventListener('click', handleBeforeLeave, { capture: true });
-    };
-  }, [visibleCount]);
-
-  // ─── Reset visible count when user changes filters ──────────────────────
-  // Guarded by blockReset so initialization-driven filter changes
-  // (URL sync, category param) never accidentally wipe the restored count.
+  // ─── Reset to page 1 when user changes filters ───────────────────────────
   useEffect(() => {
     if (blockReset.current) return;
-    setVisibleCount(PAGE_SIZE);
-    scrollRestored.current = false;
+    setCurrentPage(1);
   }, [filters]);
 
-  // IntersectionObserver: load next batch when sentinel comes into view
-  const loadMore = useCallback(() => {
-    if (isLoadingMore || !hasMore) return;
-    setIsLoadingMore(true);
-    // Wait 1 second (1000ms) so the user sees the spinner and avoids loading too fast
-    // Wait a brief moment to show loading state (1000ms)
-    setTimeout(() => {
-      setVisibleCount((prev) => prev + PAGE_SIZE);
-      setIsLoadingMore(false);
-    }, 1000);
-  }, [isLoadingMore, hasMore]);
+  // ─── Scroll to top when page changes ─────────────────────────────────────
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
 
 
@@ -404,6 +352,20 @@ export default function Products() {
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
+
+  // ─── Build page numbers array with ellipsis ───────────────────────────────
+  const buildPageNumbers = (total: number, current: number): (number | '...')[] => {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const pages: (number | '...')[] = [1];
+    if (current > 3) pages.push('...');
+    for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) {
+      pages.push(p);
+    }
+    if (current < total - 2) pages.push('...');
+    pages.push(total);
+    return pages;
+  };
+  const pageNumbers = buildPageNumbers(totalPages, safePage);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50/50">
@@ -557,51 +519,59 @@ export default function Products() {
                   ))}
                 </div>
 
-                {/* ── Load More & Progress ── */}
-                <div className="mt-10 flex flex-col items-center gap-6 pb-8">
-                  {/* Progress Indicator */}
-                  {sortedProducts.length > 0 && (
-                    <div className="flex flex-col items-center gap-2 w-full max-w-xs">
-                      <p className="text-sm font-medium text-gray-500">
-                        تم عرض <span className="text-gray-900 font-bold">{currentProducts.length}</span> من أصل <span className="text-gray-900 font-bold">{sortedProducts.length}</span> منتج
-                      </p>
-                      <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden" dir="rtl">
-                        <div
-                          className="h-full bg-gradient-to-r from-blue-600 to-cyan-500 transition-all duration-500 ease-out"
-                          style={{ width: `${(currentProducts.length / sortedProducts.length) * 100}%` }}
-                        />
-                      </div>
-                    </div>
-                  )}
+                {/* ── Pagination Controls ── */}
+                {totalPages > 1 && (
+                  <div className="mt-10 pb-8 flex flex-col items-center gap-4">
+                    {/* Products count info */}
+                    <p className="text-sm text-gray-500">
+                      الصفحة <span className="font-bold text-gray-800">{safePage}</span> من <span className="font-bold text-gray-800">{totalPages}</span> — عرض <span className="font-bold text-gray-800">{currentProducts.length}</span> من أصل <span className="font-bold text-gray-800">{sortedProducts.length}</span> منتج
+                    </p>
 
-                  {/* Load More Button */}
-                  {hasMore && (
-                    <Button
-                      onClick={loadMore}
-                      disabled={isLoadingMore}
-                      variant="outline"
-                      className="min-w-[200px] h-12 rounded-xl border-primary/20 text-primary hover:bg-primary/5 hover:text-primary/90 hover:border-primary/30 font-bold transition-all shadow-sm"
-                    >
-                      {isLoadingMore ? (
-                        <div className="flex items-center gap-2">
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                          <span>جاري التحميل...</span>
-                        </div>
-                      ) : (
-                        "إظهار المزيد من المنتجات"
+                    {/* Pagination buttons */}
+                    <div className="flex items-center gap-1.5" dir="ltr">
+                      {/* Prev */}
+                      <button
+                        onClick={() => handlePageChange(safePage - 1)}
+                        disabled={safePage === 1}
+                        className="flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-primary hover:text-white hover:border-primary disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
+                        aria-label="الصفحة السابقة"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+
+                      {/* Page numbers */}
+                      {pageNumbers.map((pg, idx) =>
+                        pg === '...' ? (
+                          <span key={`ellipsis-${idx}`} className="flex items-center justify-center w-9 h-9 text-gray-400 text-sm select-none">…</span>
+                        ) : (
+                          <button
+                            key={pg}
+                            onClick={() => handlePageChange(pg as number)}
+                            className={`flex items-center justify-center w-9 h-9 rounded-xl text-sm font-semibold transition-all duration-200 shadow-sm border ${
+                              pg === safePage
+                                ? 'bg-primary text-white border-primary shadow-primary/30 shadow-md scale-105'
+                                : 'bg-white text-gray-700 border-gray-200 hover:bg-primary/5 hover:border-primary/30 hover:text-primary'
+                            }`}
+                            aria-label={`الصفحة ${pg}`}
+                            aria-current={pg === safePage ? 'page' : undefined}
+                          >
+                            {pg}
+                          </button>
+                        )
                       )}
-                    </Button>
-                  )}
 
-                  {!hasMore && !loading && sortedProducts.length > 0 && (
-                    <div className="text-sm text-emerald-600 font-medium py-2 px-6 bg-emerald-50 rounded-full ring-1 ring-emerald-100 flex items-center gap-2 mt-2">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      لقد شاهدت جميع المنتجات
+                      {/* Next */}
+                      <button
+                        onClick={() => handlePageChange(safePage + 1)}
+                        disabled={safePage === totalPages}
+                        className="flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-primary hover:text-white hover:border-primary disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
+                        aria-label="الصفحة التالية"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </>
             ) : (
               <div className="flex flex-col items-center justify-center py-20 text-center">
