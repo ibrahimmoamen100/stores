@@ -40,7 +40,7 @@ const warrantyFeatures = [
   {
     icon: FaExchangeAlt,
     title: "أسبوع استبدال",
-    description: "على جميع المنتجات بدون أي شروط",
+    description: "في حال عيوب الصناعة خلال اول 7 ايام",
     gradient: "from-purple-500 to-purple-600",
     bg: "bg-purple-50",
     border: "border-purple-100",
@@ -123,7 +123,7 @@ export default function About() {
                   onClick={handlePhoneClick}
                   size="lg"
                   variant="outline"
-                  className="border-2 border-white/50 text-white hover:bg-white/15 font-bold px-7 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-105 gap-2"
+                  className="border-2 border-white/50 text-dark hover:bg-white/15 font-bold px-7 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-105 gap-2"
                 >
                   <FaPhone className="text-lg" />
                   {STORE_OWNER.phone}
@@ -134,7 +134,7 @@ export default function About() {
         </div>
 
         {/* ── Stats bar ── */}
-        <div className="bg-white border-b border-gray-100 shadow-sm">
+        {/* <div className="bg-white border-b border-gray-100 shadow-sm">
           <div className="container py-5">
             <div className="grid grid-cols-3 gap-4 text-center">
               {[
@@ -149,23 +149,22 @@ export default function About() {
               ))}
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* ── Image Banner ── */}
-        <div className="container pt-14">
+        {/* <div className="container pt-14">
           <motion.div {...fadeUp(0.1)} className="rounded-3xl overflow-hidden shadow-2xl border border-gray-100 relative group">
             <img
               src={settings.aboutPage.bannerImage || "/sg.jpeg"}
               alt={settings.storeName}
               className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
             />
-            {/* Optional subtle overlay for better visual integration if needed, but since it's an ad banner, keeping it clean is usually best */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
           </motion.div>
-        </div>
+        </div> */}
 
         {/* ── About cards ── */}
-        <div className="container py-14">
+        {/* <div className="container py-14">
           <motion.div className={`grid md:grid-cols-${settings.isImporter !== false ? '2' : '1'} gap-6 max-w-${settings.isImporter !== false ? 'none' : '3xl'} mx-auto`} {...fadeUp(0.15)}>
             {settings.isImporter !== false && (
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7 hover:shadow-md hover:border-primary/20 transition-all duration-300 hover:-translate-y-1">
@@ -196,7 +195,7 @@ export default function About() {
               </div>
             </div>
           </motion.div>
-        </div>
+        </div> */}
 
         {/* ── Warranty Section ── */}
         <div className="bg-gradient-to-br from-slate-50 to-primary/5 py-16 border-y border-gray-100">
@@ -230,7 +229,7 @@ export default function About() {
         </div>
 
         {/* ── Why Us ── */}
-        <div className="container py-14">
+        {/* <div className="container py-14">
           <motion.div className="text-center mb-10" {...fadeUp(0.1)}>
             <h2 className="text-2xl md:text-3xl font-extrabold text-gray-800 mb-2">
               لماذا تختارنا؟
@@ -251,7 +250,7 @@ export default function About() {
                 </motion.div>
               ))}
           </div>
-        </div>
+        </div> */}
 
         {/* ── Contact Section ── */}
         <div className="bg-gradient-to-br from-primary to-secondary py-16">
@@ -287,7 +286,7 @@ export default function About() {
                   <Button
                     onClick={handlePhoneClick}
                     variant="outline"
-                    className="w-full border-2 border-white/50 text-white hover:bg-white/20 font-bold rounded-full transition-all duration-300 hover:scale-105 gap-2"
+                    className="w-full border-2 border-white/50 text-dark hover:bg-white/20 font-bold rounded-full transition-all duration-300 hover:scale-105 gap-2"
                   >
                     <FaPhone />
                     {STORE_OWNER.phone}
