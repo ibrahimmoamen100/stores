@@ -167,7 +167,7 @@ export const PRESET_THEMES: SiteTheme[] = [
     accent: '43 96% 56%',
     background: '0 0% 100%',
     foreground: '222 47% 11%',
-    topbarBg: '#1e3a8a',
+    topbarBg: '#129160ff',
     footerBg: '#0f172a',
   },
   {
@@ -179,7 +179,7 @@ export const PRESET_THEMES: SiteTheme[] = [
     background: '0 0% 100%',
     foreground: '222 47% 11%',
     topbarBg: '#065f46',
-    footerBg: '#064e3b',
+    footerBg: '#087054ff',
   },
   {
     id: 'purple',
@@ -383,7 +383,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     accent: '43 96% 56%',
     background: '0 0% 100%',
     foreground: '222 47% 11%',
-    topbarBg: '#1e3a8a',
+    topbarBg: '#198870ff',
     footerBg: '#0f172a',
   },
 
@@ -495,7 +495,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   splashShowLogo: true,
   splashLogoUrl: '',
   splashBgColor: '#ffffff',
-  splashTextColor: '#1e3a8a',
+  splashTextColor: '#178b7cff',
   splashDuration: 2,
 
   updatedAt: new Date().toISOString(),
