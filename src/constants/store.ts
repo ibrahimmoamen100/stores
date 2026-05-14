@@ -16,9 +16,9 @@ export const STORE_CONFIG = {
 
   // معلومات الاتصال
   contact: {
-    phone: "01146324540",
-    formattedPhone: "201146324540",
-    whatsapp: "01146324540",
+    phone: "01061246012",
+    formattedPhone: "201061246012",
+    whatsapp: "01061246012",
     email: "ibrahim.moamen100@gmail.com",
     address: "  مكرم عبيد - مدينة نصر - القاهرة",
     city: "القاهرة",
@@ -45,8 +45,8 @@ export const STORE_CONFIG = {
   // معلومات صاحب المتجر
   owner: {
     name: "شركه شركة الحشومي   ",
-    phone: "01146324540",
-    whatsapp: "01146324540",
+    phone: "01061246012",
+    whatsapp: "01061246012",
     email: "elaraby_ahamed@yahoo.com",
     title: "صاحب المتجر",
 
@@ -57,14 +57,14 @@ export const STORE_CONFIG = {
     salesManager: {
       name: "Ibrahim",
       image: "/ibrahim.png",
-      phone: "01146324540",
+      phone: "01061246012",
       title: "مدير المبيعات",
       bio: "مسؤول عن إدارة المبيعات وتطوير استراتيجيات التسويق",
     },
     deliveryManager: {
       name: "Ahmed",
       image: "/def.png",
-      phone: "01146324540",
+      phone: "01061246012",
       title: "مسؤول التوصيل",
       bio: "مسؤول عن توصيل الطلبات وضمان وصولها في الوقت المحدد",
     },
@@ -92,7 +92,7 @@ export const STORE_CONFIG = {
       id: "branch3",
       name: "       شركة شركة الحشومي فرع فيصل      ",
       address: " شارع الاربعتاشر مقابل سوبر ماركت الفرجانى متفرع من شارع العشرين فيصل، شارع ال, Boulaq Al Dakrour, Giza Governorate  ",
-      phone: "01146324540",
+      phone: "01061246012",
       hours: "11:00 صباحاً - 9:00 مساءً (ماعدا الجمعة)",
       coordinates: {
         lat: 30.018461617336946,
