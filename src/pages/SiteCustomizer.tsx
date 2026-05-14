@@ -1474,6 +1474,71 @@ export default function SiteCustomizer() {
                       </CardContent>
                     </Card>
 
+                    <Card className="shadow-sm border-green-100">
+                      <CardHeader className="bg-green-50/50 border-b border-green-100 pb-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <CardTitle className="text-base text-green-900">أيقونة الواتساب العائمة</CardTitle>
+                            <CardDescription>إظهار أيقونة واتساب عائمة للتواصل السريع في جميع الصفحات الرئيسية</CardDescription>
+                          </div>
+                          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-green-200 shadow-sm">
+                            <Label htmlFor="show-floating-whatsapp" className="cursor-pointer text-sm">إظهار الأيقونة</Label>
+                            <Switch
+                              id="show-floating-whatsapp"
+                              checked={settings.floatingWhatsappEnabled}
+                              onCheckedChange={v => update({ floatingWhatsappEnabled: v })}
+                            />
+                          </div>
+                        </div>
+                      </CardHeader>
+                      {settings.floatingWhatsappEnabled && (
+                        <CardContent className="pt-6 space-y-6">
+                          <div className="space-y-3">
+                            <Label className="text-sm font-semibold">موضع الأيقونة</Label>
+                            <Select
+                              value={settings.floatingWhatsappPosition || 'left'}
+                              onValueChange={v => update({ floatingWhatsappPosition: v as any })}
+                            >
+                              <SelectTrigger className="w-full md:w-1/2">
+                                <SelectValue placeholder="اختر الموضع" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="left">أسفل اليسار</SelectItem>
+                                <SelectItem value="right">أسفل اليمين</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <Label className="text-sm font-semibold">الصفحات التي تظهر فيها</Label>
+                            <div className="grid grid-cols-2 gap-3">
+                              {[
+                                { id: 'home', label: 'الصفحة الرئيسية' },
+                                { id: 'products', label: 'صفحة المنتجات (المتجر)' },
+                                { id: 'product-details', label: 'صفحة تفاصيل المنتج' },
+                                { id: 'cart', label: 'سلة المشتريات' }
+                              ].map(page => (
+                                <Label key={page.id} className="flex items-center gap-3 cursor-pointer p-3 border rounded-xl hover:bg-gray-50 transition-colors">
+                                  <Checkbox
+                                    checked={(settings.floatingWhatsappPages || []).includes(page.id)}
+                                    onCheckedChange={(checked) => {
+                                      const current = settings.floatingWhatsappPages || [];
+                                      if (checked) {
+                                        update({ floatingWhatsappPages: [...current, page.id] });
+                                      } else {
+                                        update({ floatingWhatsappPages: current.filter(id => id !== page.id) });
+                                      }
+                                    }}
+                                  />
+                                  <span className="text-sm font-medium text-gray-700">{page.label}</span>
+                                </Label>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      )}
+                    </Card>
+
                     <Card className="shadow-sm">
                       <CardHeader><CardTitle className="text-base">معلومات التواصل الأساسية</CardTitle></CardHeader>
                       <CardContent>

@@ -309,6 +309,9 @@ export interface SiteSettings {
   // Contact
   phone: string;
   whatsapp: string;
+  floatingWhatsappEnabled: boolean;
+  floatingWhatsappPosition: 'left' | 'right';
+  floatingWhatsappPages: string[];
   email: string;
   address: string;
 
@@ -428,6 +431,9 @@ export const DEFAULT_SETTINGS: SiteSettings = {
 
   phone: '01146324540',
   whatsapp: '01146324540',
+  floatingWhatsappEnabled: true,
+  floatingWhatsappPosition: 'left',
+  floatingWhatsappPages: ['home', 'products', 'product-details', 'cart'],
   email: 'ibrahim.moamen100@gmail.com',
   address: 'مكرم عبيد - مدينة نصر - القاهرة',
 
@@ -548,6 +554,9 @@ export async function getSiteSettings(useCache = true): Promise<SiteSettings> {
       isImporter: data.isImporter ?? DEFAULT_SETTINGS.isImporter,
       showHomeSearch: data.showHomeSearch ?? DEFAULT_SETTINGS.showHomeSearch,
       homeSearchTheme: data.homeSearchTheme ?? DEFAULT_SETTINGS.homeSearchTheme,
+      floatingWhatsappEnabled: data.floatingWhatsappEnabled ?? DEFAULT_SETTINGS.floatingWhatsappEnabled,
+      floatingWhatsappPosition: data.floatingWhatsappPosition ?? DEFAULT_SETTINGS.floatingWhatsappPosition,
+      floatingWhatsappPages: data.floatingWhatsappPages ?? DEFAULT_SETTINGS.floatingWhatsappPages,
     };
   };
 

@@ -16,6 +16,7 @@ import { DataLoader } from "@/components/DataLoader";
 import { analytics } from "@/lib/analytics";
 import { MetaPixelInitializer } from "./components/MetaPixelInitializer";
 import { GlobalSplash } from "./components/GlobalSplash";
+import { FloatingWhatsApp } from "./components/FloatingWhatsApp";
 
 // Lazy load pages with error handling
 const Index = lazy(() => import("./pages/Index").catch(() => ({ default: () => <div>Error loading Index</div> })));
@@ -87,6 +88,7 @@ const AppRoutes = () => {
 
       <ScrollToTop />
       <GlobalSplash />
+      <FloatingWhatsApp />
       <Layout>
         <ErrorBoundary>
           <Suspense fallback={<></>}>
