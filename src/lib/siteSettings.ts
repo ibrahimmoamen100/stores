@@ -495,7 +495,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   splashShowLogo: true,
   splashLogoUrl: '',
   splashBgColor: '#ffffff',
-  splashTextColor: '#178b7cff',
+  splashTextColor: '#155654',
   splashDuration: 2,
 
   updatedAt: new Date().toISOString(),

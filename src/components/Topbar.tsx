@@ -42,7 +42,7 @@ export function Topbar() {
   return (
     <div
       className="text-white shadow-sm relative z-50 transition-colors duration-300"
-      style={{ backgroundColor: 'var(--topbar-bg, #1e3a8a)' }}
+      style={{ backgroundColor: 'var(--topbar-bg, #155654)' }}
     >
       <div className="container flex h-12 items-center justify-between">
         <div className="flex items-center gap-3">

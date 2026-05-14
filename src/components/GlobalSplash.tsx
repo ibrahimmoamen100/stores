@@ -111,7 +111,7 @@ export const GlobalSplash = () => {
     splashShowLogo = true,
     splashLogoUrl = '',
     splashBgColor = '#ffffff',
-    splashTextColor = '#1e8a30ff',
+    splashTextColor = '#155654',
     splashDuration = 2,
     logoUrl = '/logo1.png',
   } = settings;
