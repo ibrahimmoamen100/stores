@@ -1516,7 +1516,9 @@ export default function SiteCustomizer() {
                                 { id: 'home', label: 'الصفحة الرئيسية' },
                                 { id: 'products', label: 'صفحة المنتجات (المتجر)' },
                                 { id: 'product-details', label: 'صفحة تفاصيل المنتج' },
-                                { id: 'cart', label: 'سلة المشتريات' }
+                                { id: 'cart', label: 'سلة المشتريات' },
+                                { id: 'about', label: 'صفحة من نحن' },
+                                { id: 'locations', label: 'صفحة الفروع' }
                               ].map(page => (
                                 <Label key={page.id} className="flex items-center gap-3 cursor-pointer p-3 border rounded-xl hover:bg-gray-50 transition-colors">
                                   <Checkbox

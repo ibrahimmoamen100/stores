@@ -433,7 +433,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   whatsapp: '01061246012',
   floatingWhatsappEnabled: true,
   floatingWhatsappPosition: 'left',
-  floatingWhatsappPages: ['home', 'products', 'product-details', 'cart'],
+  floatingWhatsappPages: ['home', 'products', 'product-details', 'cart', 'about', 'locations'],
   email: 'ibrahim.moamen100@gmail.com',
   address: 'مكرم عبيد - مدينة نصر - القاهرة',
 

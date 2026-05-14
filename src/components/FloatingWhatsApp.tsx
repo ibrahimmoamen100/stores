@@ -27,6 +27,8 @@ export function FloatingWhatsApp() {
   const isAllowedPage = () => {
     if (allowedPages.includes('home') && pathname === '/') return true;
     if (allowedPages.includes('cart') && pathname === '/cart') return true;
+    if (allowedPages.includes('about') && pathname === '/about') return true;
+    if (allowedPages.includes('locations') && pathname === '/locations') return true;
     
     // Check if it's the main products list (or category pages)
     const isProductsList = pathname === '/products' || pathname.startsWith('/products/category/');
