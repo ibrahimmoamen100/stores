@@ -106,7 +106,7 @@ export const GlobalSplash = () => {
   const {
     splashEnabled = true,
     splashTheme = 'elegant',
-    splashText = 'مع شركة الحشومي انت دايماً في الأمان',
+    splashText = 'مع تجربه فريدة تبدأ من هنا',
     splashSubtext = '',
     splashShowLogo = true,
     splashLogoUrl = '',

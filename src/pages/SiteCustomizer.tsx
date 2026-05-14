@@ -1911,13 +1911,10 @@ export default function SiteCustomizer() {
                       <CardContent className="space-y-4">
                         <div className="space-y-2">
                           <Label>النص الرئيسي</Label>
-                          <Input value={settings.splashText || ''} onChange={(e) => update({ splashText: e.target.value })} placeholder="مع شركة الحشومي انت دايماً في الأمان" />
+                          <Input value={settings.splashText || ''} onChange={(e) => update({ splashText: e.target.value })} placeholder="" />
                           <p className="text-xs text-gray-400">كل كلمة تظهر بتأثير متتالي</p>
                         </div>
-                        <div className="space-y-2">
-                          <Label>النص الفرعي (اختياري)</Label>
-                          <Input value={settings.splashSubtext || ''} onChange={(e) => update({ splashSubtext: e.target.value })} placeholder="شعار ثانوي أو وصف..." />
-                        </div>
+
                       </CardContent>
                     </Card>
 
@@ -1934,8 +1931,8 @@ export default function SiteCustomizer() {
                         <div className="space-y-2">
                           <Label>لون النص والتأثيرات</Label>
                           <div className="flex items-center gap-3">
-                            <input type="color" value={settings.splashTextColor || '#1e3a8a'} onChange={(e) => update({ splashTextColor: e.target.value })} className="w-10 h-10 rounded-lg cursor-pointer border border-gray-200" />
-                            <Input value={settings.splashTextColor || '#1e3a8a'} onChange={(e) => update({ splashTextColor: e.target.value })} dir="ltr" className="font-mono text-sm flex-1" />
+                            <input type="color" value={settings.splashTextColor || '#1e8a30ff'} onChange={(e) => update({ splashTextColor: e.target.value })} className="w-10 h-10 rounded-lg cursor-pointer border border-gray-200" />
+                            <Input value={settings.splashTextColor || '#1e8a30ff'} onChange={(e) => update({ splashTextColor: e.target.value })} dir="ltr" className="font-mono text-sm flex-1" />
                           </div>
                         </div>
                       </CardContent>
@@ -1961,7 +1958,7 @@ export default function SiteCustomizer() {
                             <img src={settings.splashLogoUrl?.trim() || settings.logoUrl || '/logo1.png'} alt="Preview" className="w-16 h-16 object-contain" />
                           )}
                           <p className="font-extrabold text-center text-lg" style={{ color: settings.splashTextColor || '#1e3a8a' }}>
-                            {settings.splashText || 'مع شركة الحشومي انت دايماً في الأمان'}
+                            {settings.splashText || 'مع تجربه فريدة تبدأ من هنا'}
                           </p>
                           {settings.splashSubtext?.trim() && (
                             <p className="text-sm opacity-70 text-center" style={{ color: settings.splashTextColor || '#1e3a8a' }}>{settings.splashSubtext}</p>

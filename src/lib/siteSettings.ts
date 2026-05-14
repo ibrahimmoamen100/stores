@@ -484,7 +484,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   // Splash Screen
   splashEnabled: true,
   splashTheme: 'elegant',
-  splashText: 'مع شركة الحشومي انت دايماً في الأمان',
+  splashText: 'مع تجربه فريدة تبدأ من هنا',
   splashSubtext: '',
   splashShowLogo: true,
   splashLogoUrl: '',
